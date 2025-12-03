@@ -1,7 +1,7 @@
 # create_tables.py
 
-from backend.db.database import engine, Base
-from backend.db.models import * # Import all your models so Base knows about them
+from database import engine, Base
+from models import *  # Ensure all models are imported so they are registered with Base
 
 def create_db_and_tables():
     print("Attempting to create all tables in the database...")
