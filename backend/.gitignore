@@ -1,2 +1,5 @@
 venv/
 db/__pycache__/
+routers/__pycache__/
+models/__pycache__/
+__pycache__/

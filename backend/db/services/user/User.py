@@ -1,5 +1,6 @@
+#service/user/User.py
 from sqlalchemy.orm import Session
-from models import User
+from backend.db.models import User
 import uuid
 from datetime import datetime
 
@@ -11,5 +12,8 @@ def create_user(db: Session, email: str, hashed_password: str) -> User:
     db.refresh(db_user)
     return db_user
 
-def get_user_by_email(db: Session, email: str) -> User | None:
+def get_user_by_email(db: Session, email: str) -> User:
     return db.query(User).filter(User.email == email).first()
+
+def get_all_users(db: Session) -> list[User]:
+    return db.query(User).all()
