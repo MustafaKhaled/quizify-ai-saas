@@ -1,4 +1,6 @@
 #main.py
+from dotenv import load_dotenv
+load_dotenv()
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Annotated 
@@ -7,6 +9,9 @@ from db.routers.users.users_router import router as user_router
 
 # Define a type alias for cleaner code
 # Note: You need to import Session from sqlalchemy.orm
+
+
+
 DBSession = Annotated[Session, Depends(get_db)]
 
 # The FastAPI application instance
