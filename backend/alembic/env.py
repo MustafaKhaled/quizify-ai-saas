@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 from alembic import context
-from backend.db.database import Base
-from backend.db.database import Base
-from backend.db.models import *
+from db.database import Base
+from db.database import Base
+from db.models import *
 
 
 
