@@ -4,3 +4,4 @@ routers/__pycache__/
 models/__pycache__/
 __pycache__/
 backend/.DS_Store
+backend/*.pyc

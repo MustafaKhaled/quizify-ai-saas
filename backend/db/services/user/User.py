@@ -1,6 +1,6 @@
 #service/user/User.py
 from sqlalchemy.orm import Session
-from backend.db.models import User
+from db.models import User
 import uuid
 from datetime import datetime
 
