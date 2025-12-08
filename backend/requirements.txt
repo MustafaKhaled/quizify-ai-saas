@@ -101,3 +101,4 @@ virtualenv==20.26.3
 wcwidth==0.2.13
 websockets==15.0.1
 wheel==0.43.0
+alembic==1.17.2
