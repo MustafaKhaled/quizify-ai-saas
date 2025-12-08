@@ -5,3 +5,4 @@ models/__pycache__/
 __pycache__/
 backend/.DS_Store
 backend/*.pyc
+backend/__pycache__/
