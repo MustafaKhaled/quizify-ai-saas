@@ -9,7 +9,6 @@ BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 from alembic import context
 from db.database import Base
-from db.database import Base
 from db.models import *
 
 
