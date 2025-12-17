@@ -8,7 +8,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
-from .database import Base
+from db.database import Base
 
 
 def generate_uuid():
@@ -26,6 +26,7 @@ class Subscription(Base):
     stripe_customer_id = Column(String(255), unique=True, nullable=False)
     status = Column(String(50), nullable=False)
     ends_at = Column(TIMESTAMP(timezone=True))
+    created_at = Column(TIMESTAMP(timezone=True), nullable= True)
 
     user = relationship("User", back_populates="subscription")
 
