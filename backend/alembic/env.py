@@ -14,13 +14,16 @@ if BASE_DIR not in sys.path:
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 from alembic import context
 from db.database import Base 
-import db.models
-
-
+from db.models import User, Subscription, QuizSource, Quiz, QuizResult
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+ # ... inside env.py after the imports
+print("--- DATABASE SCHEMA DETECTION ---")
+print(f"Models detected: {list(Base.metadata.tables.keys())}")
+print("--------------------------------")
 
 target_metadata = Base.metadata
 
