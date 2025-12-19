@@ -10,8 +10,7 @@ BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-if os.getenv("RAILWAY_ENVIRONMENT") is None:
-    load_dotenv(os.path.join(BASE_DIR, ".env"))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 from alembic import context
 from db.database import Base 
 import db.models
