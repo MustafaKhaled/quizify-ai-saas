@@ -38,6 +38,7 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
+    is_admin = Column(Boolean, default=False)
 
     subscription = relationship("Subscription", back_populates="user", uselist=False)
     quiz_sources = relationship("QuizSource", back_populates="owner")
