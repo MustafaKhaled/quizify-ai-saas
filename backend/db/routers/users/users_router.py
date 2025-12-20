@@ -11,6 +11,7 @@ from pydantic import BaseModel # To define the expected request body
 class UserCreate(BaseModel):
     email: str
     password: str
+    is_admin: bool = False
 
 # Define a type alias for cleaner code
 DBSession = Annotated[Session, Depends(get_db)]
@@ -37,7 +38,7 @@ def create_user_endpoint(user_data: UserCreate, db: DBSession):
     new_user = user_service.create_user(
         db=db, 
         email=user_data.email, 
-        hashed_password=hashed_password
+        hashed_password=user_data.password
     )
     
     return new_user

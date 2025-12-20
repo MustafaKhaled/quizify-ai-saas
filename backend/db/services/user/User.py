@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 def create_user(db: Session, email: str, hashed_password: str) -> User:
-    db_user = User(id=uuid.uuid4(), email=email, hashed_password=hashed_password)
+    db_user = User(id=uuid.uuid4(), email=email, hashed_password=hashed_password, is_admin=False, created_at=datetime.utcnow())
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
