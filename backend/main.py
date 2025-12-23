@@ -7,6 +7,7 @@ from typing import Annotated
 from db.dependency import get_db
 from db.routers.users_router import router as user_router
 from db.routers.auth_router import router as auth_router
+from db.routers.admin_router import router as admin_router
 
 # Define a type alias for cleaner code
 # Note: You need to import Session from sqlalchemy.orm
@@ -20,6 +21,7 @@ app = FastAPI()
 
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(admin_router)
 
 # A GET endpoint for simple health check (no DB access)
 @app.get("/")

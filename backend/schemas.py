@@ -13,6 +13,7 @@ class UserBase(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
+    is_admin: Optional[bool]
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
@@ -27,7 +28,7 @@ class UserResponse(BaseModel):
 
 class UserAdminResponse(UserResponse):
     created_at: Optional[datetime] = None 
-    
+    is_admin: Optional[bool] = None
     class Config:
         from_attributes = True
 
