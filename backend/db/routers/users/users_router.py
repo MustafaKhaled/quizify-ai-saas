@@ -6,8 +6,8 @@ from typing import Annotated
 
 from db.models import User
 from schemas import UserAdminResponse, UserResponse, UserUpdate
-from ..dependency import get_db, get_current_user
-from ..services.user import User as user_service
+from db.dependency import get_db, get_current_user
+from db.services.user import User as user_service
 from security import hash_password
 from pydantic import BaseModel # To define the expected request body
 

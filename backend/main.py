@@ -1,13 +1,13 @@
 #main.py
 from dotenv import load_dotenv
 load_dotenv()
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from typing import Annotated 
 from db.dependency import get_db
-from db.routers.users_router import router as user_router
-from db.routers.auth_router import router as auth_router
-from db.routers.admin_router import router as admin_router
+from db.routers.users.users_router import router as user_router
+from db.routers.auth.auth_router import router as auth_router
+from db.routers.admin.admin_router import router as admin_router
 
 # Define a type alias for cleaner code
 # Note: You need to import Session from sqlalchemy.orm

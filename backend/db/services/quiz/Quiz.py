@@ -3,18 +3,27 @@ from models import  QuizSource, Quiz, QuizResult
 import uuid
 from datetime import datetime
 
-def create_quiz_source(db: Session, user_id: uuid.UUID, storage_path: str, file_name: str, extracted_text: str):
+def create_quiz_source(db: Session, user_id: uuid.UUID, file_name: str, extracted_text: str):
+    """
+    Creates a QuizSource record using extracted text only.
+    No storage_path is required as the physical file is discarded.
+    """
     source = QuizSource(
         id=uuid.uuid4(),
-        user_id=user_id,
-        storage_path=storage_path,
+        user_id=user_id,          # Still use UUID for the DB relationship
         file_name=file_name,
         extracted_text=extracted_text,
         upload_date=datetime.utcnow()
     )
+    
     db.add(source)
-    db.commit()
-    db.refresh(source)
+    try:
+        db.commit()
+        db.refresh(source)
+    except Exception as e:
+        db.rollback()
+        raise e
+        
     return source
 
 # -------------------
