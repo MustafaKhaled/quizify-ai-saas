@@ -36,7 +36,6 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-class RegistrationResponse(BaseModel):
-    user: UserAdminResponse
+class AuthenticationSuccessResponse(UserAdminResponse):
     access_token: str
     token_type: str = "bearer"

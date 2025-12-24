@@ -14,7 +14,7 @@ router = APIRouter(
 # Dependencies
 db_dep = Annotated[Session, Depends(get_db)]
 
-@router.post("/register", response_model=schemas.RegistrationResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.UserCreate, db: db_dep):
     # Check for duplicate email
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
@@ -42,7 +42,7 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
         "token_type": "bearer"
     }
 
-@router.post("/login", response_model=schemas.Token)
+@router.post("/login", response_model=schemas.AuthenticationSuccessResponse)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
     db: db_dep
@@ -61,4 +61,4 @@ async def login(
     # 3. Create token
     access_token = security.create_access_token(data={"sub": user.email})
     
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {**user.__dict__, "access_token": access_token, "token_type": "bearer"}
