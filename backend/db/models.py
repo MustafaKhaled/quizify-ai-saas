@@ -52,7 +52,6 @@ class QuizSource(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    storage_path = Column(String, nullable=False)
     file_name = Column(String(255), nullable=False)
     extracted_text = Column(String)
     upload_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)

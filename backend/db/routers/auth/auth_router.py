@@ -37,7 +37,7 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     access_token = security.create_access_token(data={"sub": new_user.email})
     
     return {
-        "user": new_user,
+        **new_user.__dict__,
         "access_token": access_token,
         "token_type": "bearer"
     }
