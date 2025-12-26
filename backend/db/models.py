@@ -38,7 +38,7 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
-    is_admin = Column(Boolean, default=False, nullable=False)
+    Column(Boolean, default=False, server_default="false", nullable=False)  # Admin flag
     subscription = relationship("Subscription", back_populates="user", uselist=False)
     quiz_sources = relationship("QuizSource", back_populates="owner")
     quiz_results = relationship("QuizResult", back_populates="user")
@@ -64,14 +64,21 @@ class Quiz(Base):
     __tablename__ = "quizzes"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    # Direct link to user for faster queries
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     source_id = Column(UUID(as_uuid=True), ForeignKey("quiz_sources.id", ondelete="CASCADE"), nullable=False, index=True)
+    
+    # New Fields
+    title = Column(String(255), nullable=False) # The Quiz Name
+    time_limit = Column(Integer, nullable=True) # Optional timer in minutes
+    
     num_questions = Column(Integer, nullable=False)
-    content = Column(JSONB, nullable=False)
+    content = Column(JSONB, nullable=False) # Stores the Gemini output
     generation_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 
     source = relationship("QuizSource", back_populates="quizzes")
+    owner = relationship("User") # Direct relationship to User
     quiz_results = relationship("QuizResult", back_populates="quiz")
-
 
 # -------------------------------
 # 3. Assessment / Results Models

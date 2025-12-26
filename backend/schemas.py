@@ -39,3 +39,15 @@ class Token(BaseModel):
 class AuthenticationSuccessResponse(UserAdminResponse):
     access_token: str
     token_type: str = "bearer"
+
+
+class QuizResponse(BaseModel):
+    id: UUID
+    title: str
+    num_questions: Optional[int]
+    time_limit: Optional[int]
+    content: dict  # The JSON questions
+    generation_date: datetime
+
+    class Config:
+        from_attributes = True # Allows Pydantic to read from SQLAlchemy models

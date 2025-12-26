@@ -1,12 +1,31 @@
-from typing import Annotated
+from typing import Annotated, Optional
 import uuid
+import streamlit as st
 import fitz  # PyMuPDF
 from datetime import datetime
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
+from dotenv import load_dotenv
+from google import genai
 
+from schemas import QuizResponse
+1
+import os
+import json
+# --- 1. CONFIGURATION AND API SETUP (from Step 2) ---
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+st.set_page_config(page_title="PDF to Quiz Builder", layout="wide")
+
+try:
+    # Initialize the Gemini Client
+    client = genai.Client(api_key=API_KEY)
+except Exception as e:
+    st.error("🚨 Error: Gemini API client could not be initialized. Please check your GEMINI_API_KEY in the .env file.")
+    st.stop()
 from db.dependency import get_current_user, get_db
-from db.models import QuizSource, User
+from db.models import Quiz, QuizSource, User
 
 DBSession = Annotated[Session, Depends(get_db)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
@@ -18,54 +37,106 @@ router = APIRouter(
     tags=["quizzes"]
 )
 
-@router.post("/create/")
-async def handle_quiz_upload_and_storage(
+@router.post("/create", response_model=QuizResponse)
+async def create_quiz_from_file(
     db: db_dep,
-    file: UploadFile = File(...),              # This is correctly a file
-    user_id: uuid.UUID = Form(...),            # Added Form(...)
-    quiz_name: str = Form(None),               # Added Form(...)
-    num_questions: int = Form(5)
+    _: User = Depends(get_current_user),
+    file: UploadFile = File(...),
+    user_id: uuid.UUID = Form(...),
+    quiz_name: str | None = Form(None),
+    num_questions: int = Form(5),
+    time_limit: int | None = Form(None)
 ):
-    """
-    Step 1: Extract Text from the Uploaded File
-    Step 2: Save metadata and text to the DB
-    """
-    
-    # 1. READ & EXTRACT (The Prior Step)
+    # 1. READ PDF
     try:
-        # Read file into memory buffer
         file_content = await file.read()
-        
-        # Open PDF from memory (no disk usage)
         with fitz.open(stream=file_content, filetype="pdf") as doc:
-            extracted_text = ""
-            for page in doc:
-                extracted_text += page.get_text()
-        
-        if not extracted_text.strip():
-            raise ValueError("The PDF appears to be empty or contains only images.")
-            
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to process PDF: {str(e)}")
+            extracted_text = "".join(page.get_text() for page in doc)
 
-    # 2. SAVE TO DATABASE (Your original logic)
-    # We use the filename as a backup if quiz_name isn't provided
-    final_title = quiz_name or file.filename
-    
-    source = QuizSource(
-        id=uuid.uuid4(),
-        user_id=user_id,
-        file_name=final_title,
-        extracted_text=extracted_text,
-        upload_date=datetime.utcnow()
-    )
-    
-    db.add(source)
+        if not extracted_text.strip():
+            raise HTTPException(400, "PDF contains no selectable text")
+    except Exception as e:
+        raise HTTPException(400, f"File processing error: {e}")
+
     try:
+        # 2. VERIFY USER EXISTS
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(404, "User not found")
+
+        # 3. SAVE SOURCE
+        source = QuizSource(
+            id=uuid.uuid4(),
+            user_id=user_id,
+            file_name=file.filename,
+            extracted_text=extracted_text,
+            upload_date=datetime.utcnow()
+        )
+        db.add(source)
+        db.flush()
+
+        # 4. GEMINI PROMPT
+        prompt = f"""
+Return ONLY valid JSON. Do NOT use markdown.
+
+{{
+  "quiz_title": "Short title",
+  "questions": [
+    {{
+      "question_text": "Question?",
+      "options": ["A", "B", "C", "D"],
+      "correct_option_index": 0,
+      "explanation": "Why"
+    }}
+  ]
+}}
+
+Generate exactly {num_questions} questions from the text below:
+
+---
+{extracted_text}
+---
+"""
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        # 5. PARSE AI OUTPUT
+        quiz_content = extract_json_from_llm(response.text)
+
+        # 6. CREATE QUIZ
+        new_quiz = Quiz(
+            id=uuid.uuid4(),
+            user_id=user_id,
+            source_id=source.id,
+            title=quiz_name or quiz_content["quiz_title"],
+            num_questions=len(quiz_content["questions"]),
+            time_limit=time_limit,
+            content=quiz_content,
+            generation_date=datetime.utcnow()
+        )
+
+        db.add(new_quiz)
         db.commit()
-        db.refresh(source)
+        db.refresh(new_quiz)
+
+        return new_quiz
+
+    except HTTPException:
+        raise
     except Exception as e:
         db.rollback()
-        raise e
-        
-    return source
+        raise HTTPException(500, f"Database error: {e}")
+
+
+def extract_json_from_llm(text: str) -> dict:
+    text = text.strip()
+
+    # Remove ```json fences
+    if text.startswith("```"):
+        text = re.sub(r"^```json\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+
+    return json.loads(text)
