@@ -40,9 +40,8 @@ router = APIRouter(
 @router.post("/create", response_model=QuizResponse)
 async def create_quiz_from_file(
     db: db_dep,
-    _: User = Depends(get_current_user),
+    currentUser: CurrentUser,
     file: UploadFile = File(...),
-    user_id: uuid.UUID = Form(...),
     quiz_name: str | None = Form(None),
     num_questions: int = Form(5),
     time_limit: int | None = Form(None)
@@ -60,14 +59,14 @@ async def create_quiz_from_file(
 
     try:
         # 2. VERIFY USER EXISTS
-        user = db.query(User).filter(User.id == user_id).first()
+        user = db.query(User).filter(User.id == currentUser.id).first()
         if not user:
             raise HTTPException(404, "User not found")
 
         # 3. SAVE SOURCE
         source = QuizSource(
             id=uuid.uuid4(),
-            user_id=user_id,
+            user_id=currentUser.id,
             file_name=file.filename,
             extracted_text=extracted_text,
             upload_date=datetime.utcnow()
@@ -109,7 +108,7 @@ Generate exactly {num_questions} questions from the text below:
         # 6. CREATE QUIZ
         new_quiz = Quiz(
             id=uuid.uuid4(),
-            user_id=user_id,
+            user_id=currentUser.id,
             source_id=source.id,
             title=quiz_name or quiz_content["quiz_title"],
             num_questions=len(quiz_content["questions"]),
