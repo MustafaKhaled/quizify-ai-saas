@@ -1,7 +1,7 @@
 from typing import Annotated
 import streamlit as st
 from sqlalchemy.orm import Session
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from dotenv import load_dotenv
 
 from schemas import QuizResponse
@@ -38,3 +38,37 @@ async def get_my_quizzes(
     )
 
     return quizzes
+
+@router.get("/{quiz_id}", response_model=list[QuizResponse])
+async def get_my_quizzes(
+    db: db_dep,
+    _: CurrentUser,
+    quiz_id: str,
+):
+    print("Fetching quiz:", id)
+    quiz = (
+        db.query(Quiz)
+        .filter(Quiz.id == quiz_id)
+        .order_by(Quiz.generation_date.desc())
+        .all()
+    )
+
+    return quiz
+
+@router.delete("/{quiz_id}", status_code=204)
+async def delete_quiz(
+    db: db_dep,
+    _: CurrentUser,
+    quiz_id: str,
+):
+    quiz = (
+        db.query(Quiz)
+        .filter(Quiz.id == quiz_id)
+        .first()
+    )
+    if not quiz:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db.delete(quiz)
+    db.commit()
+    return quiz
