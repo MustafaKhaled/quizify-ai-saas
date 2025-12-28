@@ -43,6 +43,7 @@ class AuthenticationSuccessResponse(UserAdminResponse):
 
 class QuizResponse(BaseModel):
     id: UUID
+    source_id: UUID
     title: str
     num_questions: Optional[int]
     time_limit: Optional[int]
