@@ -44,13 +44,37 @@ async def create_quiz_from_file(
     currentUser: CurrentUser,
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
+    quiz_type: str = Form("multiple_choice"),
     quiz_name: str | None = Form(None),
     num_questions: int = Form(5),
     time_limit: int | None = Form(None)
 ):
+    type: str = quiz_type
     extracted_text = ""
     source_to_use_id = None
     file_display_name = ""
+
+    # Inside your endpoint logic
+    if type == "multiple_select": # Checkbox
+        format_instruction = """
+        "questions": [
+            {
+            "question_text": "Question here",
+            "options": ["A", "B", "C", "D"],
+            "correct_option_indices": [0, 2], # Array for multiple correct answers
+            "explanation": "Why"
+            }
+        ]"""
+    else: # Standard Multiple Choice
+        format_instruction = """
+        "questions": [
+            {
+            "question_text": "Question here",
+            "options": ["A", "B", "C", "D"],
+            "correct_option_index": 0,
+            "explanation": "Why"
+            }
+        ]"""
 
     # 1. BRANCHING LOGIC: EXISTING SOURCE VS NEW UPLOAD
     if source_id:
@@ -101,19 +125,7 @@ async def create_quiz_from_file(
 Return ONLY valid JSON. Do NOT use markdown or conversational text.
 Your goal is to generate educational quiz questions based on the provided text.
 
-{{
-  "quiz_title": "Short descriptive title",
-  "questions": [
-    {{
-      "question_text": "Clear question here",
-      "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-      "correct_option_index": 0,
-      "explanation": "Brief explanation of the correct answer"
-    }}
-  ]
-}}
-
-Generate exactly {num_questions} questions from the text below:
+Generate exactly {num_questions} for the quiz type {type}, with format {format_instruction} using the text below:
 ---
 {extracted_text}
 ---
@@ -132,6 +144,7 @@ Generate exactly {num_questions} questions from the text below:
             id=uuid.uuid4(),
             user_id=currentUser.id,
             source_id=source_to_use_id,
+            type=type,
             title=quiz_name or quiz_content.get("quiz_title", file_display_name),
             num_questions=len(quiz_content.get("questions", [])),
             time_limit=time_limit,
