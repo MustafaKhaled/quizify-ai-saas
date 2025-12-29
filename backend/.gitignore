@@ -6,3 +6,5 @@ __pycache__/
 backend/.DS_Store
 backend/*.pyc
 backend/__pycache__/
+backend/alembic/*.pyc
+backend/alembic/versions/*.pyc
