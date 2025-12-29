@@ -26,7 +26,7 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     new_user = models.User( 
         email=user_in.email,
         hashed_password=hashed_pwd,
-        is_admin=user_in.is_admin
+        is_admin=False
     )
     
     db.add(new_user)
