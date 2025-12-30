@@ -41,8 +41,8 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
     Column(Boolean, default=False, server_default="false", nullable=False)  # Admin flag
     subscription = relationship("Subscription", back_populates="user", uselist=False)
-    quiz_sources = relationship("QuizSource", back_populates="owner")
-    quiz_results = relationship("QuizResult", back_populates="user")
+    quiz_sources = relationship("QuizSource", back_populates="owner", cascade="all, delete-orphan")
+    quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan")
 
 
 # --------------------------------
