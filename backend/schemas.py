@@ -45,6 +45,7 @@ class QuizResponse(BaseModel):
     id: UUID
     source_id: UUID
     title: str
+    quiz_type: str
     num_questions: Optional[int]
     time_limit: Optional[int]
     content: dict  # The JSON questions

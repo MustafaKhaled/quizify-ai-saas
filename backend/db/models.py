@@ -68,7 +68,7 @@ class Quiz(Base):
     # Direct link to user for faster queries
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     source_id = Column(UUID(as_uuid=True), ForeignKey("quiz_sources.id", ondelete="CASCADE"), nullable=False, index=True)
-    quiz_type = Column(String, nullable=False, default="single_choice") # e.g., single_choice, multiple_choice
+    quiz_type = Column(String, nullable=True, default="single_choice")
     # New Fields
     title = Column(String(255), nullable=False) # The Quiz Name
     time_limit = Column(Integer, nullable=True) # Optional timer in minutes
