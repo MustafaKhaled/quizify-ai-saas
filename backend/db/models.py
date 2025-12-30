@@ -57,8 +57,8 @@ class QuizSource(Base):
     extracted_text = Column(String)
     upload_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
 
-    owner = relationship("User", back_populates="quiz_sources", cascade="all, delete-orphan")
-    quizzes = relationship("Quiz", back_populates="source", cascade="all, delete-orphan")
+    owner = relationship("User", back_populates="quiz_sources")
+    quizzes = relationship("Quiz", back_populates="source")
 
 
 class Quiz(Base):
@@ -78,8 +78,8 @@ class Quiz(Base):
     generation_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 
     source = relationship("QuizSource", back_populates="quizzes", cascade="all, delete-orphan")
-    owner = relationship("User", cascade="all, delete-orphan") # Direct relationship to User
-    quiz_results = relationship("QuizResult", back_populates="quiz", cascade="all, delete-orphan")
+    owner = relationship("User") # Direct relationship to User
+    quiz_results = relationship("QuizResult", back_populates="quiz")
 
 # -------------------------------
 # 3. Assessment / Results Models
@@ -96,5 +96,5 @@ class QuizResult(Base):
     user_answers = Column(JSONB, nullable=False)
     attempt_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 
-    quiz = relationship("Quiz", back_populates="quiz_results", cascade="all, delete-orphan")
-    user = relationship("User", back_populates="quiz_results", cascade="all, delete-orphan")
+    quiz = relationship("Quiz", back_populates="quiz_results")
+    user = relationship("User", back_populates="quiz_results")
