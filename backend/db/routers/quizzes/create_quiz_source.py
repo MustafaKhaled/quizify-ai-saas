@@ -162,23 +162,6 @@ Generate exactly {num_questions} for the quiz type {quiz_type}, with format {for
         # Logging here would be helpful: logger.error(f"AI/DB Error: {e}")
         raise HTTPException(500, f"Error generating or saving quiz: {str(e)}")
 
-
-def extract_json_from_llm(text: str) -> dict:
-    # Use regex for more robust extraction in case Gemini adds text outside fences
-    match = re.search(r"(\{.*\})", text, re.DOTALL)
-    if match:
-        clean_text = match.group(1)
-    else:
-        # Fallback to standard cleaning
-        clean_text = text.strip()
-        if clean_text.startswith("```"):
-            clean_text = re.sub(r"^```(?:json)?\s*", "", clean_text)
-            clean_text = re.sub(r"\s*```$", "", clean_text)
-    
-    try:
-        return json.loads(clean_text)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"AI returned invalid JSON: {e}")
     
 
 @router.get("/sources")
@@ -215,3 +198,21 @@ async def delete_quiz_source(
         "status": "success",
         "message": f"Source {source_id} and all associated quizzes deleted."
     }
+
+
+def extract_json_from_llm(text: str) -> dict:
+    # Use regex for more robust extraction in case Gemini adds text outside fences
+    match = re.search(r"(\{.*\})", text, re.DOTALL)
+    if match:
+        clean_text = match.group(1)
+    else:
+        # Fallback to standard cleaning
+        clean_text = text.strip()
+        if clean_text.startswith("```"):
+            clean_text = re.sub(r"^```(?:json)?\s*", "", clean_text)
+            clean_text = re.sub(r"\s*```$", "", clean_text)
+    
+    try:
+        return json.loads(clean_text)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"AI returned invalid JSON: {e}")
