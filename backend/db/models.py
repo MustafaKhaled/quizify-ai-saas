@@ -58,7 +58,7 @@ class QuizSource(Base):
     upload_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
 
     owner = relationship("User", back_populates="quiz_sources")
-    quizzes = relationship("Quiz", back_populates="source")
+    quizzes = relationship("Quiz", back_populates="source", cascade="all, delete-orphan")
 
 
 class Quiz(Base):
@@ -79,7 +79,7 @@ class Quiz(Base):
 
     source = relationship("QuizSource", back_populates="quizzes")
     owner = relationship("User") # Direct relationship to User
-    quiz_results = relationship("QuizResult", back_populates="quiz")
+    quiz_results = relationship("QuizResult", back_populates="quiz", cascade="all, delete-orphan")
 
 # -------------------------------
 # 3. Assessment / Results Models

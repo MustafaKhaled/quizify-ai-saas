@@ -179,3 +179,39 @@ def extract_json_from_llm(text: str) -> dict:
         return json.loads(clean_text)
     except json.JSONDecodeError as e:
         raise ValueError(f"AI returned invalid JSON: {e}")
+    
+
+@router.get("/sources")
+async def get_quiz_sources(
+    db: db_dep,
+    current_user: CurrentUser,
+):
+    sources = (
+        db.query(QuizSource)
+        .filter(QuizSource.user_id == current_user.id)
+        .order_by(QuizSource.upload_date.desc())
+        .all()
+    )
+    return sources
+    
+
+@router.delete("/sources/{source_id}", status_code=204)
+async def delete_quiz_source(
+    db: db_dep,
+    _: CurrentUser,
+    source_id: str,
+):
+    source = (
+        db.query(QuizSource)
+        .filter(QuizSource.id == source_id)
+        .first()
+    )
+    if not source:
+        raise HTTPException(status_code=404, detail="Quiz Source not found")
+
+    db.delete(source)
+    db.commit()
+    return {
+        "status": "success",
+        "message": f"Source {source_id} and all associated quizzes deleted."
+    }
