@@ -44,7 +44,7 @@ async def create_quiz_from_file(
     currentUser: CurrentUser,
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
-    type: Optional[str] = Form("multiple_choice"),
+    type: Optional[str] = Form("single_choice"),
     quiz_name: str | None = Form(None),
     num_questions: int = Form(5),
     time_limit: int | None = Form(None)
