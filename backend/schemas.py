@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID  # Import the class, not just the module
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional, Union
 
 class UserBase(BaseModel):
     id: UUID  # Use UUID (capitalized)
@@ -53,3 +53,14 @@ class QuizResponse(BaseModel):
 
     class Config:
         from_attributes = True # Allows Pydantic to read from SQLAlchemy models
+
+
+class AnswerSubmission(BaseModel):
+    question_index: int
+    # Can be an int for single_choice or a list of ints for multiple_select
+    selected_options: Optional[Union[int, List[int]]] = []
+
+class QuizSubmission(BaseModel):
+    quiz_id: UUID
+    answers: List[AnswerSubmission]
+    time_taken_seconds: Optional[int] = None  # Optional

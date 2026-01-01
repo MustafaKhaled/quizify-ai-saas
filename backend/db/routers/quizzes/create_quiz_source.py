@@ -44,12 +44,12 @@ async def create_quiz_from_file(
     currentUser: CurrentUser,
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
-    type: Optional[str] = Form("single_choice"),
+    quiz_type: Optional[str] = Form(None),
     quiz_name: str | None = Form(None),
     num_questions: int = Form(5),
     time_limit: int | None = Form(None)
 ):
-    quiz_type: str = type
+    quiz_type: str = quiz_type or "single_choice"
     extracted_text = ""
     source_to_use_id = None
     file_display_name = ""
@@ -129,6 +129,11 @@ Generate exactly {num_questions} for the quiz type {quiz_type}, with format {for
 ---
 {extracted_text}
 ---
+
+CRITICAL INSTRUCTION: 
+        If quiz_type is 'multiple_select', you must provide 'correct_option_indices' as a LIST of integers.
+        If quiz_type is 'single_choice', you must provide 'correct_option_index' as a single INTEGER.
+
 """
 
         response = client.models.generate_content(
