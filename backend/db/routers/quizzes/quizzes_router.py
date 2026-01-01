@@ -140,6 +140,27 @@ async def get_quiz_results(
 
     return results
 
+@router.get("/result/{result_id}/review")
+async def get_result_review(
+    result_id: uuid.UUID,
+    db: db_dep,
+    currentUser: CurrentUser
+):
+    result = db.query(QuizResult).filter(
+        QuizResult.id == result_id,
+        QuizResult.user_id == currentUser.id
+    ).first()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Result not found")
+
+    # We return the stored breakdown from the database
+    return {
+        "score": result.score_percentage,
+        "date": result.attempt_date,
+        "breakdown": result.user_answers  # This is the JSONB we saved earlier
+    }
+
 def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list):
     questions = quiz_content.get("questions", [])
     total_questions = len(questions)
