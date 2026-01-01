@@ -115,6 +115,30 @@ async def submit(
         "result_id": new_result.id,
         "breakdown": breakdown
     }
+import uuid
+
+@router.get("/results/{quiz_id}") # Removed response_model=list[QuizResult] to avoid recursion
+async def get_quiz_results(
+    quiz_id: uuid.UUID,
+    db: db_dep,
+    currentUser: CurrentUser
+):
+    results = (
+        db.query(QuizResult)
+        .filter(
+            QuizResult.quiz_id == quiz_id,
+            QuizResult.user_id == currentUser.id  # IMPORTANT: Security filter
+        )
+        .order_by(QuizResult.attempt_date.desc())
+        .all()
+    )
+
+    if not results:
+        # It's better to return an empty list than a 404 
+        # so the frontend knows the user just hasn't attempted it yet.
+        return []
+
+    return results
 
 def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list):
     questions = quiz_content.get("questions", [])
