@@ -56,7 +56,8 @@ class QuizSource(Base):
     file_name = Column(String(255), nullable=False)
     extracted_text = Column(String)
     upload_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
-
+    start_page = Column(Integer, nullable=True)
+    end_page = Column(Integer, nullable=True)
     owner = relationship("User", back_populates="quiz_sources")
     quizzes = relationship("Quiz", back_populates="source", cascade="all, delete-orphan")
 

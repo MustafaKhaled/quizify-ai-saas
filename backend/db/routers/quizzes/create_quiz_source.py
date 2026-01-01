@@ -46,6 +46,8 @@ async def create_quiz_from_file(
     source_id: Optional[uuid.UUID] = Form(None),
     quiz_type: Optional[str] = Form(None),
     quiz_name: str | None = Form(None),
+    start_page: Optional[int] | None = Form(None),
+    end_page: Optional[int] | None = Form(None),
     num_questions: int = Form(5),
     time_limit: int | None = Form(None)
 ):
@@ -94,13 +96,27 @@ async def create_quiz_from_file(
     elif file:
         try:
             file_content = await file.read()
+            extracted_text = ""
+        
             with fitz.open(stream=file_content, filetype="pdf") as doc:
-                extracted_text = "".join(page.get_text() for page in doc)
+                total_pages = len(doc)
+                
+                # 1. Set Defaults for optional ranges
+                s = (start_page if start_page is not None else 1)
+                e = (end_page if end_page is not None else total_pages)
+                
+                # 2. Basic Validation
+                if s < 1 or e > total_pages or s > e:
+                    raise HTTPException(400, f"Invalid page range. PDF has {total_pages} pages.")
+
+                # 3. Targeted Extraction (PyMuPDF uses 0-based indexing)
+                for page_num in range(s - 1, e):
+                    page = doc.load_page(page_num)
+                    extracted_text += page.get_text()
 
             if not extracted_text.strip():
-                raise HTTPException(400, "PDF contains no selectable text")
-            
-            # Save brand new source only if file is provided
+                raise HTTPException(400, "The selected page range contains no selectable text.")
+                # Save brand new source only if file is provided
             new_source = QuizSource(
                 id=uuid.uuid4(),
                 user_id=currentUser.id,
@@ -124,6 +140,9 @@ async def create_quiz_from_file(
         prompt = f"""
 Return ONLY valid JSON. Do NOT use markdown or conversational text.
 Your goal is to generate educational quiz questions based on the provided text.
+CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text. 
+If the text is in Spanish, the JSON output must be in Spanish. 
+If the text is in Arabic, the JSON output must be in Arabic.
 
 Generate exactly {num_questions} for the quiz type {quiz_type}, with format {format_instruction} using the text below:
 ---
