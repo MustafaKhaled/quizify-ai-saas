@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import (
-    Column, String, Integer, ForeignKey,
+    Column, DateTime, String, Integer, ForeignKey,
     TIMESTAMP, Numeric, Boolean
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -39,7 +39,8 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     is_admin = Column(Boolean, default=False, server_default="false", nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
-    Column(Boolean, default=False, server_default="false", nullable=False)  # Admin flag
+    is_pro = Column(Boolean, default=False) # True only after Stripe payment
+    trial_ends_at = Column(DateTime, nullable=True) # The "Manual" gate
     subscription = relationship("Subscription", back_populates="user", uselist=False)
     quiz_sources = relationship("QuizSource", back_populates="owner", cascade="all, delete-orphan")
     quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan")

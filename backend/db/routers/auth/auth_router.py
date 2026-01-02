@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -16,7 +17,7 @@ db_dep = Annotated[Session, Depends(get_db)]
 
 @router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.UserCreate, db: db_dep):
-    # Check for duplicate email
+    expiration_date = datetime.utcnow() + timedelta(minutes=5),
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -26,6 +27,8 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     new_user = models.User( 
         email=user_in.email,
         hashed_password=hashed_pwd,
+        expiration_date=expiration_date,
+        is_pro=False,
         is_admin=False
     )
     
