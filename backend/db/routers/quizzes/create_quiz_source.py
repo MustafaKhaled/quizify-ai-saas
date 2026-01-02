@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
 from dotenv import load_dotenv
 from google import genai
 
+from db.services.subscription.Subscription import verify_pro_access
 from schemas import QuizResponse
 1
 import os
@@ -42,6 +43,7 @@ router = APIRouter(
 async def create_quiz_from_file(
     db: db_dep,
     currentUser: CurrentUser,
+    _ = Depends(verify_pro_access),
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
     quiz_type: Optional[str] = Form(None),

@@ -14,6 +14,8 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
     is_admin: Optional[bool] = None
+    is_pro: Optional[bool] = None
+    expiration_date: Optional[datetime] = None
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
@@ -39,6 +41,8 @@ class Token(BaseModel):
 class AuthenticationSuccessResponse(UserAdminResponse):
     access_token: str
     token_type: str = "bearer"
+    is_pro: Optional[bool] = None
+    trial_ends_at: Optional[datetime] = None
 
 
 class QuizResponse(BaseModel):
