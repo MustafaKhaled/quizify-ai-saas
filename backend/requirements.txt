@@ -99,6 +99,7 @@ SQLAlchemy==2.0.44
 stack-data==0.6.3
 starlette==0.50.0
 streamlit==1.51.0
+stripe>=14.1.0
 tenacity==9.1.2
 toml==0.10.2
 tornado==6.4

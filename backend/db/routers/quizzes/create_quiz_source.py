@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
 from dotenv import load_dotenv
 from google import genai
 
-from db.services.subscription.Subscription import verify_pro_access
+from db.routers.subscription.subscription_router import verify_pro_access
 from schemas import QuizResponse
 1
 import os
