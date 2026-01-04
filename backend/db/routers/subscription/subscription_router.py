@@ -18,6 +18,7 @@ db_dep = Annotated[Session, Depends(get_db)]
 
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
+
 def verify_pro_access(current_user: User = Depends(get_current_user)):
     now = datetime.utcnow()
     
@@ -43,7 +44,7 @@ async def create_checkout(
     current_user: User = Depends(get_current_user)
 ):
     print(payload.price_id)
-    stripe.api_key = STRIPE_WEBHOOK_SECRET
+    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
     try:
         # Create the session
         session = stripe.checkout.Session.create(
