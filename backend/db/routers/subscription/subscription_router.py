@@ -43,6 +43,7 @@ async def create_checkout(
     current_user: User = Depends(get_current_user)
 ):
     print(payload.price_id)
+    stripe.api_key = STRIPE_WEBHOOK_SECRET
     try:
         # Create the session
         session = stripe.checkout.Session.create(
