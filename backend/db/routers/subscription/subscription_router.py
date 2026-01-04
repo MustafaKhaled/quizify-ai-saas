@@ -3,6 +3,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException, Header, Request, status
 from sqlalchemy.orm import Session
 import stripe
+from schemas import CheckoutRequest
 from db.dependency import get_current_user, get_db
 from db.models import User, Subscription, QuizSource, Quiz, QuizResult
 import uuid
@@ -37,16 +38,17 @@ def verify_pro_access(current_user: User = Depends(get_current_user)):
 
 @router.post("/create-checkout-session")
 async def create_checkout(
-    price_id: str, 
+    payload: CheckoutRequest,
     db: db_dep, 
     current_user: User = Depends(get_current_user)
 ):
+    print(payload.price_id)
     try:
         # Create the session
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
             payment_method_types=['card'],
-            line_items=[{'price': price_id, 'quantity': 1}],
+            line_items=[{'price': payload.price_id, 'quantity': 1}],
             mode='subscription',
             # Stripe replaces {CHECKOUT_SESSION_ID} automatically
             success_url="https://exam-sim.com/success?session_id={CHECKOUT_SESSION_ID}",

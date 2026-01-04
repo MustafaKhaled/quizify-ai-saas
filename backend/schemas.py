@@ -68,3 +68,6 @@ class QuizSubmission(BaseModel):
     quiz_id: UUID
     answers: List[AnswerSubmission]
     time_taken_seconds: Optional[int] = None  # Optional
+
+class CheckoutRequest(BaseModel):
+    price_id: str
