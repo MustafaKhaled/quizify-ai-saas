@@ -31,6 +31,7 @@ class UserResponse(BaseModel):
 class UserAdminResponse(UserResponse):
     created_at: Optional[datetime] = None 
     is_admin: Optional[bool] = None
+    is_pro: Optional[bool] = None
     class Config:
         from_attributes = True
 

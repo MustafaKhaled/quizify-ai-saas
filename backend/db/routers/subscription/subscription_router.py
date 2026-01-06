@@ -3,10 +3,10 @@ import os
 from fastapi import APIRouter, Depends, HTTPException, Header, Request, status
 from sqlalchemy.orm import Session
 import stripe
+from db.database import SessionLocal
 from schemas import CheckoutRequest
 from db.dependency import get_current_user, get_db
-from db.models import User, Subscription, QuizSource, Quiz, QuizResult
-import uuid
+from db.models import User
 from datetime import datetime
 
 router = APIRouter(
@@ -40,7 +40,7 @@ def verify_pro_access(current_user: User = Depends(get_current_user)):
 @router.post("/create-checkout-session")
 async def create_checkout(
     payload: CheckoutRequest,
-    db: db_dep, 
+    _: db_dep, 
     current_user: User = Depends(get_current_user)
 ):
     print(payload.price_id)
@@ -75,7 +75,32 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
     # Check for successful payments
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        print(f"💰 Payment succeeded for {session.customer_details.email}")
+        print(f"Payment succeeded for {session.customer_details.email}")
         # TODO: Update your database here!
+    from sqlalchemy.orm import Session
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        
+        # 1. Get user identifier (using email or metadata)
+        customer_email = session.get("customer_details", {}).get("email")
+        stripe_sub_id = session.get("subscription") # e.g., sub_1Qjs...
+        stripe_customer_id = session.get("customer") # e.g., cus_Pjs...
+
+        # 2. Open a database session
+        # Ensure you have a way to get a db session here (e.g., SessionLocal())
+        with SessionLocal() as db:
+            user = db.query(User).filter(User.email == customer_email).first()
+            
+            if user:
+                # 3. Update User Status
+                user.is_pro = True
+                user.stripe_subscription_id = stripe_sub_id
+                user.stripe_customer_id = stripe_customer_id
+                
+                db.commit()
+                print(f"Database Updated: {customer_email} is now a Pro member.")
+            else:
+                print(f"Webhook Error: User with email {customer_email} not found.")
 
     return {"status": "success"}
