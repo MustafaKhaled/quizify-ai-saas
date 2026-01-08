@@ -1,7 +1,9 @@
 #main.py
+import os
 from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import Annotated 
 from db.dependency import get_db
@@ -29,8 +31,23 @@ app.include_router(create_quiz_router)
 app.include_router(quizzes_router)
 app.include_router(subscription_router)
 
+frontend_url = os.getenv("FRONTEND_URL")
+backend_url = os.getenv("BACKEND_URL")
 
 # A GET endpoint for simple health check (no DB access)
 @app.get("/")
 def read_root():
     return {"message": "AI Quiz Backend Running", "status": "OK"}
+
+origins = [
+    frontend_url,
+    backend_url
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

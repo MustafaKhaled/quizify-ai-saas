@@ -12,6 +12,7 @@ useSeoMeta({
 })
 
 const toast = useToast()
+const config = useRuntimeConfig()
 
 const fields = [{
   name: 'email',
@@ -51,8 +52,30 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log('Submitted', payload)
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  try {
+    // 1. Create Form Data (FastAPI OAuth2 expects this format)
+    const formData = new URLSearchParams()
+    formData.append('username', payload.data.email) // OAuth2 MUST use the key 'username'
+    formData.append('password', payload.data.password)
+
+    // 2. Send the request
+    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    })
+
+    console.log('Login Success:', response)
+    await navigateTo('/dashboard')
+    
+  } catch (error: any) {
+    console.error('Login Failed:', error.data)
+    const toast = useToast()
+    toast.add({ title: 'Error', description: 'Invalid login credentials', color: 'red' })
+  }
 }
 </script>
 

@@ -10,6 +10,11 @@ class UserBase(BaseModel):
     class Config:
         from_attributes = True
 
+class LoginSchema(BaseModel):
+    # This MUST match the 'name' in your frontend fields array
+    email: EmailStr    
+    password: str
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
