@@ -36,7 +36,9 @@ const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
   onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
+    navigateTo(`${config.public.apiBase}/auth/google/login`, { 
+      external: true 
+    })
   }
 }, {
   label: 'GitHub',

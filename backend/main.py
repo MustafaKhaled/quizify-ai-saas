@@ -13,10 +13,7 @@ from db.routers.admin.admin_router import router as admin_router
 from db.routers.quizzes.create_quiz_source import router as create_quiz_router
 from db.routers.quizzes.quizzes_router import router as quizzes_router
 from db.routers.subscription.subscription_router import router as subscription_router
-
-# Define a type alias for cleaner code
-# Note: You need to import Session from sqlalchemy.orm
-
+from starlette.middleware.sessions import SessionMiddleware
 
 
 DBSession = Annotated[Session, Depends(get_db)]
@@ -31,8 +28,14 @@ app.include_router(create_quiz_router)
 app.include_router(quizzes_router)
 app.include_router(subscription_router)
 
-frontend_url = os.getenv("FRONTEND_URL")
-backend_url = os.getenv("BACKEND_URL")
+
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
+secret_key = os.getenv("CLIENT_SECRET")
+session_secret_key=os.getenv("SESSION_SECRET_KEY")
+
+app.add_middleware(SessionMiddleware, secret_key=session_secret_key)
+
 
 # A GET endpoint for simple health check (no DB access)
 @app.get("/")

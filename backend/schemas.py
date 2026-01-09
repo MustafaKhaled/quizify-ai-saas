@@ -17,7 +17,7 @@ class LoginSchema(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=8, max_length=72)
+    password: Optional[str] = Field(None, min_length=8, max_length=72)
     name: str
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None

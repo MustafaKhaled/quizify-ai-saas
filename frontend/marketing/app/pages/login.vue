@@ -60,7 +60,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     formData.append('password', payload.data.password)
 
     // 2. Send the request
-    const response = await $fetch(${config.public.apiBase}/auth/login, {
+    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
