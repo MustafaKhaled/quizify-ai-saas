@@ -56,17 +56,16 @@ type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
-    const formData = new URLSearchParams()
-    formData.append('name', payload.data.name)
-    formData.append('email', payload.data.email)
-    formData.append('password', payload.data.password)
-
     const response = await $fetch(`${config.public.apiBase}/auth/register`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: formData,
+      body: {
+        name: payload.data.name,
+        email: payload.data.email,
+        password: payload.data.password
+      },
     })
 
     console.log('Register Success:', response)
