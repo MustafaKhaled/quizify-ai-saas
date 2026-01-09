@@ -11,6 +11,8 @@ useSeoMeta({
   description: 'Create an account to get started'
 })
 
+const config = useRuntimeConfig()
+
 const toast = useToast()
 
 const fields = [{
@@ -53,7 +55,26 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log('Submitted', payload)
+  try {
+    const formData = new URLSearchParams()
+    formData.append('name', payload.data.name)
+    formData.append('email', payload.data.email)
+    formData.append('password', payload.data.password)
+
+    const response = await $fetch(`${config.public.apiBase}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData,
+    })
+
+    console.log('Register Success:', response)
+    
+  } catch (error) {
+    toast.add({ title: 'Error', description: 'Failed to create account', type: 'error' })
+    
+  }
 }
 </script>
 

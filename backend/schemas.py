@@ -18,6 +18,7 @@ class LoginSchema(BaseModel):
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
+    name: str
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None
     expiration_date: Optional[datetime] = None
@@ -29,6 +30,7 @@ class UserUpdate(BaseModel):
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
+    name: Optional[str] = None
     
     class Config:
         from_attributes = True
