@@ -54,7 +54,7 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-function onSubmit(payload: FormSubmitEvent<Schema>) {
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
     const formData = new URLSearchParams()
     formData.append('name', payload.data.name)
