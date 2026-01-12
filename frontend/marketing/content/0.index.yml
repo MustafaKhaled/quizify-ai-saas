@@ -1,5 +1,5 @@
-title: Ship Your [SaaS]{class="text-primary"} at light speed
-description: Build production-ready SaaS applications with Nuxt UI's powerful components, authentication flows, and enterprise features. The same component library trusted by the entire Nuxt ecosystem.
+title: Save time, get ready for your exam with smart [AI quizzes]{class="text-primary"}.
+description: Eliminate exam pressure by turning your PDFs into interactive practice tests in seconds. Master your subjects faster with Quizify AI.
 seo:
   title: Nuxt UI SaaS Template
   description: Create stunning, fast and production-ready SaaS applications with Nuxt UI. 100+ Vue components, authentication, dark mode, and enterprise features built on Tailwind CSS.
@@ -9,67 +9,59 @@ hero:
     - label: Get started
       icon: i-lucide-arrow-right
       trailing: true
-      to: https://ui.nuxt.com/docs/getting-started/installation/nuxt
-      target: _blank
+      to: /pricing
       size: xl
-    - label: Use this template
-      icon: i-simple-icons-github
-      size: xl
-      color: neutral
-      variant: subtle
-      to: https://github.com/nuxt-ui-templates/saas
-      target: _blank
 sections:
-  - title: Powered by Nuxt UI Components
-    description: Access the complete Nuxt UI component library with 100+ beautifully styled, accessible, and customizable Vue components. Everything you need to build professional SaaS applications.
+  - title: Smarter Study Tools, Powered by AI
+    description: Stop wasting hours on manual preparation. Quizify AI is the ultimate PDF to quiz converter, generating high-quality practice exams that help you master any subject with zero friction.
     id: features
     orientation: horizontal
     features:
-      - name: 100+ UI Components
-        description: From buttons to modals, data tables to forms - all styled with Tailwind CSS and accessible out of the box.
-        icon: i-lucide-package
-      - name: Authentication Ready
-        description: Pre-built login, signup, and password reset flows. Just connect your backend and start onboarding users.
-        icon: i-lucide-shield
-      - name: TypeScript First
-        description: Full TypeScript support with auto-completion, type safety, and IntelliSense for every component and composable.
-        icon: i-lucide-code-2
-  - title: Built for Modern SaaS
-    description: Everything you need to launch and scale your SaaS. From beautiful marketing pages to complex dashboards, ship faster with production-ready patterns.
+      - name: Instant PDF Analysis
+        description: Upload your lecture notes or textbooks and get a comprehensive AI-generated practice test in under 30 seconds.
+        icon: i-lucide-file-text
+      - name: Built-in Exam Timer
+        description: Master your pacing with a customizable exam timer. Simulate real-world test pressure to build speed and reduce anxiety.
+        icon: i-lucide-timer
+      - name: High-Rigor Accuracy
+        description: Our AI prioritizes academic integrity and factual correctness, ensuring your practice questions are reliable and effective for exam prep.
+        icon: i-lucide-check-circle
+  - title: Premium Exam Prep Without the High Price
+    description: We believe powerful education tools should be accessible to everyone. Quizify AI offers professional-grade study features at a fraction of the cost of traditional tutoring.
     orientation: horizontal
     reverse: true
     features:
-      - name: Edge Performance
-        description: Optimized for Core Web Vitals with automatic code splitting, lazy loading, and SSR/SSG support.
-        icon: i-lucide-zap
-      - name: Dark Mode Ready
-        description: Automatic theme switching with smooth transitions. Respects system preferences and remembers user choice.
-        icon: i-lucide-moon
-      - name: Global Ready
-        description: Built-in i18n support for 50+ languages with RTL/LTR layouts and @nuxt/fonts integration.
-        icon: i-lucide-globe
+      - name: Student-Friendly Pricing
+        description: Affordable plans designed for tight student budgets. Get unlimited quiz generation for less than the price of a coffee.
+        icon: i-lucide-banknote
+      - name: Active Recall Analytics
+        description: Identify your weak spots instantly with personalized score reports. Track your progress and master your curriculum faster.
+        icon: i-lucide-line-chart
+      - name: Mobile-Optimized Studying
+        description: Take a timed quiz on your phone or tablet. Our fully responsive Nuxt-powered platform lets you study anywhere, anytime.
+        icon: i-lucide-smartphone
 features:
-  title: Everything You Need to Ship
-  description: Stop building from scratch. Focus on your unique features while Nuxt UI handles the foundations with battle-tested components and patterns.
+  title: Master Every Subject with Ease
+  description: Stop struggling with scattered notes. Focus on mastering your material while Quizify AI handles the heavy lifting with intelligent PDF analysis and practice tools.
   items:
-    - title: Beautiful Design System
-      description: Semantic color aliases, comprehensive design tokens, and Tailwind Variants for consistent, customizable styling.
-      icon: i-lucide-palette
-    - title: Accessible by Default
-      description: Built on Reka UI for robust accessibility. WCAG compliant components that work for everyone, everywhere.
-      icon: i-lucide-accessibility
-    - title: Developer Experience
-      description: Auto-imports, hot module replacement, and comprehensive documentation. Build faster with less friction.
-      icon: i-lucide-terminal
-    - title: SEO Optimized
-      description: Server-side rendering, automatic meta tags, sitemap generation, and Open Graph images out of the box.
-      icon: i-lucide-search
-    - title: Production Ready
-      description: Error handling, loading states, form validation, and security best practices built into every component.
-      icon: i-lucide-check-circle
-    - title: Infinitely Customizable
-      description: Override any style with the ui prop, customize globally with AppConfig, or use Tailwind classes directly.
-      icon: i-lucide-settings
+    - title: Instant PDF to Quiz
+      description: Upload any textbook or lecture note PDF and generate a complete, high-quality practice exam in under 30 seconds.
+      icon: i-lucide-file-text
+    - title: Real-World Exam Timer
+      description: Master your pacing and eliminate test-day anxiety by practicing under real-world timed conditions with our built-in simulator.
+      icon: i-lucide-timer
+    - title: Student-First Pricing
+      description: Access professional-grade AI study tools at an affordable price point designed to fit any student's budget.
+      icon: i-lucide-banknote
+    - title: Active Recall Analytics
+      description: Identify your knowledge gaps instantly with detailed score reports that show exactly what you need to review next.
+      icon: i-lucide-line-chart
+    - title: Proven Academic Accuracy
+      description: Our AI engine is optimized for high-rigor curriculum, ensuring your generated questions are factually correct and reliable.
+      icon: i-lucide-shield-check
+    - title: Study Anywhere, Anytime
+      description: Fully responsive and optimized for mobile devices, so you can squeeze in a quick practice session while on the go.
+      icon: i-lucide-smartphone
 testimonials:
   headline: Trusted by Developers
   title: Join Thousands Building with Nuxt UI

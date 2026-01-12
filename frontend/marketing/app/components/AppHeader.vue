@@ -2,18 +2,20 @@
 const route = useRoute()
 
 const items = computed(() => [{
-  label: 'Docs',
-  to: '/docs',
+  label: 'Home',
+  to: '/',
   active: route.path.startsWith('/docs')
 }, {
   label: 'Pricing',
   to: '/pricing'
-}, {
+}, 
+{
+  label: 'FAQ',
+  to: '/faq'
+},
+{
   label: 'Blog',
   to: '/blog'
-}, {
-  label: 'Changelog',
-  to: '/changelog'
 }])
 </script>
 
@@ -50,13 +52,15 @@ const items = computed(() => [{
         class="hidden lg:inline-flex"
       />
 
+
       <UButton
-        label="Sign up"
-        color="neutral"
-        trailing-icon="i-lucide-arrow-right"
-        class="hidden lg:inline-flex"
-        to="/signup"
-      />
+        label="Get Started"
+        color="secondary"
+        variant="solid"
+        to="/pricing"
+        class="lg:hidden lg:inline-flex"
+        />
+
     </template>
 
     <template #body>
@@ -76,12 +80,16 @@ const items = computed(() => [{
         block
         class="mb-3"
       />
+
       <UButton
-        label="Sign up"
-        color="neutral"
-        to="/signup"
+        label="Get Started"
+        color="solid"
+        variant="subtle"
+        to="/pricing"
         block
-      />
+        class="mb-1"
+        />
+
     </template>
   </UHeader>
 </template>
