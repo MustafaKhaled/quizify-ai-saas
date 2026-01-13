@@ -1,0 +1,21 @@
+title: Frequently Asked Questions
+description: Everything you need to know about Quizify AI and how we help you crush your exams.
+items:
+  - label: "How accurate are the AI-generated quizzes?"
+    content: "Our AI is fine-tuned for academic rigor. It analyzes your PDF content to create fact-based questions. However, we always recommend reviewing quizzes against your source material for high-stakes exams to ensure total accuracy."
+  - label: "Does the timer simulate real exam conditions?"
+    content: "Yes! You can customize the timer to match your specific exam duration. It helps you build 'exam stamina' and master your pacing, so you don't run out of time on the big day."
+  - label: "What types of files can I upload?"
+    content: "Currently, we support PDF files up to 25MB. We are working on adding support for .docx, .pptx, and direct URL links (like Wikipedia or research papers) in the very near future."
+  - label: "Can I share my quizzes with study groups?"
+    content: "Pro users can generate 'Share Links' for their quizzes. This allows your classmates to take the same quiz you generated, making it a perfect tool for collaborative study sessions."
+  - label: "Is there a limit to how many pages a PDF can have?"
+    content: "For the best results, we recommend PDFs under 100 pages. For very long textbooks, our AI performs best if you upload specific chapters to ensure the questions remain highly focused."
+  - label: "Is my data and PDF content secure?"
+    content: "Absolutely. Your privacy is our priority. Uploaded PDFs are encrypted and used only to generate your quizzes. We do not use your personal documents to train global AI models."
+  - label: "How does the 'Active Recall' analytics work?"
+    content: "Quizify AI tracks which topics you miss most frequently. It then creates a 'Focus Map' in your dashboard, suggesting which parts of your PDF you need to re-read based on your quiz performance."
+  - label: "Can I cancel my Pro subscription at any time?"
+    content: "Yes. You can cancel your subscription with one click from your account settings. You will retain access to your Pro features until the end of your current billing cycle."
+  - label: "Do you offer student discounts?"
+    content: "Our 'Yearly' plan is already discounted by 25% to make it affordable for students. However, for campus-wide licenses or groups of 10+, please contact our support for bulk pricing."

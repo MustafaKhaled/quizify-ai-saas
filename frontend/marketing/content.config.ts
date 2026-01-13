@@ -141,5 +141,19 @@ export const collections = {
       date: z.date(),
       image: z.string()
     })
-  })
+  }),
+  faq: defineCollection({
+    source: '5.faq.yml', // This matches the filename you mentioned
+    type: 'page',
+    schema: z.object({
+      title: z.string().nonempty(),
+      description: z.string().nonempty(),
+      items: z.array(
+        z.object({
+          label: z.string().nonempty(),
+          content: z.string().nonempty()
+        })
+      )
+    })
+  }),
 }

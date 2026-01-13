@@ -1,37 +1,36 @@
 <script setup lang="ts">
-    // 1. Data Fetching: This pulls the content from your /content/faq.yml file
+    // Change 'queryCollection' to 'queryContent'
     const { data: page } = await useAsyncData('faq', () => queryCollection('faq').first())
-
-    const title = page.value?.seo?.title || page.value?.title
-    const description = page.value?.seo?.description || page.value?.description
-
+    const title = computed(() => page.value?.title || 'FAQ - Quizify AI')
+    const description = computed(() => page.value?.description || 'Common questions about AI quiz generation.')
+    
     useSeoMeta({
-    title,
-    ogTitle: title,
-    description,
-    ogDescription: description
-    })
-
-    // 2. SEO: This tells Google what this page is about
-    useSeoMeta({
-      title: 'FAQ - Quizify AI',
-      description: 'Common questions about AI quiz generation and exam timers.'
+      title,
+      description
     })
     </script>
     
     <template>
-      <UContainer v-if="page" class="py-12">
-        <UPageHeader
-          :title="page.title"
-          :description="page.description"
-        />
-    
-        <UPageBody>
-          <UAccordion 
-            :items="page.items" 
-            multiple 
-            class="max-w-3xl mx-auto mt-8"
+        <UContainer v-if="page" class="py-12">
+          <UPageHeader
+            :title="page.title"
+            :description="page.description"
+            class="max-w-none" 
           />
-        </UPageBody>
-      </UContainer>
-    </template>
+      
+          <UPageBody>
+            <UAccordion 
+              :items="page.items" 
+              multiple 
+              class="w-full mt-8"
+              :ui="{
+                wrapper: 'flex flex-col w-full',
+                container: 'w-full',
+                item: {
+                  padding: 'px-4 pb-4 pt-1.5'
+                }
+              }"
+            />
+          </UPageBody>
+        </UContainer>
+      </template>
