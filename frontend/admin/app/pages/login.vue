@@ -46,7 +46,11 @@ const response = await $fetch(`${config.public.apiBase}/auth/login`, {
     body: formData,
 })
 
+const toast = useToast()
+toast.add({ title: 'Success', description: 'Login Success', color: 'green' })
+
 console.log('Login Success:', response)
+
 await navigateTo('/dashboard')
 
 } catch (error: any) {

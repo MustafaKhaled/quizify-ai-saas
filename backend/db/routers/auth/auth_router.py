@@ -4,8 +4,9 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Annotated
-from db.dependency import get_db
+from db.dependency import get_db, get_current_user
 from db import models
+
 import schemas, security
 from authlib.integrations.starlette_client import OAuth
 import os
@@ -124,3 +125,14 @@ async def google_callback(request: Request, db: db_dep):
     
     # 3. Redirect back to Nuxt with the token in the URL
     return RedirectResponse(url=f"{FRONTEND_URL}/auth/callback?token={my_token}")
+
+
+@router.get("/verify", response_model=schemas.UserAdminResponse)
+async def verify_token(
+    current_user: Annotated[models.User, Depends(get_current_user)]
+):
+    """
+    Standard verification for ANY logged-in user. 
+    Nuxt will use this to check if the session is still active.
+    """
+    return current_user
