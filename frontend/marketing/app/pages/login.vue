@@ -12,7 +12,6 @@ useSeoMeta({
 })
 
 const toast = useToast()
-const config = useRuntimeConfig()
 
 const fields = [{
   name: 'email',
