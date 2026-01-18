@@ -147,8 +147,35 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   target: '_blank'
 }, {
   label: 'Log out',
-  icon: 'i-lucide-log-out'
+  icon: 'i-lucide-log-out',
+  onSelect: handleLogout
 }]]))
+
+
+async function handleLogout() {
+  try {
+    console.log("Logout process started...")
+    
+    await $fetch('/api/auth/logout', { 
+      method: 'POST' 
+    })
+
+    window.location.href = '/login';
+
+
+    useToast.add(
+      "Successfully logged out"
+    )
+
+
+  } catch (error) {
+    // 1. Log the specific status code and message
+    console.error('Logout failed:', error.statusCode, error.statusMessage)
+    await clear()
+    await navigateTo('/login')
+  }
+}
+
 </script>
 
 <template>
