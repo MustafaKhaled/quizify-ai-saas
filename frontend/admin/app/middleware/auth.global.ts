@@ -1,43 +1,35 @@
-// app/middleware/auth.global.ts
+// frontend/admin/app/middleware/auth.global.ts
 export default defineNuxtRouteMiddleware(async (to) => {
   const { loggedIn, session, clear, fetch } = useUserSession()
   const config = useRuntimeConfig()
 
-  console.log('Checking Auth for:', to.path)
+  // 1. ALLOW API and Login page to bypass entirely
+  if (to.path.startsWith('/api/') || to.path === '/login') {
+    return
+  }
 
-  // 1. Refresh session from the server-side cookie
+  // 2. Allow the login page itself
+  if (to.path === '/login') {
+    return
+  }
+
+  // 2. Sync session state
   await fetch()
 
-  console.log('Current loggedIn status:', loggedIn.value)
-  console.log('Current session data:', session.value)
+  // 3. PROTECT: If not logged in, redirect to login
+  if (!loggedIn.value || !session.value?.token) {
+    console.log('User not logged in, redirecting...')
+    return navigateTo('/login')
+  }
 
-  // 2. Scenario: User IS logged in
-  if (loggedIn.value && session.value?.token) {
-    try {
-      // Verify token with FastAPI
-      const user: any = await $fetch(`${config.public.apiBase}/auth/verify`, {
-        headers: { Authorization: `Bearer ${session.value.token}` }
-      })
-
-      // If user is at /login but already verified, send to home
-      if (to.path === '/login') {
-        return navigateTo('/')
-      }
-    } catch (error) {
-      console.error('Token expired or invalid. Clearing session.')
-      await clear()
-      if (to.path !== '/login') {
-        return navigateTo('/login')
-      }
-    }
-  } 
-  
-  // 3. Scenario: User is NOT logged in
-  else {
-    // Only redirect if they aren't already on the login page
-    if (to.path !== '/login') {
-      console.log('Redirecting guest to /login')
-      return navigateTo('/login')
-    }
+  // 4. VERIFY: If logged in, check token with FastAPI
+  try {
+    await $fetch(`${config.public.apiBase}/auth/verify`, {
+      headers: { Authorization: `Bearer ${session.value.token}` }
+    })
+  } catch (error) {
+    console.error('FastAPI verification failed')
+    await clear()
+    return navigateTo('/login')
   }
 })

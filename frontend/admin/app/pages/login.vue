@@ -1,3 +1,4 @@
+<!-- frontend/admin/app/pages/login.vue -->
 <template>
     <div class="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
       <UCard class="w-full max-w-md">
@@ -8,55 +9,42 @@
             { name: 'email', type: 'email', label: 'Email', placeholder: 'admin@quizify.ai' },
             { name: 'password', type: 'password', label: 'Password' }
           ]"
-          @submit="onSubmit"
+          @submit.prevent="onSubmit"
         />
       </UCard>
     </div>
   </template>
   
 <script setup lang="ts">
-import * as z from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
-
-  definePageMeta({
-    layout: false // This disables the dashboard sidebar/header
-  })
-  
-const { fetch } = useUserSession()
-const config = useRuntimeConfig()
-
-interface Schema {
-  email?: string
-  password?: string
-}
-
-async function onSubmit(payload: FormSubmitEvent<Schema>) {
-try {
-// 1. Create Form Data (FastAPI OAuth2 expects this format)
-const formData = new URLSearchParams()
-formData.append('username', payload.data.email) // OAuth2 MUST use the key 'username'
-formData.append('password', payload.data.password)
-
-// 2. Send the request
-const response = await $fetch(`${config.public.apiBase}/auth/login`, {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: formData,
-})
-
+const { fetch } = useUserSession() // Hook to refresh the session state
 const toast = useToast()
-toast.add({ title: 'Success', description: 'Login Success', color: 'green' })
 
-console.log('Login Success:', response)
+async function onSubmit(payload: any) {
+  try {
+    // 1. Call your LOCAL Nuxt server route (proxy)
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: {
+        email: payload.data.email,
+        password: payload.data.password
+      }
+    })
 
-await navigateTo('/dashboard')
+    // 2. IMPORTANT: Manually refresh the session 
+    // This makes 'loggedIn.value' change to true in the UI
+    await fetch()
 
-} catch (error: any) {
-console.error('Login Failed:', error.data)
-const toast = useToast()
-toast.add({ title: 'Error', description: 'Invalid login credentials', color: 'red' })
-}
+    toast.add({ title: 'Welcome back!', color: 'green' })
+    
+    // 3. Redirect - the middleware will now let you through
+    await navigateTo('/dashboard')
+    
+  } catch (err: any) {
+    toast.add({ 
+      title: 'Login Failed', 
+      description: 'Check your credentials or database connection.', 
+      color: 'red' 
+    })
+  }
 }
   </script>
