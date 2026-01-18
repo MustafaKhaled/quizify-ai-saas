@@ -27,6 +27,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await $fetch(`${config.public.apiBase}/auth/verify`, {
       headers: { Authorization: `Bearer ${session.value.token}` }
     })
+    console.log("verified", `${session}`)
   } catch (error) {
     console.error('FastAPI verification failed')
     await clear()

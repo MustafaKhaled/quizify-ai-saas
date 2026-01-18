@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from fastapi import status
-from db.models import User
+from db.models import BlacklistedToken, User
 import jwt
 from .database import SessionLocal # Import the SessionLocal class
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
@@ -37,6 +37,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     """
     Decodes the token, validates it, and fetches the user from the DB.
     """
+
+    blacklisted = db.query(BlacklistedToken).filter(BlacklistedToken.token == token).first()
+    if blacklisted:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has been logged out. Please log in again."
+        )
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

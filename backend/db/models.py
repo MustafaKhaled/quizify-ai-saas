@@ -47,6 +47,12 @@ class User(Base):
     quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan")
 
 
+class BlacklistedToken(Base):
+    __tablename__ = "blacklisted_tokens"
+    token = Column(String, primary_key=True, index=True)
+    blacklisted_at = Column(DateTime, default=datetime.utcnow)
+
+
 # --------------------------------
 # 2. Quiz Source & Content Models
 # --------------------------------

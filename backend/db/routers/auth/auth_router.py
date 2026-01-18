@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Annotated
 from db.dependency import get_db, get_current_user
@@ -26,6 +26,7 @@ oauth.register(
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}
 )
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 BACKEND_URL = os.getenv("BACKEND_URL")
@@ -136,3 +137,11 @@ async def verify_token(
     Nuxt will use this to check if the session is still active.
     """
     return current_user
+
+@router.post("/logout")
+def logout(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    # Add token to blacklist
+    db_token = models.BlacklistedToken(token=token)
+    db.add(db_token)
+    db.commit()
+    return {"message": "Token blacklisted successfully"}
