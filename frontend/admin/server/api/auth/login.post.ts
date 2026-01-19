@@ -1,6 +1,7 @@
 // frontend/admin/server/api/auth/login.post.ts
 export default defineEventHandler(async (event) => {
   console.log('🔥 NUXT LOGIN API HIT')
+  console.log('Password check:', process.env.NUXT_SESSION_PASSWORD?.length)
   const body = await readBody(event)
   console.log('📦 BODY:', body)
   const config = useRuntimeConfig()
