@@ -30,7 +30,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     console.log("verified", `${session}`)
   } catch (error) {
     console.error('FastAPI verification failed')
-    await clear()
     return navigateTo('/login')
   }
 })
