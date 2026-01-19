@@ -32,7 +32,8 @@ async function onSubmit(payload: any) {
 
     // 2. IMPORTANT: Manually refresh the session 
     // This makes 'loggedIn.value' change to true in the UI
-    await fetch()
+    // await fetch()
+    await refreshSession()
 
     toast.add({ title: 'Welcome back!', color: 'green' })
     
