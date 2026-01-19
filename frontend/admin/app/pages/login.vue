@@ -37,7 +37,7 @@ async function onSubmit(payload: any) {
     toast.add({ title: 'Welcome back!', color: 'green' })
     
     // 3. Redirect - the middleware will now let you through
-    await navigateTo('/')
+    await navigateTo('/' , { external: true })
     
   } catch (err: any) {
     toast.add({ 
