@@ -30,6 +30,8 @@ async function onSubmit(payload: any) {
       }
     })
 
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
     // 2. IMPORTANT: Manually refresh the session 
     // This makes 'loggedIn.value' change to true in the UI
     await fetch()
