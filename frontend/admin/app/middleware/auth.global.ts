@@ -1,35 +1,16 @@
 // frontend/admin/app/middleware/auth.global.ts
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { loggedIn, session, clear, fetch } = useUserSession()
-  const config = useRuntimeConfig()
+  // Allow login & API routes
+  if (to.path === '/login' || to.path.startsWith('/api/')) return
 
-  // 1. ALLOW API and Login page to bypass entirely
-  if (to.path.startsWith('/api/') || to.path === '/login') {
-    return
-  }
+  const { loggedIn, fetch } = useUserSession()
 
-  // 2. Allow the login page itself
-  if (to.path === '/login') {
-    return
-  }
-
-  // 2. Sync session state
+  // Sync session ONCE
   await fetch()
 
-  // 3. PROTECT: If not logged in, redirect to login
-  if (!loggedIn.value || !session.value?.token) {
+  // Protect route
+  if (!loggedIn.value) {
     console.log('User not logged in, redirecting...')
-    return navigateTo('/login')
-  }
-
-  // 4. VERIFY: If logged in, check token with FastAPI
-  try {
-    await $fetch(`${config.public.apiBase}/auth/verify`, {
-      headers: { Authorization: `Bearer ${session.value.token}` }
-    })
-    console.log("verified", `${session}`)
-  } catch (error) {
-    console.error('FastAPI verification failed')
     return navigateTo('/login')
   }
 })

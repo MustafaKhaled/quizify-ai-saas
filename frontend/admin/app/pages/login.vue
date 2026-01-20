@@ -27,8 +27,11 @@ async function onSubmit(payload: any) {
       body: {
         email: payload.data.email,
         password: payload.data.password
-      }
+      },
+       credentials: 'include'
     })
+
+    await nextTick()
 
     // 2. IMPORTANT: Manually refresh the session 
     // This makes 'loggedIn.value' change to true in the UI
