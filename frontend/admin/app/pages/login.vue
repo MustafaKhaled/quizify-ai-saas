@@ -33,11 +33,10 @@ async function onSubmit(payload: any) {
     // 2. IMPORTANT: Manually refresh the session 
     // This makes 'loggedIn.value' change to true in the UI
     await fetch()
-    
+
     toast.add({ title: 'Welcome back!', color: 'green' })
     
-    // 3. Redirect - the middleware will now let you through
-    await navigateTo('/' , { external: true })
+    window.location.href = '/'
     
   } catch (err: any) {
     toast.add({ 
