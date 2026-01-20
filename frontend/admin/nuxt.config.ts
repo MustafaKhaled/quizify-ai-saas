@@ -31,6 +31,16 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE_URL
+    },
+    session: {
+      name: 'nuxt-session',
+      password: process.env.NUXT_SESSION_PASSWORD,
+      cookie: {
+        sameSite: 'lax', 
+        secure: true, // Railway is HTTPS, so this should be true
+        httpOnly: true,
+        path: '/', // Ensure it's available for all routes
+      }
     }
   },
   future: { compatibilityVersion: 4 }
