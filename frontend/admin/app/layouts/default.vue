@@ -93,7 +93,6 @@ onMounted(async () => {
   if (cookie.value === 'accepted') {
     return
   }
-})
 
   toast.add({
     title: 'We use first-party cookies to enhance your experience on our website.',
