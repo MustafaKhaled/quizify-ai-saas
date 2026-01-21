@@ -39,6 +39,9 @@ class UserAdminResponse(UserResponse):
     created_at: Optional[datetime] = None 
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None
+    quizzes_count: int = 0
+    sources_count: int = 0
+    subscription_status: str = "free" # trial, active, canceled, free
     class Config:
         from_attributes = True
 

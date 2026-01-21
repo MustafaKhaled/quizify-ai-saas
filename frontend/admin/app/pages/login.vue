@@ -39,7 +39,7 @@ async function onSubmit(payload: any) {
 
     toast.add({ title: 'Welcome back!', color: 'green' })
     
-    window.location.href = '/'
+    await navigateTo('/')
     
   } catch (err: any) {
     toast.add({ 
