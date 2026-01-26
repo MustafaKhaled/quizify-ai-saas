@@ -21,7 +21,7 @@ const columnFilters = ref([{
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data, status } = await useFetch<User[]>('/api/customers', {
+const { data, status, refresh } = await useFetch<User[]>('/api/customers', {
   lazy: true
 })
 
@@ -60,11 +60,25 @@ function getRowItems(row: Row<User>) {
       label: 'Delete customer',
       icon: 'i-lucide-trash',
       color: 'error',
-      onSelect() {
-        toast.add({
-          title: 'Customer deleted',
-          description: 'The customer has been deleted.'
-        })
+      async onSelect() {
+        try {
+          await $fetch('/api/users/delete', {
+            method: 'POST',
+            body: { email: row.original.email }
+          })
+          toast.add({
+            title: 'Customer deleted',
+            description: 'The customer has been deleted.',
+            color: 'success'
+          })
+          await refresh()
+        } catch (err: any) {
+          toast.add({
+            title: 'Error',
+            description: err?.data?.message || 'Failed to delete customer',
+            color: 'error'
+          })
+        }
       }
     }
   ]
@@ -215,7 +229,7 @@ const pagination = ref({
         </template>
 
         <template #right>
-          <CustomersAddModal />
+          <CustomersAddModal @created="refresh" />
         </template>
       </UDashboardNavbar>
     </template>
@@ -230,7 +244,11 @@ const pagination = ref({
         />
 
         <div class="flex flex-wrap items-center gap-1.5">
-          <CustomersDeleteModal :count="table?.tableApi?.getFilteredSelectedRowModel().rows.length">
+          <CustomersDeleteModal 
+            :count="table?.tableApi?.getFilteredSelectedRowModel().rows.length"
+            :selected-users="table?.tableApi?.getFilteredSelectedRowModel().rows.map((r: any) => r.original) || []"
+            @deleted="refresh"
+          >
             <UButton
               v-if="table?.tableApi?.getFilteredSelectedRowModel().rows.length"
               label="Delete"

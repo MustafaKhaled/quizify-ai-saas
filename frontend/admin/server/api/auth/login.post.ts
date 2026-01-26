@@ -28,30 +28,30 @@ export default defineEventHandler(async (event) => {
 
     console.log('✅ FastAPI Response:', data)
 
-console.log('✅ FastAPI Response received')
-
-    // 1. Only check for the token, since 'user' doesn't exist as a separate key
-    if (!data.access_token) {
-       console.error('❌ Login failed: No access token in response')
+    // 1. Check for the token and user in the response
+    if (!data.access_token || !data.user) {
+       console.error('❌ Login failed: No access token or user in response')
        throw createError({ statusCode: 401, message: 'Invalid credentials' })
     }
 
-    // 2. Map the flat FastAPI response into the Nuxt Session structure
+    // 2. Check if user is admin
+    if (!data.user.is_admin) {
+      throw createError({ statusCode: 403, message: 'Admin access required' })
+    }
+
+    // 3. Map the FastAPI response into the Nuxt Session structure
     await setUserSession(event, {
       user: {
-        id: data.id,
-        email: data.email,
-        name: data.name,
-        is_admin: data.is_admin
-        // Any other fields you need in the UI
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        is_admin: data.user.is_admin
       },
       token: data.access_token,
       loggedInAt: Date.now()
     })
 
-    console.log('✅ Session sealed for:', data.email)
-    return { success: true }
-
+    console.log('✅ Session sealed for:', data.user.email)
     return { success: true }
   } catch (err: any) {
     // Forward FastAPI error if available
