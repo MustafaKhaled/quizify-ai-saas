@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Annotated
+from db.routers.util import get_detailed_status
 from db.dependency import get_db, get_current_user
 from db import models
 
@@ -36,39 +37,49 @@ db_dep = Annotated[Session, Depends(get_db)]
 
 @router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.UserCreate, db: db_dep):
-    expiration_date = datetime.utcnow() + timedelta(minutes=5),
+    # 1. Fix the date (removed trailing comma)
+    # Note: using datetime.now(timezone.utc) is preferred over utcnow() in 2026
+    expiration_date = datetime.now(timezone.utc) + timedelta(minutes=5)
+    
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
     if not user_in.password:
-        raise HTTPException(
-            status_code=400, 
-            detail="Password is required for standard registration."
-        )
+        raise HTTPException(status_code=400, detail="Password is required.")
 
-    # Create new user
+    # 2. Create and Save
     hashed_pwd = security.hash_password(user_in.password[:72])
     new_user = models.User( 
         email=user_in.email,
         hashed_password=hashed_pwd,
-        name = user_in.name,
-        trial_ends_at=expiration_date,
+        name=user_in.name,
+        trial_ends_at=expiration_date, # No comma here!
         is_pro=False,
         is_admin=False
+        # Do not include ID here if your model has a default uuid4
     )
     
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    # Generate token
+    # 3. Prepare Subscriptions
+    sub_state = get_detailed_status(new_user)
     access_token = security.create_access_token(data={"sub": new_user.email})
-    
-    return {
+
+    # 4. Correctly Nest the Data
+    user_data = {
         **new_user.__dict__,
+        "status_label": sub_state["label"],
+        "subscription": sub_state
+    }
+
+    # THIS return statement matches AuthenticationSuccessResponse
+    return {
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": user_data  # This key 'user' is what the schema requires!
     }
 
 @router.post("/login", response_model=schemas.AuthenticationSuccessResponse)
@@ -82,7 +93,7 @@ async def login(
     if user and not user.hashed_password:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Looks like you Sign-up with Google, please use Google Login",
+            detail="Looks like you signed up with Google, please use Google Login",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -94,11 +105,25 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # 3. Create token
+    # 3. Calculate Subscription Status (The "Fusion" Logic)
+    # Using the utility method we discussed
+    sub_state = get_detailed_status(user)
+
+    # 4. Create Token
     access_token = security.create_access_token(data={"sub": user.email})
     
-    return {**user.__dict__, "access_token": access_token, "token_type": "bearer"}
+    user_data = {
+        **user.__dict__,
+        "status_label": sub_state["label"],
+        "subscription": sub_state
+    }
 
+    # This matches the schema: access_token, token_type, and user
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user_data  # <--- This fixes the 'user' field required error
+    }
 
 @router.get('/google/login')
 async def google_login(request: Request):

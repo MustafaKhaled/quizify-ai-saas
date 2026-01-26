@@ -1,11 +1,13 @@
 # models.py
 
+from typing import Optional
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import (
     Column, DateTime, String, Integer, ForeignKey,
     TIMESTAMP, Numeric, Boolean
 )
+from datetime import datetime, timezone
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from db.database import Base
@@ -39,12 +41,27 @@ class User(Base):
     hashed_password = Column(String(255), nullable=True)
     name = Column(String(255), nullable=True)
     is_admin = Column(Boolean, default=False, server_default="false", nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
-    is_pro = Column(Boolean, default=False) # True only after Stripe payment
-    trial_ends_at = Column(DateTime, nullable=True) # The "Manual" gate
-    subscription = relationship("Subscription", back_populates="user", uselist=False)
+    
+    # Use timezone-aware defaults
+    created_at = Column(TIMESTAMP(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    
+    # Subscription Logic
+    is_pro = Column(Boolean, default=False)
+    trial_ends_at = Column(
+        TIMESTAMP(timezone=True), 
+        default=lambda: datetime.now(timezone.utc) + timedelta(days=7)
+    )
+    subscription_end = Column(TIMESTAMP(timezone=True), nullable=True) # Tracks the 3-month/1-month end
+    
+    stripe_customer_id = Column(String, nullable=True)
+    stripe_subscription_id = Column(String, nullable=True)
+    subscription_status = Column(String, default="inactive")
+    plan_interval = Column(String, nullable=True) # "month" or "year"
+
+    # Relationships
     quiz_sources = relationship("QuizSource", back_populates="owner", cascade="all, delete-orphan")
     quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan")
+    subscription = relationship("Subscription", back_populates="user", cascade="all, delete-orphan")
 
 
 class BlacklistedToken(Base):

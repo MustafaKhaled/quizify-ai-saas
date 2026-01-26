@@ -14,49 +14,56 @@ function formatCurrency(value: number): string {
   })
 }
 
-const baseStats = [{
-  title: 'Customers',
-  icon: 'i-lucide-users',
-  minValue: 400,
-  maxValue: 1000,
-  minVariation: -15,
-  maxVariation: 25
-}, {
-  title: 'Conversions',
-  icon: 'i-lucide-chart-pie',
-  minValue: 1000,
-  maxValue: 2000,
-  minVariation: -10,
-  maxVariation: 20
-}, {
-  title: 'Revenue',
-  icon: 'i-lucide-circle-dollar-sign',
-  minValue: 200000,
-  maxValue: 500000,
-  minVariation: -20,
-  maxVariation: 30,
-  formatter: formatCurrency
-}, {
-  title: 'Orders',
-  icon: 'i-lucide-shopping-cart',
-  minValue: 100,
-  maxValue: 300,
-  minVariation: -5,
-  maxVariation: 15
-}]
-
 const { data: stats } = await useAsyncData<Stat[]>('stats', async () => {
-  return baseStats.map((stat) => {
-    const value = randomInt(stat.minValue, stat.maxValue)
-    const variation = randomInt(stat.minVariation, stat.maxVariation)
-
-    return {
-      title: stat.title,
-      icon: stat.icon,
-      value: stat.formatter ? stat.formatter(value) : value,
-      variation
-    }
-  })
+  try {
+    const statsData = await $fetch('/api/stats')
+    
+    return [{
+      title: 'Total Users',
+      icon: 'i-lucide-users',
+      value: statsData.totalUsers.value,
+      variation: statsData.totalUsers.variation
+    }, {
+      title: 'Pro Users',
+      icon: 'i-lucide-crown',
+      value: statsData.proUsers.value,
+      variation: statsData.proUsers.variation
+    }, {
+      title: 'Total Quizzes',
+      icon: 'i-lucide-file-question',
+      value: statsData.totalQuizzes.value,
+      variation: statsData.totalQuizzes.variation
+    }, {
+      title: 'PDF Sources',
+      icon: 'i-lucide-file-text',
+      value: statsData.totalSources.value,
+      variation: statsData.totalSources.variation
+    }]
+  } catch (err) {
+    console.error('Failed to fetch stats:', err)
+    // Return default stats on error
+    return [{
+      title: 'Total Users',
+      icon: 'i-lucide-users',
+      value: 0,
+      variation: 0
+    }, {
+      title: 'Pro Users',
+      icon: 'i-lucide-crown',
+      value: 0,
+      variation: 0
+    }, {
+      title: 'Total Quizzes',
+      icon: 'i-lucide-file-question',
+      value: 0,
+      variation: 0
+    }, {
+      title: 'PDF Sources',
+      icon: 'i-lucide-file-text',
+      value: 0,
+      variation: 0
+    }]
+  }
 }, {
   watch: [() => props.period, () => props.range],
   default: () => []

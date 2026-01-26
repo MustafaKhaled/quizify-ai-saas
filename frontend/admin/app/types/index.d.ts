@@ -4,7 +4,7 @@ export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 export type SaleStatus = 'paid' | 'failed' | 'refunded'
 
 export interface User {
-  id: number
+  id: string | number
   name: string
   email: string
   avatar?: AvatarProps

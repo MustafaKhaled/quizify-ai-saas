@@ -27,21 +27,31 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=8, max_length=72)
 
+class SubscriptionInfo(BaseModel):
+    status: str          # active_monthly, active_yearly, trial, expired
+    label: str           # "Pro Monthly", "Trial (5d left)"
+    is_eligible: bool    # Quick boolean for the UI to enable/disable AI buttons
+    ends_at: Optional[datetime] = None
+
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
     name: Optional[str] = None
+    subscription: Optional[SubscriptionInfo] = None
     
     class Config:
         from_attributes = True
 
 class UserAdminResponse(UserResponse):
     created_at: Optional[datetime] = None 
-    is_admin: Optional[bool] = None
-    is_pro: Optional[bool] = None
+    is_admin: Optional[bool] = False
+    is_pro: Optional[bool] = False
     quizzes_count: int = 0
     sources_count: int = 0
-    subscription_status: str = "free" # trial, active, canceled, free
+
+    status_label: Optional[str] = "Trial" 
+    trial_ends_at: Optional[datetime] = None 
+    
     class Config:
         from_attributes = True
 
@@ -49,11 +59,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-class AuthenticationSuccessResponse(UserAdminResponse):
+class AuthenticationSuccessResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    is_pro: Optional[bool] = None
-    trial_ends_at: Optional[datetime] = None
+    user: UserAdminResponse # Nest the user data
 
 
 class QuizResponse(BaseModel):
