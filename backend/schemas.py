@@ -27,6 +27,12 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=8, max_length=72)
 
+class SubscriptionInfo(BaseModel):
+    status: str          # trial, active_monthly, active_yearly, expired
+    label: str           # "Pro Monthly", "Trial (5d left)"
+    is_eligible: bool    # Quick boolean for the UI to enable/disable AI buttons
+    ends_at: Optional[datetime] = None
+
 class UserResponse(BaseModel):
     id: UUID
     email: EmailStr
@@ -41,7 +47,11 @@ class UserAdminResponse(UserResponse):
     is_pro: Optional[bool] = None
     quizzes_count: int = 0
     sources_count: int = 0
-    subscription_status: str = "free" # trial, active, canceled, free
+    subscription_status: str = "free"  # trial, active, canceled, free
+    subscription: Optional[SubscriptionInfo] = None
+    status_label: Optional[str] = None
+    trial_ends_at: Optional[datetime] = None
+    
     class Config:
         from_attributes = True
 
@@ -49,11 +59,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-class AuthenticationSuccessResponse(UserAdminResponse):
+class AuthenticationSuccessResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    is_pro: Optional[bool] = None
-    trial_ends_at: Optional[datetime] = None
+    user: UserAdminResponse
 
 
 class QuizResponse(BaseModel):

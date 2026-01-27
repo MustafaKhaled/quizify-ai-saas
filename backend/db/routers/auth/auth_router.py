@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 from db.dependency import get_db, get_current_user
 from db import models
+from db.routers.util import build_user_response
 
 import schemas, security
 from authlib.integrations.starlette_client import OAuth
@@ -36,7 +37,9 @@ db_dep = Annotated[Session, Depends(get_db)]
 
 @router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.UserCreate, db: db_dep):
-    expiration_date = datetime.utcnow() + timedelta(minutes=5),
+    from sqlalchemy.orm import joinedload
+    
+    expiration_date = datetime.now(timezone.utc) + timedelta(days=7)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -52,10 +55,10 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     new_user = models.User( 
         email=user_in.email,
         hashed_password=hashed_pwd,
-        name = user_in.name,
+        name=user_in.name,
         trial_ends_at=expiration_date,
         is_pro=False,
-        is_admin=False
+        is_admin=user_in.is_admin or False
     )
     
     db.add(new_user)
@@ -65,10 +68,13 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     # Generate token
     access_token = security.create_access_token(data={"sub": new_user.email})
     
+    # Build user response with subscription info
+    user_data = build_user_response(new_user, db)
+    
     return {
-        **new_user.__dict__,
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": user_data
     }
 
 @router.post("/login", response_model=schemas.AuthenticationSuccessResponse)
@@ -76,8 +82,10 @@ async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
     db: db_dep
 ):
-    # 1. Find the user
-    user = db.query(models.User).filter(models.User.email == form_data.username).first()
+    from sqlalchemy.orm import joinedload
+    
+    # 1. Find the user with subscription relationship loaded
+    user = db.query(models.User).options(joinedload(models.User.subscription)).filter(models.User.email == form_data.username).first()
 
     if user and not user.hashed_password:
         raise HTTPException(
@@ -97,7 +105,14 @@ async def login(
     # 3. Create token
     access_token = security.create_access_token(data={"sub": user.email})
     
-    return {**user.__dict__, "access_token": access_token, "token_type": "bearer"}
+    # 4. Build user response with subscription info
+    user_data = build_user_response(user, db)
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user_data
+    }
 
 
 @router.get('/google/login')
