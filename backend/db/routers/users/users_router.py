@@ -7,6 +7,7 @@ from typing import Annotated
 from db.models import User
 from schemas import UserAdminResponse, UserResponse, UserUpdate
 from db.dependency import get_db, get_current_user
+from db.routers.util import build_user_response
 from security import hash_password
 from pydantic import BaseModel # To define the expected request body
 
@@ -22,8 +23,13 @@ router = APIRouter(
 )
 
 @router.get("/me", response_model=UserAdminResponse)
-def get_my_profile(current_user: CurrentUser):
-    return current_user
+def get_my_profile(current_user: CurrentUser, db: DBSession):
+    # Access subscription to trigger lazy load if needed
+    _ = current_user.subscription
+    
+    # Build user response with subscription info and counts
+    user_data = build_user_response(current_user, db)
+    return user_data
 
 
 @router.patch("/me", response_model=UserResponse)
