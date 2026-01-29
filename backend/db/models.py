@@ -1,10 +1,10 @@
 # models.py
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import (
     Column, DateTime, String, Integer, ForeignKey,
-    TIMESTAMP, Numeric, Boolean
+    TIMESTAMP, Numeric, Boolean, func
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
@@ -26,7 +26,7 @@ class Subscription(Base):
     stripe_customer_id = Column(String(255), unique=True, nullable=False)
     status = Column(String(50), nullable=False)
     ends_at = Column(TIMESTAMP(timezone=True))
-    created_at = Column(TIMESTAMP(timezone=True), nullable= True)
+    created_at = Column(TIMESTAMP(timezone=True),default=datetime.utcnow,nullable=False)
 
     user = relationship("User", back_populates="subscription")
 
@@ -39,7 +39,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=True)
     name = Column(String(255), nullable=True)
     is_admin = Column(Boolean, default=False, server_default="false", nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), default=datetime.utcnow, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     is_pro = Column(Boolean, default=False) # True only after Stripe payment
     trial_ends_at = Column(DateTime, nullable=True) # The "Manual" gate
     subscription = relationship("Subscription", back_populates="user", uselist=False)

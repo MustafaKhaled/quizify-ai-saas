@@ -32,6 +32,8 @@ class SubscriptionInfo(BaseModel):
     label: str           # "Pro Monthly", "Trial (5d left)"
     is_eligible: bool    # Quick boolean for the UI to enable/disable AI buttons
     ends_at: Optional[datetime] = None
+    trial_ends_at: Optional[datetime] = None
+    status_label: Optional[str] = None
 
 class UserResponse(BaseModel):
     id: UUID
@@ -47,10 +49,7 @@ class UserAdminResponse(UserResponse):
     is_pro: Optional[bool] = None
     quizzes_count: int = 0
     sources_count: int = 0
-    subscription_status: str = "free"  # trial, active, canceled, free
     subscription: Optional[SubscriptionInfo] = None
-    status_label: Optional[str] = None
-    trial_ends_at: Optional[datetime] = None
     
     class Config:
         from_attributes = True

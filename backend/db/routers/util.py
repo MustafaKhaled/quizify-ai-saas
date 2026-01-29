@@ -1,91 +1,75 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from db.models import User
 
 def get_subscription_status(user: User) -> dict:
-    """
-    Calculate subscription status and info based on user's current state.
-    Returns a dict with subscription_status, subscription info, and status_label.
-    """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc) - timedelta(hours=1)  # Small buffer to avoid edge cases
     
-    # Normalize trial_ends_at to timezone-aware if it exists
-    trial_ends = None
-    if user.trial_ends_at:
-        if user.trial_ends_at.tzinfo is None:
-            # Assume UTC if timezone-naive
-            trial_ends = user.trial_ends_at.replace(tzinfo=timezone.utc)
-        else:
-            trial_ends = user.trial_ends_at
-    
-    # Check if user has an active paid subscription
-    if user.is_pro:
-        # Try to access subscription relationship (will lazy load if needed)
-        try:
-            sub = user.subscription if hasattr(user, 'subscription') else None
-        except:
-            sub = None
-            
-        if sub:
-            sub_ends_at = None
-            if sub.ends_at:
-                if sub.ends_at.tzinfo is None:
-                    sub_ends_at = sub.ends_at.replace(tzinfo=timezone.utc)
-                else:
-                    sub_ends_at = sub.ends_at
-            
-            if sub_ends_at and sub_ends_at > now:
-                # Determine if monthly or yearly based on subscription status
-                status = "active_yearly" if "year" in sub.status.lower() else "active_monthly"
-                subscription_status = "active"
-                label = f"Pro {'Yearly' if 'year' in sub.status.lower() else 'Monthly'}"
-                ends_at = sub_ends_at
-            else:
-                status = "expired"
-                subscription_status = "canceled"
-                label = "Expired"
-                ends_at = sub_ends_at
-        else:
-            # User is pro but no subscription record - assume active
-            status = "active_monthly"
-            subscription_status = "active"
-            label = "Pro Active"
-            ends_at = None
+    # 2. Force user.created_at to UTC
+    # If it's already aware, convert it. If naive, assume UTC.
+    if user.created_at.tzinfo is None:
+        created_at_utc = user.created_at.replace(tzinfo=timezone.utc)
     else:
-        # Check trial status
-        if trial_ends and trial_ends > now:
-            status = "trial"
-            subscription_status = "trial"
-            days_left = (trial_ends - now).days
-            label = f"Trial ({days_left}d left)" if days_left > 0 else "Trial (Expiring soon)"
-            ends_at = trial_ends
+        created_at_utc = user.created_at.astimezone(timezone.utc)
+        
+    trial_limit = created_at_utc + timedelta(minutes=3)
+
+    print("Current time (UTC):", now)   
+    print("User created at (UTC):", created_at_utc)
+    print("Trial ends at (UTC):", trial_limit)
+
+    # 2. Logic Branch 1: User is currently PRO (Paid)
+    if user.is_pro:
+        # Check if the subscription record exists to get the specific type
+        sub_record = user.subscription
+        ends_at = sub_record.ends_at if sub_record else None
+        
+        # Determine if monthly or yearly
+        is_yearly = sub_record and "year" in (sub_record.status or "").lower()
+        
+        # Check if the paid time has actually run out
+        if ends_at and now > ends_at:
+            status = "expired_yearly" if is_yearly else "expired_monthly"
+            is_eligible = False
+            label = "Subscription Expired"
         else:
-            # No active subscription or trial
-            status = "expired"
-            subscription_status = "free"
-            label = "Free"
-            ends_at = None
-    
-    is_eligible = status in ["trial", "active_monthly", "active_yearly"]
-    
-    return {
-        "subscription_status": subscription_status,
-        "subscription": {
+            status = "active_yearly" if is_yearly else "active_monthly"
+            is_eligible = True
+            label = "Pro Yearly" if is_yearly else "Pro Monthly"
+
+        return {
             "status": status,
             "label": label,
             "is_eligible": is_eligible,
-            "ends_at": ends_at
-        },
-        "status_label": label
+            "ends_at": ends_at,
+            "trial_ends": trial_limit
+        }
+
+    # 3. Logic Branch 2: User is NOT Pro (Check Trial)
+    if now < trial_limit:
+        diff = trial_limit - now
+        total_seconds = int(diff.total_seconds())
+        
+        return {
+            "status": "trial_active",
+            "label": f"Trial ({total_seconds // 60}m {total_seconds % 60}s left)",
+            "is_eligible": True,
+            "ends_at": None,      # No subscription end date yet
+            "trial_ends": trial_limit
+        }
+
+    # 4. Logic Branch 3: Trial has ended, never paid
+    return {
+        "status": "trial_expired",
+        "label": "Trial Expired",
+        "is_eligible": False,
+        "ends_at": None,
+        "trial_ends": trial_limit
     }
 
 def build_user_response(user: User, db_session=None) -> dict:
-    """
-    Build a complete user response with subscription info and counts.
-    """
-    # Get subscription info
-    sub_info = get_subscription_status(user)
+    # Get the detailed subscription status
+    sub_data = get_subscription_status(user)
     
-    # Get counts if db_session is provided
     quizzes_count = 0
     sources_count = 0
     if db_session:
@@ -93,16 +77,17 @@ def build_user_response(user: User, db_session=None) -> dict:
         quizzes_count = db_session.query(Quiz).filter(Quiz.user_id == user.id).count()
         sources_count = db_session.query(QuizSource).filter(QuizSource.user_id == user.id).count()
     
-    # Normalize trial_ends_at to timezone-aware if it exists
-    trial_ends_at = None
-    if user.trial_ends_at:
-        if user.trial_ends_at.tzinfo is None:
-            trial_ends_at = user.trial_ends_at.replace(tzinfo=timezone.utc)
-        else:
-            trial_ends_at = user.trial_ends_at
+    # Create subscription info object with trial_ends_at and status_label moved inside
+    subscription_info = {
+        "status": sub_data["status"],
+        "label": sub_data["label"],
+        "is_eligible": sub_data["is_eligible"],
+        "ends_at": sub_data.get("ends_at"),
+        "trial_ends_at": sub_data.get("trial_ends"),
+        "status_label": sub_data["label"]  # Use label as status_label
+    }
     
-    # Build response
-    response = {
+    return {
         "id": user.id,
         "email": user.email,
         "name": user.name,
@@ -111,10 +96,5 @@ def build_user_response(user: User, db_session=None) -> dict:
         "is_pro": user.is_pro,
         "quizzes_count": quizzes_count,
         "sources_count": sources_count,
-        "subscription_status": sub_info["subscription_status"],
-        "subscription": sub_info["subscription"],
-        "status_label": sub_info["status_label"],
-        "trial_ends_at": trial_ends_at
+        "subscription": subscription_info
     }
-    
-    return response

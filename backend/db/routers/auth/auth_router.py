@@ -39,7 +39,7 @@ db_dep = Annotated[Session, Depends(get_db)]
 async def register(user_in: schemas.UserCreate, db: db_dep):
     from sqlalchemy.orm import joinedload
     
-    expiration_date = datetime.now(timezone.utc) + timedelta(days=7)
+    expiration_date = datetime.now(timezone.utc) + timedelta(minutes=3)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
