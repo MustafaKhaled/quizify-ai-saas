@@ -90,3 +90,20 @@ class QuizSubmission(BaseModel):
 
 class CheckoutRequest(BaseModel):
     price_id: str
+
+class QuizSourceResponse(BaseModel):
+    id: UUID
+    file_name: str
+    upload_date: datetime
+    start_page: Optional[int] = None
+    end_page: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+class UserDetailResponse(UserAdminResponse):
+    quiz_sources: List[QuizSourceResponse] = []
+    quizzes: List[QuizResponse] = []
+
+    class Config:
+        from_attributes = True

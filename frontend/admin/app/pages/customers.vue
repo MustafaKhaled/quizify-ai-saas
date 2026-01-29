@@ -34,6 +34,9 @@ const UCheckbox = resolveComponent('UCheckbox')
 const toast = useToast()
 const table = useTemplateRef('table')
 
+const showDetailsModal = ref(false)
+const selectedUserId = ref<string | null>(null)
+
 const columnFilters = ref([{
   id: 'email',
   value: ''
@@ -67,7 +70,11 @@ function getRowItems(row: Row<AdminUser>) {
     },
     {
       label: 'View customer details',
-      icon: 'i-lucide-list'
+      icon: 'i-lucide-list',
+      onSelect() {
+        selectedUserId.value = row.original.id
+        showDetailsModal.value = true
+      }
     },
     {
       label: 'View customer payments',
@@ -378,4 +385,10 @@ const pagination = ref({
       </div>
     </template>
   </UDashboardPanel>
+
+  <!-- Customer Details Modal -->
+  <CustomerDetailsModal
+    v-model="showDetailsModal"
+    :user-id="selectedUserId"
+  />
 </template>
