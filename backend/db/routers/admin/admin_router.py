@@ -1,9 +1,11 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from requests import Session
+from db.routers.util import build_user_response
 from schemas import UserAdminResponse
 from db.dependency import get_current_admin, get_db
 from db import models
+from sqlalchemy.orm import joinedload
 router = APIRouter(
     prefix="/admin",
     tags=["Adinmistration"]
@@ -18,8 +20,8 @@ async def get_all_users(
     db: db_dep,
     _: CurrentAdmin
 ):
-    users = db.query(models.User).all()
-    return users
+    users = db.query(models.User).options(joinedload(models.User.subscription)).all()
+    return [build_user_response(user, db_session=db) for user in users] 
 
 
 @router.delete("/user/email/{email}", status_code=status.HTTP_204_NO_CONTENT)

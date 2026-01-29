@@ -3,7 +3,27 @@ import type { TableColumn } from '@nuxt/ui'
 import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
-import type { User } from '~/types'
+
+interface SubscriptionInfo {
+  status: string
+  label: string
+  is_eligible: boolean
+  ends_at: string | null
+  trial_ends_at: string | null
+  status_label: string | null
+}
+
+interface AdminUser {
+  id: string
+  email: string
+  name: string | null
+  created_at: string
+  is_admin: boolean
+  is_pro: boolean
+  quizzes_count: number
+  sources_count: number
+  subscription: SubscriptionInfo | null
+}
 
 const UAvatar = resolveComponent('UAvatar')
 const UButton = resolveComponent('UButton')
@@ -21,11 +41,11 @@ const columnFilters = ref([{
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data, status } = await useFetch<User[]>('/api/customers', {
+const { data, status } = await useFetch<AdminUser[]>('/api/customers', {
   lazy: true
 })
 
-function getRowItems(row: Row<User>) {
+function getRowItems(row: Row<AdminUser>) {
   return [
     {
       type: 'label',
@@ -70,7 +90,7 @@ function getRowItems(row: Row<User>) {
   ]
 }
 
-const columns: TableColumn<User>[] = [
+const columns: TableColumn<AdminUser>[] = [
   {
     id: 'select',
     header: ({ table }) =>
@@ -91,20 +111,20 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: 'id',
-    header: 'ID'
+    header: 'ID',
+    cell: ({ row }) => {
+      const id = row.original.id.toString()
+      return h('div', { class: 'text-xs text-muted truncate' }, id.slice(0, 8) + '...')
+    }
   },
   {
     accessorKey: 'name',
     header: 'Name',
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
-        h(UAvatar, {
-          ...row.original.avatar,
-          size: 'lg'
-        }),
         h('div', undefined, [
-          h('p', { class: 'font-medium text-highlighted' }, row.original.name),
-          h('p', { class: '' }, `@${row.original.name}`)
+          h('p', { class: 'font-medium text-highlighted' }, row.original.name || 'Unnamed'),
+          h('p', { class: 'text-sm text-muted' }, row.original.email)
         ])
       ])
     }
@@ -129,24 +149,53 @@ const columns: TableColumn<User>[] = [
     }
   },
   {
-    accessorKey: 'location',
-    header: 'Location',
-    cell: ({ row }) => row.original.location
+    accessorKey: 'is_pro',
+    header: 'Pro Status',
+    cell: ({ row }) => {
+      const isPro = row.original.is_pro
+      const color = isPro ? 'success' : 'gray'
+      const label = isPro ? 'Pro' : 'Free'
+
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => label)
+    }
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    filterFn: 'equals',
+    accessorKey: 'subscription',
+    header: 'Subscription',
     cell: ({ row }) => {
-      const color = {
-        subscribed: 'success' as const,
-        unsubscribed: 'error' as const,
-        bounced: 'warning' as const
-      }[row.original.status]
+      const sub = row.original.subscription
+      if (!sub) {
+        return h('span', { class: 'text-sm text-muted' }, 'No subscription')
+      }
 
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.original.status
-      )
+      const color = {
+        trial_active: 'info',
+        trial_expired: 'warning',
+        active_monthly: 'success',
+        active_yearly: 'success',
+        expired_monthly: 'error',
+        expired_yearly: 'error'
+      }[sub.status] || 'gray'
+
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => sub.label)
+    }
+  },
+  {
+    accessorKey: 'quizzes_count',
+    header: 'Quizzes',
+    cell: ({ row }) => h('div', { class: 'text-center' }, row.original.quizzes_count.toString())
+  },
+  {
+    accessorKey: 'sources_count',
+    header: 'Sources',
+    cell: ({ row }) => h('div', { class: 'text-center' }, row.original.sources_count.toString())
+  },
+  {
+    accessorKey: 'is_admin',
+    header: 'Admin',
+    cell: ({ row }) => {
+      const isAdmin = row.original.is_admin
+      return h('div', { class: 'text-center' }, isAdmin ? '✓' : '—')
     }
   },
   {
@@ -181,7 +230,7 @@ const statusFilter = ref('all')
 watch(() => statusFilter.value, (newVal) => {
   if (!table?.value?.tableApi) return
 
-  const statusColumn = table.value.tableApi.getColumn('status')
+  const statusColumn = table.value.tableApi.getColumn('subscription')
   if (!statusColumn) return
 
   if (newVal === 'all') {
@@ -250,12 +299,14 @@ const pagination = ref({
             v-model="statusFilter"
             :items="[
               { label: 'All', value: 'all' },
-              { label: 'Subscribed', value: 'subscribed' },
-              { label: 'Unsubscribed', value: 'unsubscribed' },
-              { label: 'Bounced', value: 'bounced' }
+              { label: 'Pro Monthly', value: 'active_monthly' },
+              { label: 'Pro Yearly', value: 'active_yearly' },
+              { label: 'Trial Active', value: 'trial_active' },
+              { label: 'Trial Expired', value: 'trial_expired' },
+              { label: 'Free', value: 'free' }
             ]"
             :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
-            placeholder="Filter status"
+            placeholder="Filter subscription"
             class="min-w-28"
           />
           <UDropdownMenu
