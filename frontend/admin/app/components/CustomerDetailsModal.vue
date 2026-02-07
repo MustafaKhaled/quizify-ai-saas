@@ -1,148 +1,3 @@
-<template>
-  <UModal v-model="isOpen" :prevent-close="loading">
-    <UCard class="w-full max-w-4xl">
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-semibold">Customer Details</h2>
-          <UButton
-            variant="ghost"
-            icon="i-lucide-x"
-            @click="isOpen = false"
-          />
-        </div>
-      </template>
-
-      <div v-if="loading" class="flex justify-center py-8">
-        <USkeleton class="h-12 w-full" />
-      </div>
-
-      <div v-else-if="error" class="text-center py-8">
-        <p class="text-red-500">{{ error }}</p>
-        <UButton label="Close" @click="isOpen = false" class="mt-4" />
-      </div>
-
-      <div v-else-if="user">
-        <!-- User Info Section -->
-        <div class="space-y-4 p-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-sm font-medium text-gray-500">Name</p>
-              <p class="text-lg font-semibold">{{ user.name || 'Unnamed' }}</p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Email</p>
-              <p class="text-lg font-semibold">{{ user.email }}</p>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Status</p>
-              <div class="flex gap-2 mt-1">
-                <UBadge variant="subtle">
-                  {{ user.is_pro ? 'Pro' : 'Free' }}
-                </UBadge>
-                <UBadge v-if="user.is_admin" variant="subtle">
-                  Admin
-                </UBadge>
-              </div>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-500">Joined</p>
-              <p class="text-lg font-semibold">{{ formatDate(user.created_at) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Subscription Section -->
-        <div class="p-4">
-          <h3 class="text-lg font-semibold mb-4">Subscription</h3>
-          <div v-if="user.subscription" class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-sm font-medium text-gray-500">Status</p>
-              <UBadge variant="subtle">
-                {{ user.subscription.label }}
-              </UBadge>
-            </div>
-            <div v-if="user.subscription.ends_at">
-              <p class="text-sm font-medium text-gray-500">Expires</p>
-              <p class="text-lg font-semibold">{{ formatDate(user.subscription.ends_at) }}</p>
-            </div>
-            <div v-if="user.subscription.trial_ends_at">
-              <p class="text-sm font-medium text-gray-500">Trial Ends</p>
-              <p class="text-lg font-semibold">{{ formatDate(user.subscription.trial_ends_at) }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quiz Sources Section -->
-        <div class="p-4">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Quiz Sources (PDFs)</h3>
-            <UBadge variant="subtle">{{ user.quiz_sources?.length || 0 }}</UBadge>
-          </div>
-          <div v-if="user.quiz_sources && user.quiz_sources.length > 0" class="space-y-2">
-            <div
-              v-for="source in user.quiz_sources"
-              :key="source.id"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-            >
-              <div class="flex items-center gap-3">
-                <UIcon name="i-lucide-file-pdf" class="text-red-500" />
-                <div>
-                  <p class="font-medium">{{ source.file_name }}</p>
-                  <p class="text-xs text-gray-500">
-                    Uploaded {{ formatDate(source.upload_date) }}
-                    <span v-if="source.start_page || source.end_page">
-                      • Pages {{ source.start_page }}-{{ source.end_page }}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-center py-8">
-            <p class="text-gray-500">No quiz sources uploaded</p>
-          </div>
-        </div>
-
-        <!-- Quizzes Section -->
-        <div class="p-4">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">Quizzes Created</h3>
-            <UBadge variant="subtle">{{ user.quizzes?.length || 0 }}</UBadge>
-          </div>
-          <div v-if="user.quizzes && user.quizzes.length > 0" class="space-y-2">
-            <div
-              v-for="quiz in user.quizzes"
-              :key="quiz.id"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-            >
-              <div class="flex-1">
-                <p class="font-medium">{{ quiz.title }}</p>
-                <p class="text-xs text-gray-500">
-                  {{ quiz.num_questions }} questions
-                  <span v-if="quiz.time_limit"> • {{ quiz.time_limit }}m time limit</span>
-                  • Created {{ formatDate(quiz.generation_date) }}
-                </p>
-              </div>
-              <UBadge variant="subtle">
-                {{ quiz.quiz_type }}
-              </UBadge>
-            </div>
-          </div>
-          <div v-else class="text-center py-8">
-            <p class="text-gray-500">No quizzes created</p>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <UButton @click="isOpen = false">Close</UButton>
-        </div>
-      </template>
-    </UCard>
-  </UModal>
-</template>
-
 <script setup lang="ts">
 interface SubscriptionInfo {
   status: string
@@ -153,23 +8,20 @@ interface SubscriptionInfo {
   status_label: string | null
 }
 
-interface QuizSourceInfo {
+interface QuizSource {
   id: string
-  file_name: string
-  upload_date: string
-  start_page: number | null
-  end_page: number | null
+  name: string
+  file_name?: string
+  upload_date?: string
+  start_page?: number
+  end_page?: number
 }
 
-interface QuizInfo {
+interface Quiz {
   id: string
-  source_id: string
   title: string
-  quiz_type: string
-  num_questions: number
-  time_limit: number | null
-  content: any
-  generation_date: string
+  created_at?: string
+  is_published?: boolean
 }
 
 interface UserDetail {
@@ -182,65 +34,224 @@ interface UserDetail {
   quizzes_count: number
   sources_count: number
   subscription: SubscriptionInfo | null
-  quiz_sources: QuizSourceInfo[]
-  quizzes: QuizInfo[]
+  quiz_sources?: QuizSource[]
+  quizzes?: Quiz[]
 }
 
 const props = defineProps<{
-  userId?: string
+  modelValue: boolean
+  userId: string | null
 }>()
 
 const emit = defineEmits<{
-  close: []
+  'update:modelValue': [value: boolean]
 }>()
 
-const isOpen = defineModel<boolean>('modelValue', { default: false })
+const isOpen = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value)
+})
 
-const user = ref<UserDetail | null>(null)
-const loading = ref(false)
-const error = ref<string | null>(null)
+const { data: user, pending, error, execute } = useFetch<UserDetail>(
+  () => props.userId ? `/api/admin/users/${props.userId}` : null,
+  { immediate: false }
+)
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-}
+const deletingSourceId = ref<string | null>(null)
+const deletingQuizId = ref<string | null>(null)
 
-const fetchUserDetails = async () => {
-  if (!props.userId) {
-    console.log('No userId provided')
-    return
-  }
-
-  loading.value = true
-  error.value = null
-
+async function deleteSource(sourceId: string) {
+  if (!confirm('Delete this source and all associated quizzes? This cannot be undone.')) return
   try {
-    console.log('Fetching user details for:', props.userId)
-    const data = await $fetch<UserDetail>(`/api/admin/users/${props.userId}`)
-    console.log('User details fetched:', data)
-    user.value = data
-  } catch (err: any) {
-    console.error('Error fetching user details:', err)
-    error.value = err.data?.message || 'Failed to load user details'
+    deletingSourceId.value = sourceId
+    await $fetch(`/api/admin/quiz-sources/${sourceId}`, { method: 'DELETE' })
+    // refresh user details
+    await execute()
+  } catch (e: any) {
+    console.error('Failed to delete source', e)
+    alert(e?.data?.detail || e?.message || 'Failed to delete source')
   } finally {
-    loading.value = false
+    deletingSourceId.value = null
   }
 }
 
-watch(isOpen, async (newVal) => {
-  console.log('Modal isOpen changed to:', newVal, 'userId:', props.userId)
+async function deleteQuiz(quizId: string) {
+  if (!confirm('Delete this quiz? This cannot be undone.')) return
+  try {
+    deletingQuizId.value = quizId
+    await $fetch(`/api/admin/quizzes/${quizId}`, { method: 'DELETE' })
+    // refresh user details
+    await execute()
+  } catch (e: any) {
+    console.error('Failed to delete quiz', e)
+    alert(e?.data?.detail || e?.message || 'Failed to delete quiz')
+  } finally {
+    deletingQuizId.value = null
+  }
+}
+
+watch(() => isOpen.value, (newVal) => {
   if (newVal && props.userId) {
-    await fetchUserDetails()
+    execute()
   }
 })
 
-watch(() => props.userId, async (newUserId) => {
-  console.log('UserId prop changed to:', newUserId, 'isOpen:', isOpen.value)
-  if (isOpen.value && newUserId) {
-    await fetchUserDetails()
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return 'N/A'
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  } catch {
+    return 'N/A'
   }
-})
+}
 </script>
+
+<template>
+  <UModal 
+  v-model="isOpen" 
+  :prevent-close="pending || deletingSourceId !== null || deletingQuizId !== null" 
+  size="xl">
+    <UCard @click.stop>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">
+            {{ user?.name || 'Customer Details' }}
+          </h2>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-lucide-x"
+            @click="isOpen = false"
+          />
+        </div>
+      </template>
+
+      <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+
+      <!-- Loading State -->
+      <div v-if="pending" class="space-y-4">
+        <USkeleton class="h-8 w-full" />
+        <USkeleton class="h-6 w-3/4" />
+        <USkeleton class="h-6 w-2/3" />
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="text-center py-8">
+        <p class="text-red-500 font-medium">Failed to load customer details</p>
+      </div>
+
+      <!-- Content -->
+      <div v-else-if="user" class="space-y-6">
+        <!-- Customer Info -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Name</p>
+            <p class="text-base font-semibold">{{ user.name || 'Unnamed' }}</p>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Email</p>
+            <p class="text-base font-semibold">{{ user.email }}</p>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Pro Status</p>
+            <UBadge :color="user.is_pro ? 'success' : 'gray'" variant="subtle">
+              {{ user.is_pro ? 'Pro' : 'Free' }}
+            </UBadge>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-500">Joined</p>
+            <p class="text-base font-semibold">{{ formatDate(user.created_at) }}</p>
+          </div>
+        </div>
+
+        <!-- Subscription Info -->
+        <div v-if="user.subscription" class="border-t pt-4">
+          <h3 class="font-semibold mb-3">Subscription</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Status</p>
+              <UBadge variant="subtle">{{ user.subscription.label }}</UBadge>
+            </div>
+            <div v-if="user.subscription.ends_at">
+              <p class="text-sm font-medium text-gray-500">Expires</p>
+              <p class="text-base font-semibold">{{ formatDate(user.subscription.ends_at) }}</p>
+            </div>
+            <div v-if="user.subscription.trial_ends_at">
+              <p class="text-sm font-medium text-gray-500">Trial Ends</p>
+              <p class="text-base font-semibold">{{ formatDate(user.subscription.trial_ends_at) }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Sources -->
+        <div class="border-t pt-4">
+          <div class="flex items-center gap-2 mb-3">
+            <h3 class="font-semibold">Quiz Sources</h3>
+            <UBadge variant="subtle">{{ user.quiz_sources?.length || 0 }}</UBadge>
+          </div>
+          <div v-if="user.quiz_sources?.length" class="space-y-2">
+            <div
+              v-for="source in user.quiz_sources"
+              :key="source.id"
+              class="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 flex items-start justify-between"
+              @click.stop
+            >
+              <div class="flex-1">
+                <p class="font-medium">{{ source.file_name || source.name }}</p>
+                <p class="text-xs text-gray-500 mt-1">
+                  {{ formatDate(source.upload_date) }}
+                  <span v-if="source.start_page || source.end_page">
+                    • Pages {{ source.start_page }}-{{ source.end_page }}
+                  </span>
+                </p>
+              </div>
+              <UButton
+                color="red"
+                variant="ghost"
+                size="sm"
+                icon="i-lucide-trash-2"
+                :loading="deletingSourceId === source.id"
+                @click.stop="deleteSource(source.id)"
+              />
+            </div>
+          </div>
+          <p v-else class="text-gray-500 text-sm">No quiz sources</p>
+        </div>
+
+        <!-- Quizzes -->
+        <div class="border-t pt-4">
+          <div class="flex items-center gap-2 mb-3">
+            <h3 class="font-semibold">Quizzes</h3>
+            <UBadge variant="subtle">{{ user.quizzes?.length || 0 }}</UBadge>
+          </div>
+          <div v-if="user.quizzes?.length" class="space-y-2">
+            <div
+              v-for="quiz in user.quizzes"
+              :key="quiz.id"
+              class="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 flex items-start justify-between"
+              @click.stop
+            >
+              <div class="flex-1">
+                <p class="font-medium">{{ quiz.title }}</p>
+                <p class="text-xs text-gray-500 mt-1">
+                  Created {{ formatDate(quiz.created_at) }}
+                </p>
+              </div>
+              <UButton
+                color="red"
+                variant="ghost"
+                size="sm"
+                icon="i-lucide-trash-2"
+                :loading="deletingQuizId === quiz.id"
+                @click.stop="deleteQuiz(quiz.id)"
+              />
+            </div>
+          </div>
+          <p v-else class="text-gray-500 text-sm">No quizzes</p>
+        </div>
+      </div>
+      </div>
+    </UCard>
+  </UModal>
+</template>

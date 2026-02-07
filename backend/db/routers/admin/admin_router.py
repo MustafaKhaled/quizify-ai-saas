@@ -94,4 +94,31 @@ async def get_user_details(
     return user_data
 
 
+@router.delete("/quiz-sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_quiz_source(
+    source_id: UUID,
+    db: db_dep,
+    _: CurrentAdmin
+):
+    """Delete a quiz source and all associated quizzes"""
+    source = db.query(models.QuizSource).filter(models.QuizSource.id == source_id).first()
+    if not source:
+        raise HTTPException(status_code=404, detail="Quiz source not found")
+    
+    db.delete(source)
+    db.commit()
 
+
+@router.delete("/quizzes/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_quiz(
+    quiz_id: UUID,
+    db: db_dep,
+    _: CurrentAdmin
+):
+    """Delete a quiz"""
+    quiz = db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz not found")
+    
+    db.delete(quiz)
+    db.commit()
