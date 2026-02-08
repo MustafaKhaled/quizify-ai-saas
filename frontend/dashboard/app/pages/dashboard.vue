@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-    <div class="w-full px-4 py-16">
+  <div class="h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-6 py-16">
       <!-- Hero Section -->
       <div class="text-center mb-16">
         <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-4">Welcome to Quizify</h1>
@@ -43,7 +42,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

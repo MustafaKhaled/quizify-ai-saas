@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="w-full px-4 py-12">
+  <div class="h-screen overflow-y-auto bg-gray-50 dark:bg-gray-900 px-6 py-12">
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white">My Quizzes</h1>
@@ -51,7 +50,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

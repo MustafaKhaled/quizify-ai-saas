@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="w-full px-4 py-12">
+  <div class="h-screen overflow-y-auto bg-gray-50 dark:bg-gray-900 px-6 py-12">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Create Quiz</h1>
         <p class="text-gray-600 dark:text-gray-400">Upload a PDF and generate an AI-powered quiz</p>
@@ -109,7 +108,6 @@
           </button>
         </form>
       </div>
-    </div>
   </div>
 </template>
 
@@ -162,7 +160,7 @@ const uploadFile = async (file: File) => {
     const config = useRuntimeConfig()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
-    const response = await $fetch(`${config.public.apiBase}/sources/upload`, {
+    const response = await $fetch(`${config.public.apiBase}/quizzes/create`, {
       method: 'POST',
       body: formDataToSend,
       headers: token ? { 'Authorization': `Bearer ${token}` } : {}
