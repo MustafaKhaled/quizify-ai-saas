@@ -152,6 +152,10 @@ const selectFile = (file: File) => {
 }
 
 const createQuiz = async () => {
+  console.log('🚀 createQuiz called')
+  console.log('Selected file:', selectedFile.value)
+  console.log('Form data:', formData.value)
+
   if (!selectedFile.value) {
     alert('Please select a PDF first')
     return
@@ -168,6 +172,9 @@ const createQuiz = async () => {
     const config = useRuntimeConfig()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
+    console.log('📍 API Base:', config.public.apiBase)
+    console.log('🔑 Token:', token ? 'Present' : 'Missing')
+
     // Send everything in one request: file + form data
     const formDataToSend = new FormData()
     formDataToSend.append('file', selectedFile.value)
@@ -178,17 +185,25 @@ const createQuiz = async () => {
       formDataToSend.append('time_limit', String(formData.value.time_limit))
     }
 
+    console.log('📤 Sending request to:', `${config.public.apiBase}/quizzes/create`)
+
     const quiz = await $fetch(`${config.public.apiBase}/quizzes/create`, {
       method: 'POST',
       body: formDataToSend,
       headers: token ? { 'Authorization': `Bearer ${token}` } : {}
     })
 
+    console.log('✅ Success:', quiz)
     alert('Quiz created successfully!')
     await navigateTo(`/quiz/${quiz.id}`)
   } catch (error: any) {
-    console.error('Quiz creation failed:', error)
-    alert(error?.data?.detail || 'Failed to create quiz')
+    console.error('❌ Quiz creation failed:', error)
+    console.error('Error details:', {
+      message: error.message,
+      data: error.data,
+      statusCode: error.statusCode
+    })
+    alert(error?.data?.detail || error?.message || 'Failed to create quiz')
   } finally {
     isCreating.value = false
   }
