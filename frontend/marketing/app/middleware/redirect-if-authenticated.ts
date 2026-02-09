@@ -27,9 +27,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       }
     })
 
-    // Token is valid, redirect to dashboard
+    // Token is valid, redirect to dashboard with token
     const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-    window.location.href = dashboardUrl
+    window.location.href = `${dashboardUrl}?token=${token}`
 
   } catch (error) {
     // Token is invalid, remove it and allow access to auth pages

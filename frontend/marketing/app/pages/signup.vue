@@ -72,14 +72,14 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     console.log('Register Success:', response)
 
-    // Save the auth token to localStorage
+    // Save the auth token to localStorage (marketing site)
     if (response.access_token) {
       localStorage.setItem('auth_token', response.access_token)
 
-      // Redirect to dashboard website
+      // Redirect to dashboard website with token in URL
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-      window.location.href = dashboardUrl
-    } else {
+      window.location.href = `${dashboardUrl}?token=${response.access_token}`
+    } else{
       // If no token returned, show success message and redirect to login
       toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'green' })
       setTimeout(() => navigateTo('/login'), 2000)
