@@ -204,7 +204,7 @@ const createQuiz = async () => {
 
     console.log('✅ Success:', quiz)
     alert('Quiz created successfully!')
-    await navigateTo(`/quiz/${quiz.id}`)
+    await navigateTo('/quizzes')
   } catch (error: any) {
     console.error('❌ Quiz creation failed:', error)
     console.error('Error details:', {

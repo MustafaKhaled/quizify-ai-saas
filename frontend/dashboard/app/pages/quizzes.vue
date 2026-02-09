@@ -65,12 +65,19 @@ const isLoading = ref(true)
 const loadQuizzes = async () => {
   try {
     isLoading.value = true
-    const { $fetch } = useNuxtApp()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
-    quizzes.value = await $fetch(`${config.public.apiBase}/quizzes/my_quizzes`, {
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    const response = await fetch(`${config.public.apiBase}/quizzes/my_quizzes`, {
+      headers: {
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      }
     })
+
+    if (response.ok) {
+      quizzes.value = await response.json()
+    } else {
+      console.error('Failed to load quizzes:', response.status)
+    }
   } catch (error) {
     console.error('Failed to load quizzes:', error)
   } finally {
@@ -82,15 +89,21 @@ const deleteQuiz = async (quizId: string) => {
   if (!confirm('Are you sure you want to delete this quiz?')) return
 
   try {
-    const { $fetch } = useNuxtApp()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
-    await $fetch(`${config.public.apiBase}/quizzes/${quizId}`, {
+    const response = await fetch(`${config.public.apiBase}/quizzes/${quizId}`, {
       method: 'DELETE',
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      headers: {
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      }
     })
 
-    quizzes.value = quizzes.value.filter(q => q.id !== quizId)
+    if (response.ok) {
+      quizzes.value = quizzes.value.filter(q => q.id !== quizId)
+      alert('Quiz deleted successfully!')
+    } else {
+      alert('Failed to delete quiz')
+    }
   } catch (error) {
     console.error('Failed to delete quiz:', error)
     alert('Failed to delete quiz')
