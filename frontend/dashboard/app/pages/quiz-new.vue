@@ -168,7 +168,6 @@ const createQuiz = async () => {
 
   try {
     isCreating.value = true
-    const { $fetch } = useNuxtApp()
     const config = useRuntimeConfig()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
@@ -187,11 +186,21 @@ const createQuiz = async () => {
 
     console.log('📤 Sending request to:', `${config.public.apiBase}/quizzes/create`)
 
-    const quiz = await $fetch(`${config.public.apiBase}/quizzes/create`, {
+    // Use fetch directly with proper headers
+    const response = await fetch(`${config.public.apiBase}/quizzes/create`, {
       method: 'POST',
       body: formDataToSend,
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      headers: {
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      }
     })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`)
+    }
+
+    const quiz = await response.json()
 
     console.log('✅ Success:', quiz)
     alert('Quiz created successfully!')
