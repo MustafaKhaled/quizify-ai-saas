@@ -96,7 +96,6 @@ definePageMeta({
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const { $fetch } = useNuxtApp()
 
 const quiz = ref<any>(null)
 const isLoading = ref(true)
@@ -155,19 +154,34 @@ const submitQuiz = async () => {
   try {
     isSubmitting.value = true
     const token = getToken()
-    
+
+    // Transform answers from Record<number, number | number[]> to AnswerSubmission[]
+    const answersArray = Object.entries(userAnswers.value).map(([questionIndex, selectedOptions]) => ({
+      question_index: parseInt(questionIndex),
+      selected_options: selectedOptions
+    }))
+
     const submission = {
       quiz_id: route.params.id,
-      answers: userAnswers.value
+      answers: answersArray,
+      time_taken_seconds: null
     }
 
-    const result = await $fetch(`${config.public.apiBase}/quizzes/submit/${route.params.id}`, {
+    const response = await fetch(`${config.public.apiBase}/quizzes/submit/${route.params.id}`, {
       method: 'POST',
-      body: submission,
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      body: JSON.stringify(submission),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      }
     })
 
-    await navigateTo(`/results/${result.id}`)
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const result = await response.json()
+    await navigateTo(`/results/${result.result_id}`)
   } catch (error) {
     console.error('Submit failed:', error)
     alert('Failed to submit quiz')
@@ -179,9 +193,19 @@ const submitQuiz = async () => {
 onMounted(async () => {
   try {
     const token = getToken()
-    quiz.value = await $fetch(`${config.public.apiBase}/quizzes/${route.params.id}`, {
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+    const response = await fetch(`${config.public.apiBase}/quizzes/${route.params.id}`, {
+      headers: {
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      }
     })
+
+    if (response.ok) {
+      const data = await response.json()
+      // Backend returns an array, get the first element
+      quiz.value = Array.isArray(data) ? data[0] : data
+    } else {
+      console.error('Failed to load quiz:', response.status)
+    }
   } catch (error) {
     console.error('Failed to load quiz:', error)
   } finally {

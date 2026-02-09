@@ -117,6 +117,21 @@ async def submit(
     }
 import uuid
 
+@router.get("/my_results")
+async def get_my_results(
+    db: db_dep,
+    currentUser: CurrentUser
+):
+    """Get all quiz results for the current user"""
+    results = (
+        db.query(QuizResult)
+        .filter(QuizResult.user_id == currentUser.id)
+        .order_by(QuizResult.attempt_date.desc())
+        .all()
+    )
+
+    return results
+
 @router.get("/results/{quiz_id}") # Removed response_model=list[QuizResult] to avoid recursion
 async def get_quiz_results(
     quiz_id: uuid.UUID,
@@ -134,7 +149,7 @@ async def get_quiz_results(
     )
 
     if not results:
-        # It's better to return an empty list than a 404 
+        # It's better to return an empty list than a 404
         # so the frontend knows the user just hasn't attempted it yet.
         return []
 
