@@ -2,12 +2,16 @@
   <UDashboardPanel grow>
     <UDashboardPanelContent class="p-6 overflow-y-auto">
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Create Quiz</h1>
-        <p class="text-gray-600 dark:text-gray-400">Upload a PDF and generate an AI-powered quiz</p>
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          {{ mode === 'focused' ? '🎯 Practice Weak Areas' : mode === 'full' ? '🔄 Retake Full Quiz' : 'Create Quiz' }}
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+          {{ mode === 'focused' ? `Generate a quiz focused on: ${focusTopics.join(', ')}` : mode === 'full' ? 'Retake the full quiz with new questions' : 'Upload a PDF and generate an AI-powered quiz' }}
+        </p>
       </div>
 
-      <!-- Upload Section -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+      <!-- Upload Section (only for normal mode) -->
+      <div v-if="mode === 'normal'" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload PDF</h2>
         
         <div
@@ -102,10 +106,10 @@
           <!-- Submit Button -->
           <button
             type="submit"
-            :disabled="isCreating || !selectedFile"
+            :disabled="isCreating || (mode === 'normal' && !selectedFile)"
             class="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
-            {{ isCreating ? 'Creating Quiz...' : 'Create Quiz' }}
+            {{ isCreating ? 'Creating Quiz...' : mode === 'focused' ? 'Generate Practice Quiz' : mode === 'full' ? 'Generate New Quiz' : 'Create Quiz' }}
           </button>
         </form>
       </div>
@@ -118,10 +122,16 @@ definePageMeta({
   layout: 'default'
 })
 
+const route = useRoute()
 const fileInput = ref<HTMLInputElement>()
 const isDragover = ref(false)
 const isCreating = ref(false)
 const selectedFile = ref<File | null>(null)
+
+// Support for focused quiz mode
+const mode = ref<'normal' | 'focused' | 'full'>('normal')
+const focusTopics = ref<string[]>([])
+const sourceId = ref<string | null>(null)
 
 const formData = ref({
   quiz_name: '',
@@ -153,12 +163,28 @@ const selectFile = (file: File) => {
   selectedFile.value = file
 }
 
+onMounted(() => {
+  // Check if we're in focused or full retake mode
+  if (route.query.focus_topics) {
+    focusTopics.value = (route.query.focus_topics as string).split(',')
+    mode.value = 'focused'
+    sourceId.value = route.query.source_id as string
+    formData.value.quiz_name = `Practice: ${focusTopics.value.slice(0, 2).join(', ')}`
+  } else if (route.query.mode === 'full' && route.query.source_id) {
+    mode.value = 'full'
+    sourceId.value = route.query.source_id as string
+    formData.value.quiz_name = 'Full Quiz Retake'
+  }
+})
+
 const createQuiz = async () => {
   console.log('🚀 createQuiz called')
   console.log('Selected file:', selectedFile.value)
   console.log('Form data:', formData.value)
+  console.log('Mode:', mode.value)
 
-  if (!selectedFile.value) {
+  // For normal mode, file is required
+  if (mode.value === 'normal' && !selectedFile.value) {
     alert('Please select a PDF first')
     return
   }
@@ -176,9 +202,25 @@ const createQuiz = async () => {
     console.log('📍 API Base:', config.public.apiBase)
     console.log('🔑 Token:', token ? 'Present' : 'Missing')
 
-    // Send everything in one request: file + form data
+    // Determine endpoint and prepare data based on mode
+    const endpoint = mode.value === 'focused'
+      ? '/quizzes/create-focused'
+      : '/quizzes/create'
+
     const formDataToSend = new FormData()
-    formDataToSend.append('file', selectedFile.value)
+
+    if (mode.value === 'focused') {
+      // Focused quiz: use existing source with specific topics
+      formDataToSend.append('source_id', sourceId.value!)
+      formDataToSend.append('focus_topics', focusTopics.value.join(','))
+    } else if (mode.value === 'full') {
+      // Full retake: use existing source
+      formDataToSend.append('source_id', sourceId.value!)
+    } else {
+      // Normal mode: upload new file
+      formDataToSend.append('file', selectedFile.value!)
+    }
+
     formDataToSend.append('quiz_name', formData.value.quiz_name)
     formDataToSend.append('quiz_type', formData.value.quiz_type)
     formDataToSend.append('num_questions', String(formData.value.num_questions))
@@ -186,10 +228,10 @@ const createQuiz = async () => {
       formDataToSend.append('time_limit', String(formData.value.time_limit))
     }
 
-    console.log('📤 Sending request to:', `${config.public.apiBase}/quizzes/create`)
+    console.log('📤 Sending request to:', `${config.public.apiBase}${endpoint}`)
 
     // Use fetch directly with proper headers
-    const response = await fetch(`${config.public.apiBase}/quizzes/create`, {
+    const response = await fetch(`${config.public.apiBase}${endpoint}`, {
       method: 'POST',
       body: formDataToSend,
       headers: {

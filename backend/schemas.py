@@ -72,6 +72,7 @@ class QuizResponse(BaseModel):
     num_questions: Optional[int]
     time_limit: Optional[int]
     content: dict  # The JSON questions
+    topics: Optional[dict] = None  # Topics identified from PDF
     generation_date: datetime
 
     class Config:

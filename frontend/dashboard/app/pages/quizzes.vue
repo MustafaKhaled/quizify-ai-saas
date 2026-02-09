@@ -31,7 +31,7 @@
           v-for="quiz of quizzes"
           :key="quiz.id"
           class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer"
-          @click="navigateTo(`/quiz/${quiz.id}`)"
+          @click="handleQuizClick(quiz.id)"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h3>
 
@@ -39,6 +39,9 @@
             <p>📝 {{ quiz.num_questions }} questions</p>
             <p v-if="quiz.time_limit">⏱️ {{ quiz.time_limit }} minutes</p>
             <p>{{ quiz.quiz_type === 'single_choice' ? '✓ Multiple Choice' : '✓✓ Multiple Select' }}</p>
+            <p v-if="quiz.lastResult" class="text-blue-600 dark:text-blue-400 font-medium">
+              ✓ Completed - {{ Math.round(quiz.lastResult.score_percentage) }}%
+            </p>
           </div>
 
           <div class="flex gap-2">
@@ -76,7 +79,33 @@ const loadQuizzes = async () => {
     })
 
     if (response.ok) {
-      quizzes.value = await response.json()
+      const quizData = await response.json()
+
+      // Fetch results for each quiz to check if completed
+      const quizzesWithResults = await Promise.all(
+        quizData.map(async (quiz: any) => {
+          try {
+            const resultsResponse = await fetch(`${config.public.apiBase}/quizzes/results/${quiz.id}`, {
+              headers: {
+                ...(token && { 'Authorization': `Bearer ${token}` })
+              }
+            })
+
+            if (resultsResponse.ok) {
+              const results = await resultsResponse.json()
+              return {
+                ...quiz,
+                lastResult: results.length > 0 ? results[0] : null
+              }
+            }
+          } catch (error) {
+            console.error(`Failed to load results for quiz ${quiz.id}:`, error)
+          }
+          return quiz
+        })
+      )
+
+      quizzes.value = quizzesWithResults
     } else {
       console.error('Failed to load quizzes:', response.status)
     }
@@ -84,6 +113,17 @@ const loadQuizzes = async () => {
     console.error('Failed to load quizzes:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const handleQuizClick = async (quizId: string) => {
+  const quiz = quizzes.value.find(q => q.id === quizId)
+
+  // If quiz has been completed, show results. Otherwise, take the quiz
+  if (quiz?.lastResult) {
+    await navigateTo(`/results/${quiz.lastResult.id}`)
+  } else {
+    await navigateTo(`/quiz/${quizId}`)
   }
 }
 

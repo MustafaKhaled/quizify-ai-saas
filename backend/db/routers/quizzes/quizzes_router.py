@@ -132,6 +132,57 @@ async def get_my_results(
 
     return results
 
+@router.get("/performance/by-topic")
+async def get_performance_by_topic(
+    db: db_dep,
+    currentUser: CurrentUser
+):
+    """Analyze user's performance across all topics"""
+    results = (
+        db.query(QuizResult)
+        .join(Quiz)
+        .filter(QuizResult.user_id == currentUser.id)
+        .all()
+    )
+
+    topic_stats = {}
+
+    for result in results:
+        quiz = result.quiz
+        if not quiz.content.get("questions"):
+            continue
+
+        for answer in result.user_answers:
+            topic = answer.get("topic", "Unknown")
+
+            if topic not in topic_stats:
+                topic_stats[topic] = {
+                    "total": 0,
+                    "correct": 0,
+                    "accuracy": 0
+                }
+
+            topic_stats[topic]["total"] += 1
+            if answer.get("is_correct"):
+                topic_stats[topic]["correct"] += 1
+
+    # Calculate accuracy percentages
+    for topic, stats in topic_stats.items():
+        if stats["total"] > 0:
+            stats["accuracy"] = round((stats["correct"] / stats["total"]) * 100, 2)
+
+    # Identify weak topics (below 70% accuracy)
+    weak_topics = [
+        {"topic": topic, **stats}
+        for topic, stats in topic_stats.items()
+        if stats["accuracy"] < 70.0 and stats["total"] >= 3  # At least 3 questions
+    ]
+
+    return {
+        "all_topics": topic_stats,
+        "weak_topics": sorted(weak_topics, key=lambda x: x["accuracy"])
+    }
+
 @router.get("/results/{quiz_id}") # Removed response_model=list[QuizResult] to avoid recursion
 async def get_quiz_results(
     quiz_id: uuid.UUID,
@@ -169,11 +220,16 @@ async def get_result_review(
     if not result:
         raise HTTPException(status_code=404, detail="Result not found")
 
-    # We return the stored breakdown from the database
+    # We return the stored breakdown from the database plus quiz info for navigation
     return {
         "score": result.score_percentage,
         "date": result.attempt_date,
-        "breakdown": result.user_answers  # This is the JSONB we saved earlier
+        "breakdown": result.user_answers,  # This is the JSONB we saved earlier
+        "quiz": {
+            "id": result.quiz.id,
+            "source_id": result.quiz.source_id,
+            "title": result.quiz.title
+        }
     }
 
 def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list):
@@ -208,6 +264,7 @@ def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list)
 
         detailed_results.append({
             "question_index": i,
+            "topic": q.get("topic", "Unknown"),
             "is_correct": is_correct,
             "user_choice": user_choice,
             "correct_answer": q.get("correct_option_indices") if quiz_type == "multiple_select" else q.get("correct_option_index"),

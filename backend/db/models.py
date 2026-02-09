@@ -84,6 +84,7 @@ class Quiz(Base):
     
     num_questions = Column(Integer, nullable=False)
     content = Column(JSONB, nullable=False) # Stores the Gemini output
+    topics = Column(JSONB, nullable=True) # Stores identified topics from PDF
     generation_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 
     source = relationship("QuizSource", back_populates="quizzes")

@@ -141,17 +141,41 @@ async def create_quiz_from_file(
         # Prompt includes specific instruction for better results
         prompt = f"""
 Return ONLY valid JSON. Do NOT use markdown or conversational text.
-Your goal is to generate educational quiz questions based on the provided text.
-CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text. 
-If the text is in Spanish, the JSON output must be in Spanish. 
+
+STEP 1: Analyze the provided text and identify:
+- The primary subject (e.g., "Biology", "Mathematics", "History")
+- 3-5 main topics covered in the text (e.g., "Cell Structure", "Photosynthesis")
+
+STEP 2: Generate exactly {num_questions} educational quiz questions.
+- Each question MUST be tagged with its most relevant topic
+- Distribute questions evenly across the identified topics
+- Use the quiz type {quiz_type}
+
+CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text.
+If the text is in Spanish, the JSON output must be in Spanish.
 If the text is in Arabic, the JSON output must be in Arabic.
 
-Generate exactly {num_questions} for the quiz type {quiz_type}, with format {format_instruction} using the text below:
+Required JSON format:
+{{
+  "primary_subject": "string",
+  "topics": ["topic1", "topic2", "topic3"],
+  "questions": [
+    {{
+      "question_text": "Question here",
+      "topic": "topic1",
+      "options": ["A", "B", "C", "D"],
+      {"\"correct_option_index\": 0" if quiz_type == "single_choice" else "\"correct_option_indices\": [0, 2]"},
+      "explanation": "Why"
+    }}
+  ]
+}}
+
+Text to analyze:
 ---
 {extracted_text}
 ---
 
-CRITICAL INSTRUCTION: 
+CRITICAL INSTRUCTION:
         If quiz_type is 'multiple_select', you must provide 'correct_option_indices' as a LIST of integers.
         If quiz_type is 'single_choice', you must provide 'correct_option_index' as a single INTEGER.
 
@@ -175,6 +199,10 @@ CRITICAL INSTRUCTION:
             num_questions=len(quiz_content.get("questions", [])),
             time_limit=time_limit,
             content=quiz_content,
+            topics={
+                "primary_subject": quiz_content.get("primary_subject", "Unknown"),
+                "topics": quiz_content.get("topics", [])
+            },
             generation_date=datetime.utcnow()
         )
 
@@ -188,7 +216,105 @@ CRITICAL INSTRUCTION:
         # Logging here would be helpful: logger.error(f"AI/DB Error: {e}")
         raise HTTPException(500, f"Error generating or saving quiz: {str(e)}")
 
-    
+@router.post("/create-focused", response_model=QuizResponse)
+async def create_focused_quiz(
+    db: db_dep,
+    currentUser: CurrentUser,
+    source_id: uuid.UUID = Form(...),
+    focus_topics: str = Form(...),  # Comma-separated list
+    quiz_type: Optional[str] = Form("single_choice"),
+    quiz_name: str | None = Form(None),
+    num_questions: int = Form(10),
+    time_limit: int | None = Form(None)
+):
+    """Generate a quiz focused on specific topics from an existing source"""
+
+    # Get the source
+    source = db.query(QuizSource).filter(
+        QuizSource.id == source_id,
+        QuizSource.user_id == currentUser.id
+    ).first()
+
+    if not source:
+        raise HTTPException(404, "Source not found")
+
+    # Parse focus topics
+    topics_list = [t.strip() for t in focus_topics.split(",")]
+
+    # Enhanced prompt for focused quiz
+    prompt = f"""
+Return ONLY valid JSON. Do NOT use markdown or conversational text.
+
+Generate exactly {num_questions} quiz questions focused ONLY on these specific topics:
+{', '.join(topics_list)}
+
+You MUST:
+- Generate questions ONLY about these topics
+- Distribute questions evenly across the listed topics
+- Tag each question with its topic
+- Use quiz type: {quiz_type}
+
+CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text.
+
+Required JSON format:
+{{
+  "primary_subject": "string",
+  "topics": {topics_list},
+  "questions": [
+    {{
+      "question_text": "Question here",
+      "topic": "one of the focus topics",
+      "options": ["A", "B", "C", "D"],
+      {"\"correct_option_index\": 0" if quiz_type == "single_choice" else "\"correct_option_indices\": [0, 2]"},
+      "explanation": "Why"
+    }}
+  ]
+}}
+
+Text to use:
+---
+{source.extracted_text}
+---
+
+CRITICAL INSTRUCTION:
+        If quiz_type is 'multiple_select', you must provide 'correct_option_indices' as a LIST of integers.
+        If quiz_type is 'single_choice', you must provide 'correct_option_index' as a single INTEGER.
+"""
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        quiz_content = extract_json_from_llm(response.text)
+
+        new_quiz = Quiz(
+            id=uuid.uuid4(),
+            user_id=currentUser.id,
+            source_id=source_id,
+            quiz_type=quiz_type,
+            title=quiz_name or f"Focused Quiz - {', '.join(topics_list[:2])}",
+            num_questions=len(quiz_content.get("questions", [])),
+            time_limit=time_limit,
+            content=quiz_content,
+            topics={
+                "primary_subject": quiz_content.get("primary_subject", "Unknown"),
+                "topics": quiz_content.get("topics", [])
+            },
+            generation_date=datetime.utcnow()
+        )
+
+        db.add(new_quiz)
+        db.commit()
+        db.refresh(new_quiz)
+        return new_quiz
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, f"Error generating focused quiz: {str(e)}")
+
+
 
 @router.get("/sources")
 async def get_quiz_sources(
