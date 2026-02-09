@@ -1,5 +1,6 @@
 <template>
-  <div class="h-screen overflow-y-auto bg-gray-50 dark:bg-gray-900 px-6 py-12">
+  <UDashboardPanel grow>
+    <UDashboardPanelContent class="p-6 overflow-y-auto">
       <div class="flex items-center justify-between mb-8">
         <div>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white">My Quizzes</h1>
@@ -33,7 +34,7 @@
           @click="navigateTo(`/quiz/${quiz.id}`)"
         >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h3>
-          
+
           <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
             <p>📝 {{ quiz.num_questions }} questions</p>
             <p v-if="quiz.time_limit">⏱️ {{ quiz.time_limit }} minutes</p>
@@ -50,7 +51,8 @@
           </div>
         </div>
       </div>
-  </div>
+    </UDashboardPanelContent>
+  </UDashboardPanel>
 </template>
 
 <script setup lang="ts">

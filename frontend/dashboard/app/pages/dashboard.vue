@@ -1,5 +1,6 @@
 <template>
-  <div class="h-screen overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 px-6 py-16">
+  <UDashboardPanel grow>
+    <UDashboardPanelContent class="p-6 overflow-y-auto">
       <!-- Hero Section -->
       <div class="text-center mb-16">
         <h1 class="text-5xl font-bold text-gray-900 dark:text-white mb-4">Welcome to Quizify</h1>
@@ -12,7 +13,7 @@
       </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
           <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Total Quizzes</p>
           <p class="text-4xl font-bold text-gray-900 dark:text-white">{{ stats.totalQuizzes }}</p>
@@ -24,7 +25,7 @@
       </div>
 
       <!-- Recent Quizzes -->
-      <div v-if="recentQuizzes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-6xl mx-auto">
+      <div v-if="recentQuizzes.length > 0" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Recent Quizzes</h2>
         <div class="space-y-3">
           <div
@@ -38,7 +39,8 @@
           </div>
         </div>
       </div>
-  </div>
+    </UDashboardPanelContent>
+  </UDashboardPanel>
 </template>
 
 <script setup lang="ts">

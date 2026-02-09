@@ -1,5 +1,6 @@
 <template>
-  <div class="h-screen overflow-y-auto bg-gray-50 dark:bg-gray-900 px-6 py-12">
+  <UDashboardPanel grow>
+    <UDashboardPanelContent class="p-6 overflow-y-auto">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">Create Quiz</h1>
         <p class="text-gray-600 dark:text-gray-400">Upload a PDF and generate an AI-powered quiz</p>
@@ -108,7 +109,8 @@
           </button>
         </form>
       </div>
-  </div>
+    </UDashboardPanelContent>
+  </UDashboardPanel>
 </template>
 
 <script setup lang="ts">

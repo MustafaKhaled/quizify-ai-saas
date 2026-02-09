@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-4xl mx-auto px-4 py-12">
+  <UDashboardPanel grow>
+    <UDashboardPanelContent class="p-6 overflow-y-auto">
       <!-- Quiz Header -->
       <div v-if="quiz" class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h1>
@@ -85,8 +85,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </UDashboardPanelContent>
+  </UDashboardPanel>
 </template>
 
 <script setup lang="ts">

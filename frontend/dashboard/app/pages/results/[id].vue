@@ -1,6 +1,6 @@
 <template>
-  <div class="h-screen overflow-y-auto bg-gray-50 dark:bg-gray-900 px-6 py-12">
-    <div class="max-w-4xl mx-auto">
+  <UDashboardPanel grow>
+    <UDashboardPanelContent class="p-6 max-w-4xl mx-auto overflow-y-auto">
       <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -98,8 +98,8 @@
           </button>
         </NuxtLink>
       </div>
-    </div>
-  </div>
+    </UDashboardPanelContent>
+  </UDashboardPanel>
 </template>
 
 <script setup lang="ts">
