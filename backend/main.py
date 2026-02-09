@@ -30,6 +30,7 @@ app.include_router(subscription_router)
 
 
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+dashboard_url = os.getenv("DASHBOARD_URL", "http://localhost:3001")
 backend_url = os.getenv("BACKEND_URL", "http://localhost:8000")
 secret_key = os.getenv("CLIENT_SECRET")
 session_secret_key=os.getenv("SESSION_SECRET_KEY")
@@ -44,6 +45,7 @@ def read_root():
 
 origins = [
     frontend_url,
+    dashboard_url,
     backend_url
 ]
 
