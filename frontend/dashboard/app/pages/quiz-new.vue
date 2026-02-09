@@ -32,15 +32,15 @@
           />
           <button
             @click="fileInput?.click()"
-            :disabled="isUploading"
+            :disabled="isCreating"
             class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            {{ isUploading ? 'Uploading...' : 'Choose PDF' }}
+            Choose PDF
           </button>
         </div>
 
-        <div v-if="uploadedSource" class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <p class="text-green-800 dark:text-green-200">✓ {{ uploadedSource.file_name }} uploaded successfully</p>
+        <div v-if="selectedFile" class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <p class="text-green-800 dark:text-green-200">✓ {{ selectedFile.name }} selected</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@
           <!-- Submit Button -->
           <button
             type="submit"
-            :disabled="isCreating || !uploadedSource"
+            :disabled="isCreating || !selectedFile"
             class="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {{ isCreating ? 'Creating Quiz...' : 'Create Quiz' }}
@@ -118,67 +118,42 @@ definePageMeta({
 
 const fileInput = ref<HTMLInputElement>()
 const isDragover = ref(false)
-const isUploading = ref(false)
 const isCreating = ref(false)
-const uploadedSource = ref<any>(null)
+const selectedFile = ref<File | null>(null)
 
 const formData = ref({
-  source_id: '',
   quiz_name: '',
   quiz_type: 'single_choice',
   num_questions: 10,
   time_limit: null as number | null
 })
 
-const handleFileDrop = async (e: DragEvent) => {
+const handleFileDrop = (e: DragEvent) => {
   isDragover.value = false
   const files = e.dataTransfer?.files
   if (files?.length) {
-    await uploadFile(files[0])
+    selectFile(files[0])
   }
 }
 
-const handleFileSelect = async (e: Event) => {
+const handleFileSelect = (e: Event) => {
   const files = (e.target as HTMLInputElement).files
   if (files?.length) {
-    await uploadFile(files[0])
+    selectFile(files[0])
   }
 }
 
-const uploadFile = async (file: File) => {
+const selectFile = (file: File) => {
   if (!file.type.includes('pdf')) {
     alert('Please upload a PDF file')
     return
   }
-
-  try {
-    isUploading.value = true
-    const formDataToSend = new FormData()
-    formDataToSend.append('file', file)
-    
-    const { $fetch } = useNuxtApp()
-    const config = useRuntimeConfig()
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
-    const response = await $fetch(`${config.public.apiBase}/quizzes/create`, {
-      method: 'POST',
-      body: formDataToSend,
-      headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-    })
-
-    uploadedSource.value = response
-    formData.value.source_id = response.id
-  } catch (error) {
-    console.error('Upload failed:', error)
-    alert('Failed to upload PDF')
-  } finally {
-    isUploading.value = false
-  }
+  selectedFile.value = file
 }
 
 const createQuiz = async () => {
-  if (!formData.value.source_id) {
-    alert('Please upload a PDF first')
+  if (!selectedFile.value) {
+    alert('Please select a PDF first')
     return
   }
 
@@ -193,8 +168,9 @@ const createQuiz = async () => {
     const config = useRuntimeConfig()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
 
+    // Send everything in one request: file + form data
     const formDataToSend = new FormData()
-    formDataToSend.append('source_id', formData.value.source_id)
+    formDataToSend.append('file', selectedFile.value)
     formDataToSend.append('quiz_name', formData.value.quiz_name)
     formDataToSend.append('quiz_type', formData.value.quiz_type)
     formDataToSend.append('num_questions', String(formData.value.num_questions))
