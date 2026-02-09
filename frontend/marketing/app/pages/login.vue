@@ -12,6 +12,7 @@ useSeoMeta({
 })
 
 const toast = useToast()
+const config = useRuntimeConfig()
 
 const fields = [{
   name: 'email',
@@ -68,8 +69,16 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     })
 
     console.log('Login Success:', response)
-    await navigateTo('/dashboard')
-    
+
+    // Save the auth token to localStorage
+    if (response.access_token) {
+      localStorage.setItem('auth_token', response.access_token)
+
+      // Redirect to dashboard website
+      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
+      window.location.href = dashboardUrl
+    }
+
   } catch (error: any) {
     console.error('Login Failed:', error.data)
     const toast = useToast()

@@ -51,7 +51,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL,
+      marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'http://localhost:3000'
     },
   },
   future: { compatibilityVersion: 4 }

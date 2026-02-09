@@ -71,10 +71,22 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     })
 
     console.log('Register Success:', response)
-    
+
+    // Save the auth token to localStorage
+    if (response.access_token) {
+      localStorage.setItem('auth_token', response.access_token)
+
+      // Redirect to dashboard website
+      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
+      window.location.href = dashboardUrl
+    } else {
+      // If no token returned, show success message and redirect to login
+      toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'green' })
+      setTimeout(() => navigateTo('/login'), 2000)
+    }
+
   } catch (error) {
-    toast.add({ title: 'Error', description: 'Failed to create account', type: 'error' })
-    
+    toast.add({ title: 'Error', description: 'Failed to create account', color: 'red' })
   }
 }
 </script>

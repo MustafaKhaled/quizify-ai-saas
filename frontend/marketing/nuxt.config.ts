@@ -40,7 +40,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL,
+      dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001'
     }
   }
 })
