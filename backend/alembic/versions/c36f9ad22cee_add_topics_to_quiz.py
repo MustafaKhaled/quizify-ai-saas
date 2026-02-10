@@ -21,9 +21,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # This adds the missing column to the 'quizzes' table
-    op.add_column('quizzes', sa.Column('topics', postgresql.JSONB(astext_type=sa.Text()), nullable=True))
+    # No-op: topics column already added in 0f991b56a029
+    pass
 
 def downgrade() -> None:
-    # This removes it if you ever need to roll back
-    op.drop_column('quizzes', 'topics')
+    # No-op: topics column removed in 0f991b56a029 downgrade
+    pass
