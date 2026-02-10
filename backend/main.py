@@ -1,15 +1,12 @@
 #main.py
 import os
-from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 from typing import Annotated
 from db.dependency import get_db
-from db.database import engine
 from db.routers.users.users_router import router as user_router
 from db.routers.auth.auth_router import router as auth_router
 from db.routers.admin.admin_router import router as admin_router
@@ -21,19 +18,8 @@ from starlette.middleware.sessions import SessionMiddleware
 
 DBSession = Annotated[Session, Depends(get_db)]
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Ensure the topics column exists (fixes Railway where alembic stamp skipped it)
-    with engine.connect() as conn:
-        conn.execute(text(
-            "ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS topics JSONB"
-        ))
-        conn.commit()
-        print("Startup: ensured 'topics' column exists on quizzes table")
-    yield
-
 # The FastAPI application instance
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 app.include_router(user_router)
 app.include_router(auth_router)
