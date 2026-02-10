@@ -9,6 +9,8 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -19,12 +21,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
-    # Add topics column to quizzes table
-    op.add_column('quizzes', sa.Column('topics', JSONB, nullable=True))
-
+    # This adds the missing column to the 'quizzes' table
+    op.add_column('quizzes', sa.Column('topics', postgresql.JSONB(astext_type=sa.Text()), nullable=True))
 
 def downgrade() -> None:
-    """Downgrade schema."""
-    # Remove topics column from quizzes table
+    # This removes it if you ever need to roll back
     op.drop_column('quizzes', 'topics')
