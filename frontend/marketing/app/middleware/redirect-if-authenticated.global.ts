@@ -4,18 +4,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return
   }
 
-  // Pages that should redirect if user is already authenticated
-  const authPages = ['/', '/login', '/signup']
-
-  if (!authPages.includes(to.path)) {
-    return
-  }
-
   // Check for auth token
   const token = localStorage.getItem('auth_token')
 
   if (!token) {
-    return // No token, allow access
+    return // No token, allow access to marketing site
   }
 
   // Validate token with API
@@ -27,12 +20,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       }
     })
 
-    // Token is valid, redirect to dashboard with token
+    // Token is valid, redirect to dashboard
     const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
     window.location.href = `${dashboardUrl}?token=${token}`
 
   } catch (error) {
-    // Token is invalid, remove it and allow access to auth pages
+    // Token is invalid, remove it and allow access to marketing site
     localStorage.removeItem('auth_token')
   }
 })
