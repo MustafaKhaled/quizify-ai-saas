@@ -4,7 +4,12 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return
   }
 
-  // If a token exists, redirect to the dashboard immediately
+  // Only redirect away from login/signup if already authenticated
+  const authOnlyPages = ['/login', '/signup']
+  if (!authOnlyPages.includes(to.path)) {
+    return
+  }
+
   const token = localStorage.getItem('auth_token')
   if (!token) {
     return
