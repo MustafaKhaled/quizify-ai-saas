@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <NuxtLink to="/dashboard" class="flex items-center gap-2 px-2 py-1.5 min-w-0">
-    <AppLogo class="h-6 w-auto shrink-0" :class="collapsed ? 'mx-auto' : ''" />
+  <NuxtLink to="/dashboard" class="flex items-center px-2 py-1.5 min-w-0">
+    <AppLogo :collapsed="collapsed" />
   </NuxtLink>
 </template>
