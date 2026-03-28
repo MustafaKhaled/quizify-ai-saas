@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
-
 defineProps<{
   collapsed?: boolean
 }>()
 
 const config = useRuntimeConfig()
-
 const user = ref({ name: '', email: '' })
 
 onMounted(async () => {
@@ -20,43 +17,41 @@ onMounted(async () => {
   } catch {}
 })
 
-function logout() {
-  localStorage.removeItem('auth_token')
+async function logout() {
+  const token = localStorage.getItem('auth_token')
+  if (token) {
+    try {
+      await $fetch(`${config.public.apiBase}/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+    } catch {}
+    localStorage.removeItem('auth_token')
+  }
   const marketingUrl = config.public.marketingUrl || 'http://localhost:3000'
   window.location.href = `${marketingUrl}/login`
 }
-
-const items = computed<DropdownMenuItem[][]>(() => [[{
-  type: 'label',
-  label: user.value.name || 'Loading...',
-  description: user.value.email
-}], [{
-  label: 'Log out',
-  icon: 'i-lucide-log-out',
-  color: 'error' as const,
-  onSelect: logout
-}]])
 </script>
 
 <template>
-  <UDropdownMenu
-    :items="items"
-    :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-  >
-    <UButton
-      :label="collapsed ? undefined : (user.name || 'Loading...')"
-      :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
-      color="neutral"
-      variant="ghost"
-      block
-      :square="collapsed"
-      class="data-[state=open]:bg-elevated"
-      :ui="{ trailingIcon: 'text-dimmed' }"
-    >
-      <template #leading>
-        <UAvatar :alt="user.name" size="xs" />
-      </template>
-    </UButton>
-  </UDropdownMenu>
+  <div class="flex items-center gap-2 px-1 py-1 w-full">
+    <UAvatar :alt="user.name" size="xs" class="shrink-0" />
+
+    <div v-if="!collapsed" class="flex-1 min-w-0">
+      <p class="text-sm font-medium text-highlighted truncate">{{ user.name || 'Loading...' }}</p>
+      <p class="text-xs text-dimmed truncate">{{ user.email }}</p>
+    </div>
+
+    <UTooltip :text="'Log out'" :delay="300">
+      <UButton
+        icon="i-lucide-log-out"
+        color="error"
+        variant="ghost"
+        size="xs"
+        square
+        class="shrink-0"
+        @click="logout"
+      />
+    </UTooltip>
+  </div>
 </template>
