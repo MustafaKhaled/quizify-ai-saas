@@ -63,67 +63,61 @@ features:
       description: Fully responsive and optimized for mobile devices, so you can squeeze in a quick practice session while on the go.
       icon: i-lucide-smartphone
 testimonials:
-  headline: Trusted by Developers
-  title: Join Thousands Building with Nuxt UI
-  description: See why developers choose Nuxt UI to ship their SaaS applications faster and with more confidence.
+  headline: Trusted by Students
+  title: Join Thousands preparing their exams with Quizify AI
+  description: See why students across the country are choosing Quizify AI to supercharge their exam prep with intelligent PDF analysis and personalized practice tools.
   items:
-    - quote: Nuxt UI transformed how we build. The component quality is exceptional - everything just works with perfect TypeScript support, accessibility, and dark mode built in.
+    - quote: I uploaded my entire semester's worth of lecture notes and had a full practice exam ready in under a minute. I passed my finals with the highest grade in my class.
       user:
-        name: Sarah Chen
-        description: CTO at TechScale Solutions
+        name: Aisha Patel
+        description: Medical Student, University of Toronto
         avatar:
           src: https://i.pravatar.cc/120?img=1
-    - quote: We shipped our MVP in 2 weeks instead of 2 months. The authentication flows and form components saved us countless hours of development time.
+    - quote: The timed quiz mode is a game changer. I used to freeze up during exams but after practicing with Quizify's timer I felt completely in control on test day.
       user:
-        name: Marcus Rodriguez
-        description: VP of Engineering at DataFlow
+        name: Carlos Mendez
+        description: Law Student, NYU
         avatar:
           src: https://i.pravatar.cc/120?img=7
-    - quote: The design system with AppConfig is brilliant. We maintain brand consistency across all our products while leveraging the full component library.
+    - quote: I tried other AI quiz tools but they kept generating wrong answers. Quizify's questions are spot-on for my engineering curriculum. I trust it completely.
       user:
-        name: David Kumar
-        description: Security Director at SecureStack
+        name: Lena Fischer
+        description: Engineering Student, TU Munich
         avatar:
           src: https://i.pravatar.cc/120?img=3
-    - quote: Perfect Lighthouse scores out of the box. Our Core Web Vitals improved dramatically just by switching to Nuxt UI components.
+    - quote: The score reports showed me exactly which chapters I was weak on. I stopped wasting time re-reading everything and focused on what actually mattered.
       user:
-        name: Emily Zhang
-        description: Lead Architect at ScaleForce
+        name: Jordan Williams
+        description: Pre-Med Student, UCLA
         avatar:
           src: https://i.pravatar.cc/120?img=5
-    - quote: The Tailwind Variants system makes customization so intuitive. We can override any component style while keeping the functionality intact.
+    - quote: As someone who studies on the go, being able to take practice quizzes on my phone between classes has been incredibly convenient. My GPA went up a full point.
       user:
-        name: James Wilson
-        description: DevOps Lead at CloudPro
+        name: Yuki Tanaka
+        description: Business Student, Waseda University
         avatar:
           src: https://i.pravatar.cc/120?img=8
-    - quote: From the SaaS template to production in days. The pre-built layouts, navigation, and content structure accelerated our launch.
+    - quote: I was skeptical at first but Quizify generated questions that were almost identical to what appeared on my actual exam. It's like having a crystal ball for studying.
       user:
-        name: Lisa Patel
-        description: CEO at AutoScale
+        name: Fatima Al-Hassan
+        description: Pharmacy Student, King's College London
         avatar:
           src: https://i.pravatar.cc/120?img=9
-    - quote: Reka UI foundation means accessibility is never an afterthought. We achieved WCAG compliance without any custom work.
+    - quote: My study group all uses Quizify now. We upload the same PDF and race each other on the quizzes. Studying has never been this fun or effective.
       user:
-        name: Michael Torres
-        description: Frontend Lead at AccessFirst
+        name: Noah Andersen
+        description: Computer Science Student, DTU
         avatar:
           src: https://i.pravatar.cc/120?img=11
-    - quote: The documentation is outstanding. Every component has clear examples, and the community on Discord is incredibly helpful.
+    - quote: The pricing is unbeatable for what you get. I cancelled two other subscription services and Quizify replaced them both at a fraction of the cost.
       user:
-        name: Rachel Kim
-        description: Performance Engineer at APIHub
+        name: Priya Sharma
+        description: Accounting Student, University of Melbourne
         avatar:
           src: https://i.pravatar.cc/120?img=10
-    - quote: We replaced three different UI libraries with Nuxt UI. The consistency and quality across all components is unmatched.
+    - quote: Quizify turned a 400-page textbook into a focused practice set in seconds. I went from dreading study sessions to actually looking forward to them.
       user:
-        name: Thomas Weber
-        description: UI Architecture Lead at DesignScale
+        name: Marcus Okonkwo
+        description: History Student, University of Ghana
         avatar:
           src: https://i.pravatar.cc/120?img=12
-    - quote: The integration with Nuxt modules is seamless. Color mode, fonts, icons - everything works together perfectly.
-      user:
-        name: Sophia Martinez
-        description: Integration Specialist at TechFlow
-        avatar:
-          src: https://i.pravatar.cc/120?img=14

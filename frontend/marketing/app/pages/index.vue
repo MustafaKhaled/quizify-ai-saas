@@ -86,12 +86,5 @@ useSeoMeta({
 
     <USeparator />
 
-    <UPageCTA
-      v-bind="page.cta"
-      variant="naked"
-      class="overflow-hidden"
-    >
-      <LazyStarsBg />
-    </UPageCTA>
   </div>
 </template>

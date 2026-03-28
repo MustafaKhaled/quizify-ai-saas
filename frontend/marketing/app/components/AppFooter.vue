@@ -2,11 +2,14 @@
 const columns = [{
   label: 'Company',
   children: [{
-    label: 'About'
+    label: 'FAQ',
+    to: '/faq'
   }, {
-    label: 'Pricing'
+    label: 'Pricing',
+    to: '/pricing'
   }, {
-    label: 'Blog'
+    label: 'Blog',
+    to: '/blog'
   }]
 }]
 
@@ -41,7 +44,7 @@ function onSubmit() {
 
     <template #left>
       <p class="text-muted text-sm">
-        Quizify • © {{ new Date().getFullYear() }}
+        Quizify AI • © {{ new Date().getFullYear() }}
       </p>
     </template>
 
