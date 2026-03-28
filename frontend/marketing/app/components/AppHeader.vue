@@ -4,8 +4,24 @@ const config = useRuntimeConfig()
 
 const isLoggedIn = ref(false)
 
+function hasValidToken(): boolean {
+  const token = localStorage.getItem('auth_token')
+  if (!token) return false
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem('auth_token')
+      return false
+    }
+    return true
+  } catch {
+    localStorage.removeItem('auth_token')
+    return false
+  }
+}
+
 onMounted(() => {
-  isLoggedIn.value = !!localStorage.getItem('auth_token')
+  isLoggedIn.value = hasValidToken()
 })
 
 const dashboardUrl = computed(() =>
