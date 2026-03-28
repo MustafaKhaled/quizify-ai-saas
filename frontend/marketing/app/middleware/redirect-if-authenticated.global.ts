@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // Only run on client side
   if (process.server) {
     return
@@ -16,6 +16,16 @@ export default defineNuxtRouteMiddleware((to, from) => {
   }
 
   const config = useRuntimeConfig()
-  const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-  window.location.href = `${dashboardUrl}?token=${token}`
+
+  try {
+    await $fetch(`${config.public.apiBase}/auth/verify`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    // Token is valid — redirect to dashboard
+    const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
+    window.location.href = `${dashboardUrl}?token=${token}`
+  } catch {
+    // Token is invalid or blacklisted — clean up and stay on page
+    localStorage.removeItem('auth_token')
+  }
 })
