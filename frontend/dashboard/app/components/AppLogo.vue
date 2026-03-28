@@ -7,13 +7,13 @@ defineProps<{
 <template>
   <img
     v-if="collapsed"
-    :src="'/logo-icon.png'"
+    :src="'/quizify-logo-icon.png'"
     alt="Quizify AI"
     class="h-8 w-8 object-contain"
   />
   <img
     v-else
-    :src="'/logo-full.png'"
+    :src="'/quizify-logo.png'"
     alt="Quizify AI"
     class="h-8 w-auto object-contain"
   />

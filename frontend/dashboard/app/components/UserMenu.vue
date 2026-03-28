@@ -38,7 +38,7 @@ async function logout() {
     <UAvatar :alt="user.name" size="xs" class="shrink-0" />
 
     <div v-if="!collapsed" class="flex-1 min-w-0">
-      <p class="text-sm font-medium text-highlighted truncate">{{ user.name || 'Loading...' }}</p>
+      <p class="text-sm font-medium text-highlighted truncate">{{ user.name }}</p>
       <p class="text-xs text-dimmed truncate">{{ user.email }}</p>
     </div>
 
