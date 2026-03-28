@@ -57,7 +57,6 @@ const items = computed(() => [{
       <NuxtLink to="/">
         <AppLogo class="w-auto h-6 shrink-0" />
       </NuxtLink>
-      <TemplateMenu />
     </template>
 
     <UNavigationMenu
