@@ -37,12 +37,6 @@ const providers = [{
   onClick: () => {
     toast.add({ title: 'Google', description: 'Login with Google' })
   }
-}, {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  onClick: () => {
-    toast.add({ title: 'GitHub', description: 'Login with GitHub' })
-  }
 }]
 
 const schema = z.object({
