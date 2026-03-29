@@ -70,14 +70,14 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     // Save the auth token to localStorage (marketing site)
     if (response.access_token) {
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-      window.location.href = dashboardUrl
+      window.location.replace(dashboardUrl)
     } else {
       toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'success' })
       setTimeout(() => navigateTo('/login'), 2000)
     }
 
   } catch (error) {
-    toast.add({ title: 'Error', description: 'Failed to create account', color: 'red' })
+    toast.add({ title: 'Error', description: 'Failed to create account', color: 'error' })
   }
 }
 </script>

@@ -11,7 +11,6 @@ useSeoMeta({
   description: 'Login to your account to continue'
 })
 
-const toast = useToast()
 const config = useRuntimeConfig()
 
 const fields = [{
@@ -35,7 +34,7 @@ const providers = [{
   label: 'Google',
   icon: 'i-simple-icons-google',
   onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
+    navigateTo(`${config.public.apiBase}/auth/google/login`, { external: true })
   }
 }]
 
@@ -67,7 +66,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     if (response.access_token) {
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-      window.location.href = dashboardUrl
+      window.location.replace(dashboardUrl)
     }
 
   } catch (error: any) {
