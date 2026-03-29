@@ -59,17 +59,27 @@ async def create_quiz_from_file(
     file_display_name = ""
 
     # Inside your endpoint logic
-    if quiz_type == "multiple_select": # Checkbox
+    if quiz_type == "multiple_select":
         format_instruction = """
         "questions": [
             {
             "question_text": "Question here",
             "options": ["A", "B", "C", "D"],
-            "correct_option_indices": [0, 2], # Array for multiple correct answers
+            "correct_option_indices": [0, 2],
             "explanation": "Why"
             }
         ]"""
-    else: # Standard Multiple Choice
+    elif quiz_type == "true_or_false":
+        format_instruction = """
+        "questions": [
+            {
+            "question_text": "Statement here (must be evaluatable as true or false)",
+            "options": ["True", "False"],
+            "correct_option_index": 0,
+            "explanation": "Why"
+            }
+        ]"""
+    else:  # single_choice
         format_instruction = """
         "questions": [
             {
@@ -164,7 +174,7 @@ Required JSON format:
       "question_text": "Question here",
       "topic": "topic1",
       "options": ["A", "B", "C", "D"],
-      {"\"correct_option_index\": 0" if quiz_type == "single_choice" else "\"correct_option_indices\": [0, 2]"},
+      {"\"correct_option_index\": 0" if quiz_type in ("single_choice", "true_or_false") else "\"correct_option_indices\": [0, 2]"},
       "explanation": "Why"
     }}
   ]
@@ -265,7 +275,7 @@ Required JSON format:
       "question_text": "Question here",
       "topic": "one of the focus topics",
       "options": ["A", "B", "C", "D"],
-      {"\"correct_option_index\": 0" if quiz_type == "single_choice" else "\"correct_option_indices\": [0, 2]"},
+      {"\"correct_option_index\": 0" if quiz_type in ("single_choice", "true_or_false") else "\"correct_option_indices\": [0, 2]"},
       "explanation": "Why"
     }}
   ]

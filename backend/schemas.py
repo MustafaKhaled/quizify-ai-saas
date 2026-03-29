@@ -87,7 +87,7 @@ class AnswerSubmission(BaseModel):
 class QuizSubmission(BaseModel):
     quiz_id: UUID
     answers: List[AnswerSubmission]
-    time_taken_seconds: Optional[int] = None  # Optional
+    started_at: Optional[datetime] = None  # ISO timestamp from frontend when quiz page loaded
 
 class CheckoutRequest(BaseModel):
     price_id: str

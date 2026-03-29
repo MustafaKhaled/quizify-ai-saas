@@ -129,7 +129,10 @@ class QuizResult(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     score_percentage = Column(Numeric(5, 2), nullable=False)
     is_passed = Column(Boolean, nullable=False)
-    time_taken_seconds = Column(Integer)
+    time_taken_seconds = Column(Integer, nullable=True)
+    time_remaining_seconds = Column(Integer, nullable=True)
+    started_at = Column(TIMESTAMP(timezone=True), nullable=True)
+    ended_at = Column(TIMESTAMP(timezone=True), nullable=True)
     user_answers = Column(JSONB, nullable=False)
     attempt_date = Column(TIMESTAMP(timezone=True), default=datetime.utcnow)
 

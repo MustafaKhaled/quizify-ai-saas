@@ -75,6 +75,7 @@
             >
               <option value="single_choice">Multiple Choice</option>
               <option value="multiple_select">Multiple Select</option>
+              <option value="true_or_false">True or False</option>
             </select>
           </div>
 
@@ -243,7 +244,7 @@ const createQuiz = async () => {
 
     console.log('✅ Success:', quiz)
     alert('Quiz created successfully!')
-    await navigateTo(`/quiz/${quiz.id}`)
+    await navigateTo(`/quiz/${quiz.id}`, { replace: true })
   } catch (error: any) {
     console.error('❌ Quiz creation failed:', error)
     console.error('Error details:', {

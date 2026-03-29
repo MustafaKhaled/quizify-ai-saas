@@ -81,28 +81,40 @@ async def submit(
     db: db_dep,
     currentUser: CurrentUser
 ):
-# 1. Fetch Quiz and verify existence
+    # 1. Fetch Quiz and verify existence
     quiz = db.query(Quiz).filter(Quiz.id == submission.quiz_id).first()
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")
 
     # 2. Score the quiz based on its defined type
     score_pct, breakdown = calculate_quiz_score(
-        quiz.content, 
-        quiz.quiz_type, # This comes from your DB column
+        quiz.content,
+        quiz.quiz_type,
         submission.answers
     )
 
-    # 3. Create the Result record
+    # 3. Compute timing fields
+    ended_at = datetime.utcnow()
+    started_at = submission.started_at.replace(tzinfo=None) if submission.started_at else None
+    time_taken_seconds = int((ended_at - started_at).total_seconds()) if started_at else None
+    time_remaining_seconds = None
+    if quiz.time_limit and time_taken_seconds is not None:
+        total_seconds = quiz.time_limit * 60
+        time_remaining_seconds = max(0, total_seconds - time_taken_seconds)
+
+    # 4. Create the Result record
     new_result = QuizResult(
         id=uuid.uuid4(),
         quiz_id=quiz.id,
         user_id=currentUser.id,
         score_percentage=score_pct,
-        is_passed=score_pct >= 70.0,  # Hardcoded 70% pass mark
-        time_taken_seconds=submission.time_taken_seconds,
-        user_answers=breakdown,        # Detailed JSON breakdown for review
-        attempt_date=datetime.utcnow()
+        is_passed=score_pct >= 70.0,
+        time_taken_seconds=time_taken_seconds,
+        time_remaining_seconds=time_remaining_seconds,
+        started_at=started_at,
+        ended_at=ended_at,
+        user_answers=breakdown,
+        attempt_date=ended_at
     )
 
     db.add(new_result)
