@@ -173,8 +173,6 @@ const config = useRuntimeConfig()
 const result = ref<any>(null)
 const isLoading = ref(true)
 
-const getToken = () => typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
 const correctCount = computed(() => {
   if (!result.value?.breakdown) return 0
   return result.value.breakdown.filter((item: any) => item.is_correct).length
@@ -272,13 +270,10 @@ const retakeFullQuiz = async () => {
 
 onMounted(async () => {
   try {
-    const token = getToken()
     const resultId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
 
     const response = await fetch(`${config.public.apiBase}/quizzes/result/${resultId}/review`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (response.ok) {

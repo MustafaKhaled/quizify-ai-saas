@@ -197,10 +197,7 @@ const createQuiz = async () => {
   try {
     isCreating.value = true
     const config = useRuntimeConfig()
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
     console.log('📍 API Base:', config.public.apiBase)
-    console.log('🔑 Token:', token ? 'Present' : 'Missing')
 
     // Determine endpoint and prepare data based on mode
     const endpoint = mode.value === 'focused'
@@ -234,9 +231,7 @@ const createQuiz = async () => {
     const response = await fetch(`${config.public.apiBase}${endpoint}`, {
       method: 'POST',
       body: formDataToSend,
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (!response.ok) {

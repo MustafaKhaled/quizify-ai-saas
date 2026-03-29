@@ -52,8 +52,9 @@ type Schema = z.output<typeof schema>
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
-    const response = await $fetch(`${config.public.apiBase}/auth/register`, {
+    const response = await $fetch<{ access_token?: string }>(`${config.public.apiBase}/auth/register`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -68,14 +69,10 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     // Save the auth token to localStorage (marketing site)
     if (response.access_token) {
-      localStorage.setItem('auth_token', response.access_token)
-
-      // Redirect to dashboard website with token in URL
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-      window.location.href = `${dashboardUrl}?token=${response.access_token}`
-    } else{
-      // If no token returned, show success message and redirect to login
-      toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'green' })
+      window.location.href = dashboardUrl
+    } else {
+      toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'success' })
       setTimeout(() => navigateTo('/login'), 2000)
     }
 

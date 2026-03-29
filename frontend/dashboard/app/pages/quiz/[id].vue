@@ -103,8 +103,6 @@ const isSubmitting = ref(false)
 const currentQuestionIndex = ref(0)
 const userAnswers = ref<Record<number, number | number[]>>({})
 
-const getToken = () => typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
 const currentQuestion = computed(() => {
   if (!quiz.value?.content?.questions) return null
   return quiz.value.content.questions[currentQuestionIndex.value]
@@ -153,7 +151,6 @@ const nextQuestion = () => {
 const submitQuiz = async () => {
   try {
     isSubmitting.value = true
-    const token = getToken()
 
     // Transform answers from Record<number, number | number[]> to AnswerSubmission[]
     const answersArray = Object.entries(userAnswers.value).map(([questionIndex, selectedOptions]) => ({
@@ -170,10 +167,8 @@ const submitQuiz = async () => {
     const response = await fetch(`${config.public.apiBase}/quizzes/submit/${route.params.id}`, {
       method: 'POST',
       body: JSON.stringify(submission),
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
     })
 
     if (!response.ok) {
@@ -192,11 +187,8 @@ const submitQuiz = async () => {
 
 onMounted(async () => {
   try {
-    const token = getToken()
     const response = await fetch(`${config.public.apiBase}/quizzes/${route.params.id}`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (response.ok) {

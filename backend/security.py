@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 from db.dependency import SECRET_KEY, ALGORITHM
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 90   # 3 months
+REFRESH_TOKEN_EXPIRE_DAYS = 365              # 1 year
 def hash_password(password: str) -> str:
     """
     Turns a plain text password into a secure hash.
@@ -39,5 +40,16 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     
     # Encode the token
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    
+
     return encoded_jwt
+
+
+def create_refresh_token() -> str:
+    """Generates a secure random refresh token (not a JWT — stored hashed in DB)."""
+    import secrets
+    return secrets.token_urlsafe(64)
+
+
+def hash_refresh_token(token: str) -> str:
+    import hashlib
+    return hashlib.sha256(token.encode()).hexdigest()

@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import Annotated
-from db.dependency import get_db, get_current_user
+from db.dependency import get_db, get_current_user, get_token
 from db import models
 from db.routers.util import build_user_response
 
@@ -27,32 +27,73 @@ oauth.register(
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}
 )
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 BACKEND_URL = os.getenv("BACKEND_URL")
+DASHBOARD_URL = os.getenv("DASHBOARD_URL", FRONTEND_URL)
+IS_PRODUCTION = os.getenv("ENVIRONMENT") == "production"
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
 
 # Dependencies
 db_dep = Annotated[Session, Depends(get_db)]
 
+
+ACCESS_TOKEN_MAX_AGE  = 60 * 60 * 24 * 90   # 3 months in seconds
+REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 365  # 1 year in seconds
+
+
+def set_auth_cookie(response: Response, token: str):
+    response.set_cookie(
+        key="auth_token",
+        value=token,
+        httponly=True,
+        secure=IS_PRODUCTION,
+        samesite="lax",
+        domain=COOKIE_DOMAIN,
+        max_age=ACCESS_TOKEN_MAX_AGE,
+        path="/"
+    )
+
+
+def set_refresh_cookie(response: Response, token: str):
+    response.set_cookie(
+        key="refresh_token",
+        value=token,
+        httponly=True,
+        secure=IS_PRODUCTION,
+        samesite="lax",
+        domain=COOKIE_DOMAIN,
+        max_age=REFRESH_TOKEN_MAX_AGE,
+        path="/auth/refresh"  # only sent to the refresh endpoint
+    )
+
+
+def issue_refresh_token(response: Response, user_id, db: Session):
+    raw = security.create_refresh_token()
+    token_hash = security.hash_refresh_token(raw)
+    expires_at = datetime.now(timezone.utc) + timedelta(days=security.REFRESH_TOKEN_EXPIRE_DAYS)
+    db.add(models.RefreshToken(token_hash=token_hash, user_id=user_id, expires_at=expires_at))
+    db.commit()
+    set_refresh_cookie(response, raw)
+
+
 @router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
-async def register(user_in: schemas.UserCreate, db: db_dep):
+async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
     from sqlalchemy.orm import joinedload
-    
+
     expiration_date = datetime.now(timezone.utc) + timedelta(minutes=3)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
+
     if not user_in.password:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="Password is required for standard registration."
         )
 
-    # Create new user
     hashed_pwd = security.hash_password(user_in.password[:72])
-    new_user = models.User( 
+    new_user = models.User(
         email=user_in.email,
         hashed_password=hashed_pwd,
         name=user_in.name,
@@ -60,31 +101,32 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
         is_pro=False,
         is_admin=user_in.is_admin or False
     )
-    
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    # Generate token
     access_token = security.create_access_token(data={"sub": new_user.email})
-    
-    # Build user response with subscription info
+    set_auth_cookie(response, access_token)
+    issue_refresh_token(response, new_user.id, db)
+
     user_data = build_user_response(new_user, db)
-    
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "user": user_data
     }
 
+
 @router.post("/login", response_model=schemas.AuthenticationSuccessResponse)
 async def login(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    response: Response,
     db: db_dep
 ):
     from sqlalchemy.orm import joinedload
-    
-    # 1. Find the user with subscription relationship loaded
+
     user = db.query(models.User).options(joinedload(models.User.subscription)).filter(models.User.email == form_data.username).first()
 
     if user and not user.hashed_password:
@@ -93,8 +135,7 @@ async def login(
             detail="Looks like you Sign-up with Google, please use Google Login",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
-    # 2. Verify password
+
     if not user or not security.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -102,12 +143,12 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # 3. Create token
     access_token = security.create_access_token(data={"sub": user.email})
-    
-    # 4. Build user response with subscription info
+    set_auth_cookie(response, access_token)
+    issue_refresh_token(response, user.id, db)
+
     user_data = build_user_response(user, db)
-    
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
@@ -116,47 +157,178 @@ async def login(
 
 
 @router.get('/google/login')
-async def google_login(request: Request):
-    # This URL is where Google sends the user back after login
+async def google_login(request: Request, db: db_dep):
+    import secrets
+    state = secrets.token_urlsafe(32)
     redirect_uri = f"{BACKEND_URL}/auth/google/callback"
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+    # Store state in DB so it survives cross-device flows
+    db.add(models.OAuthState(state=state, redirect_uri=redirect_uri))
+    db.commit()
+
+    return await oauth.google.authorize_redirect(request, redirect_uri, state=state)
+
 
 @router.get('/google/callback')
 async def google_callback(request: Request, db: db_dep):
-    token = await oauth.google.authorize_access_token(request)
-    user_info = token.get('userinfo')
-    
-    user = db.query(models.User).filter(models.User.email == user_info['email']).first()
-    
-    if not user:
-        # 2. SIGN UP: Create new user if they don't exist
-        user = models.User(
-            email=user_info['email'],
-            name=user_info['name']
+    from datetime import timedelta
+    state = request.query_params.get('state')
+
+    # Validate state against DB
+    oauth_state = db.query(models.OAuthState).filter(
+        models.OAuthState.state == state
+    ).first()
+
+    if not oauth_state:
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
+
+    # Expire states older than 10 minutes
+    age = datetime.now(timezone.utc) - oauth_state.created_at.replace(tzinfo=timezone.utc)
+    if age > timedelta(minutes=10):
+        db.delete(oauth_state)
+        db.commit()
+        raise HTTPException(status_code=400, detail="OAuth state expired")
+
+    redirect_uri = oauth_state.redirect_uri
+    db.delete(oauth_state)
+    db.commit()
+
+    # Exchange code for token manually — bypasses authlib's session-based state check
+    # since we already validated state against the DB above
+    import httpx
+    code = request.query_params.get('code')
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(
+            'https://oauth2.googleapis.com/token',
+            data={
+                'code': code,
+                'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+                'client_secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+                'redirect_uri': redirect_uri,
+                'grant_type': 'authorization_code',
+            }
         )
+    token_data = token_response.json()
+    if 'error' in token_data:
+        raise HTTPException(status_code=400, detail=token_data.get('error_description', 'Token exchange failed'))
+
+    import jwt as pyjwt
+    id_token = token_data.get('id_token')
+    user_info = pyjwt.decode(id_token, options={"verify_signature": False})
+
+    email = user_info.get('email')
+    name = user_info.get('name') or user_info.get('given_name', '')
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+
+    if not user:
+        user = models.User(email=email, name=name)
         db.add(user)
         db.commit()
         db.refresh(user)
-    my_token = security.create_access_token(data={"sub": user_info['email']})
-    
-    # 3. Redirect back to Nuxt with the token in the URL
-    return RedirectResponse(url=f"{FRONTEND_URL}/auth/callback?token={my_token}")
+
+    my_token = security.create_access_token(data={"sub": email})
+
+    # Use a handoff code so the dashboard can exchange it via a credentialed fetch,
+    # which correctly sets the cookie (redirect Set-Cookie is unreliable cross-port)
+    import secrets as _secrets
+    code = _secrets.token_urlsafe(32)
+    db.add(models.HandoffCode(code=code, token=my_token))
+    db.commit()
+
+    return RedirectResponse(url=f"{DASHBOARD_URL}?code={code}")
 
 
 @router.get("/verify", response_model=schemas.UserAdminResponse)
 async def verify_token(
     current_user: Annotated[models.User, Depends(get_current_user)]
 ):
-    """
-    Standard verification for ANY logged-in user. 
-    Nuxt will use this to check if the session is still active.
-    """
     return current_user
 
-@router.post("/logout")
-def logout(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    # Add token to blacklist
-    db_token = models.BlacklistedToken(token=token)
-    db.add(db_token)
+
+@router.post("/exchange")
+def exchange_handoff_code(payload: dict, response: Response, db: Session = Depends(get_db)):
+    """Exchange a one-time handoff code for an auth cookie. Used after Google OAuth redirect."""
+    from datetime import timedelta
+    code = payload.get("code")
+    if not code:
+        raise HTTPException(status_code=400, detail="Missing code")
+
+    record = db.query(models.HandoffCode).filter(
+        models.HandoffCode.code == code,
+        models.HandoffCode.used == False
+    ).first()
+
+    if not record:
+        raise HTTPException(status_code=400, detail="Invalid or already used code")
+
+    age = datetime.now(timezone.utc) - record.created_at.replace(tzinfo=timezone.utc)
+    if age > timedelta(seconds=60):
+        db.delete(record)
+        db.commit()
+        raise HTTPException(status_code=400, detail="Code expired")
+
+    token = record.token
+    record.used = True
     db.commit()
-    return {"message": "Token blacklisted successfully"}
+
+    # Decode the access token to find the user for refresh token issuance
+    import jwt as pyjwt
+    payload = pyjwt.decode(token, options={"verify_signature": False})
+    email = payload.get("sub")
+    user = db.query(models.User).filter(models.User.email == email).first()
+
+    set_auth_cookie(response, token)
+    if user:
+        issue_refresh_token(response, user.id, db)
+    return {"ok": True}
+
+
+@router.post("/refresh")
+def refresh(request: Request, response: Response, db: Session = Depends(get_db)):
+    raw_token = request.cookies.get("refresh_token")
+    if not raw_token:
+        raise HTTPException(status_code=401, detail="No refresh token")
+
+    token_hash = security.hash_refresh_token(raw_token)
+    record = db.query(models.RefreshToken).filter(
+        models.RefreshToken.token_hash == token_hash,
+        models.RefreshToken.revoked == False
+    ).first()
+
+    if not record:
+        raise HTTPException(status_code=401, detail="Invalid or revoked refresh token")
+
+    if record.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        db.delete(record)
+        db.commit()
+        raise HTTPException(status_code=401, detail="Refresh token expired")
+
+    user = db.query(models.User).filter(models.User.id == record.user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    access_token = security.create_access_token(data={"sub": user.email})
+    set_auth_cookie(response, access_token)
+    return {"ok": True}
+
+
+@router.post("/logout")
+def logout(request: Request, response: Response, token: str = Depends(get_token), db: Session = Depends(get_db)):
+    # Blacklist access token
+    db.add(models.BlacklistedToken(token=token))
+
+    # Revoke refresh token if present
+    raw_refresh = request.cookies.get("refresh_token")
+    if raw_refresh:
+        token_hash = security.hash_refresh_token(raw_refresh)
+        record = db.query(models.RefreshToken).filter(
+            models.RefreshToken.token_hash == token_hash
+        ).first()
+        if record:
+            record.revoked = True
+
+    db.commit()
+    response.delete_cookie(key="auth_token", path="/", domain=COOKIE_DOMAIN)
+    response.delete_cookie(key="refresh_token", path="/auth/refresh", domain=COOKIE_DOMAIN)
+    return {"message": "Logged out successfully"}

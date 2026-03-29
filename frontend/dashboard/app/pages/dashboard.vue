@@ -92,8 +92,6 @@ const recentQuizzes = ref<any[]>([])
 const stats = ref({ totalQuizzes: 0, averageScore: 0 })
 const topicInsights = ref<any[]>([])
 
-const getToken = () => typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
 const getBarColor = (accuracy: number) => {
   if (accuracy >= 70) return 'bg-green-500'
   if (accuracy >= 50) return 'bg-yellow-500'
@@ -120,13 +118,9 @@ const getPerformanceLabel = (accuracy: number) => {
 
 onMounted(async () => {
   try {
-    const token = getToken()
-
     // Fetch quizzes
     const quizzesResponse = await fetch(`${config.public.apiBase}/quizzes/my_quizzes`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (quizzesResponse.ok) {
@@ -137,9 +131,7 @@ onMounted(async () => {
 
     // Fetch all quiz results
     const resultsResponse = await fetch(`${config.public.apiBase}/quizzes/my_results`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (resultsResponse.ok) {
@@ -154,9 +146,7 @@ onMounted(async () => {
 
     // Fetch weak topics
     const topicResponse = await fetch(`${config.public.apiBase}/quizzes/performance/by-topic`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (topicResponse.ok) {

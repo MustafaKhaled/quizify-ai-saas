@@ -1,30 +1,34 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Only run on client side
-  if (import.meta.server) {
-    return
-  }
+  if (import.meta.server) return
 
-  // Skip auth check for auth pages
   const publicPages = ['/auth/login', '/auth/register']
-  if (publicPages.includes(to.path)) {
-    return
-  }
+  if (publicPages.includes(to.path)) return
 
-  const token = localStorage.getItem('auth_token')
   const config = useRuntimeConfig()
   const marketingUrl = config.public.marketingUrl || 'http://localhost:3000'
+  const apiBase = config.public.apiBase || 'http://localhost:8000'
 
-  if (!token) {
-    window.location.href = `${marketingUrl}/login`
-    return
+  // Exchange Google OAuth handoff code for a cookie via credentialed fetch
+  const code = to.query.code as string | undefined
+  if (code) {
+    try {
+      await $fetch(`${apiBase}/auth/exchange`, {
+        method: 'POST',
+        credentials: 'include',
+        body: { code }
+      })
+    } catch {
+      window.location.href = `${marketingUrl}/login`
+      return
+    }
+    return navigateTo({ path: to.path, query: {} }, { replace: true })
   }
 
   try {
-    await $fetch(`${config.public.apiBase}/auth/verify`, {
-      headers: { Authorization: `Bearer ${token}` }
+    await $fetch(`${apiBase}/auth/verify`, {
+      credentials: 'include'
     })
   } catch {
-    localStorage.removeItem('auth_token')
     window.location.href = `${marketingUrl}/login`
   }
 })

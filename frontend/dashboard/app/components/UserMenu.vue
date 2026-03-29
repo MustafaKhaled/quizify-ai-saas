@@ -7,27 +7,21 @@ const config = useRuntimeConfig()
 const user = ref({ name: '', email: '' })
 
 onMounted(async () => {
-  const token = localStorage.getItem('auth_token')
-  if (!token) return
   try {
     const data = await $fetch<{ name: string, email: string }>(`${config.public.apiBase}/users/me`, {
-      headers: { Authorization: `Bearer ${token}` }
+      credentials: 'include'
     })
     user.value = data
   } catch {}
 })
 
 async function logout() {
-  const token = localStorage.getItem('auth_token')
-  if (token) {
-    try {
-      await $fetch(`${config.public.apiBase}/auth/logout`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      })
-    } catch {}
-    localStorage.removeItem('auth_token')
-  }
+  try {
+    await $fetch(`${config.public.apiBase}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    })
+  } catch {}
   const marketingUrl = config.public.marketingUrl || 'http://localhost:3000'
   window.location.href = `${marketingUrl}/login`
 }

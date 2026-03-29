@@ -54,8 +54,9 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     formData.append('password', payload.data.password)
 
     // 2. Send the request
-    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
+    const response = await $fetch<{ access_token: string }>(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -64,19 +65,15 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
     console.log('Login Success:', response)
 
-    // Save the auth token to localStorage (marketing site)
     if (response.access_token) {
-      localStorage.setItem('auth_token', response.access_token)
-
-      // Redirect to dashboard website with token in URL
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
-      window.location.href = `${dashboardUrl}?token=${response.access_token}`
+      window.location.href = dashboardUrl
     }
 
   } catch (error: any) {
     console.error('Login Failed:', error.data)
     const toast = useToast()
-    toast.add({ title: 'Error', description: 'Invalid login credentials', color: 'red' })
+    toast.add({ title: 'Error', description: 'Invalid login credentials', color: 'error' })
   }
 }
 </script>

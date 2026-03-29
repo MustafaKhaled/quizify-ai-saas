@@ -53,6 +53,33 @@ class BlacklistedToken(Base):
     blacklisted_at = Column(DateTime, default=datetime.utcnow)
 
 
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    token_hash = Column(String, unique=True, index=True, nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    expires_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    revoked = Column(Boolean, default=False, nullable=False)
+
+    user = relationship("User")
+
+
+class OAuthState(Base):
+    __tablename__ = "oauth_states"
+    state = Column(String, primary_key=True, index=True)
+    redirect_uri = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class HandoffCode(Base):
+    __tablename__ = "handoff_codes"
+    code = Column(String, primary_key=True, index=True)
+    token = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    used = Column(Boolean, default=False, nullable=False)
+
+
 # --------------------------------
 # 2. Quiz Source & Content Models
 # --------------------------------

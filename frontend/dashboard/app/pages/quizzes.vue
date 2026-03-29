@@ -70,12 +70,8 @@ const isLoading = ref(true)
 const loadQuizzes = async () => {
   try {
     isLoading.value = true
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
     const response = await fetch(`${config.public.apiBase}/quizzes/my_quizzes`, {
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (response.ok) {
@@ -86,9 +82,7 @@ const loadQuizzes = async () => {
         quizData.map(async (quiz: any) => {
           try {
             const resultsResponse = await fetch(`${config.public.apiBase}/quizzes/results/${quiz.id}`, {
-              headers: {
-                ...(token && { 'Authorization': `Bearer ${token}` })
-              }
+              credentials: 'include'
             })
 
             if (resultsResponse.ok) {
@@ -131,13 +125,9 @@ const deleteQuiz = async (quizId: string) => {
   if (!confirm('Are you sure you want to delete this quiz?')) return
 
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-
     const response = await fetch(`${config.public.apiBase}/quizzes/${quizId}`, {
       method: 'DELETE',
-      headers: {
-        ...(token && { 'Authorization': `Bearer ${token}` })
-      }
+      credentials: 'include'
     })
 
     if (response.ok) {

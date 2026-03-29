@@ -1,39 +1,40 @@
-from typing import Generator
+from typing import Generator, Optional
 import os
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from fastapi import status
 from db.models import BlacklistedToken, User
 import jwt
-from .database import SessionLocal # Import the SessionLocal class
+from .database import SessionLocal
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
-# This is the function that will be injected into your routes
+
 def get_db() -> Generator[Session, None, None]:
-    """
-    Provides a new SQLAlchemy session for each request,
-    and ensures it's closed afterwards.
-    """
     db = SessionLocal()
     try:
-        # 'yield' makes this function a generator dependency
-        yield db 
+        yield db
     except Exception:
-        # Rollback the session if any unhandled error occurs
         db.rollback()
         raise
     finally:
-        # Always close the session after the request is complete
         db.close()
 
-# 1. Config
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login", auto_error=False)
 
-# 2. Token extraction setup
-# This tells FastAPI to look for the "Authorization: Bearer <token>" header
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+def get_token(request: Request, bearer: Optional[str] = Depends(oauth2_scheme)) -> str:
+    if bearer:
+        return bearer
+    cookie = request.cookies.get("auth_token")
+    if cookie:
+        return cookie
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Not authenticated",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def get_current_user(token: str = Depends(get_token), db: Session = Depends(get_db)) -> User:
     """
     Decodes the token, validates it, and fetches the user from the DB.
     """
