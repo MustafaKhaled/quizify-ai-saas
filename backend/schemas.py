@@ -64,19 +64,42 @@ class AuthenticationSuccessResponse(BaseModel):
     user: UserAdminResponse
 
 
+class SubjectCreate(BaseModel):
+    name: str
+    color: Optional[str] = None
+
+class SubjectUpdate(BaseModel):
+    name: Optional[str] = None
+    color: Optional[str] = None
+
+class SubjectResponse(BaseModel):
+    id: UUID
+    name: str
+    color: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class SubjectDetailResponse(SubjectResponse):
+    source_count: int = 0
+    quiz_count: int = 0
+
+
 class QuizResponse(BaseModel):
     id: UUID
-    source_id: UUID
+    source_id: Optional[UUID] = None
+    subject_id: Optional[UUID] = None
     title: str
     quiz_type: str
     num_questions: Optional[int]
     time_limit: Optional[int]
-    content: dict  # The JSON questions
-    topics: Optional[dict] = None  # Topics identified from PDF
+    content: dict
+    topics: Optional[dict] = None
     generation_date: datetime
 
     class Config:
-        from_attributes = True # Allows Pydantic to read from SQLAlchemy models
+        from_attributes = True
 
 
 class AnswerSubmission(BaseModel):

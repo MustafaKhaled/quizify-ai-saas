@@ -3,10 +3,14 @@
     <UDashboardPanelContent class="p-6 overflow-y-auto">
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          {{ mode === 'focused' ? '🎯 Practice Weak Areas' : mode === 'full' ? '🔄 Retake Full Quiz' : 'Create Quiz' }}
+          {{ mode === 'focused' ? '🎯 Practice Weak Areas' : 'Create Quiz' }}
         </h1>
         <p class="text-gray-600 dark:text-gray-400">
-          {{ mode === 'focused' ? `Generate a quiz focused on: ${focusTopics.join(', ')}` : mode === 'full' ? 'Retake the full quiz with new questions' : 'Upload a PDF and generate an AI-powered quiz' }}
+          {{ mode === 'focused'
+            ? `Generate a quiz focused on: ${focusTopics.join(', ')}`
+            : existingSourceName
+              ? `Generating from source: ${existingSourceName}`
+              : 'Upload a PDF and generate an AI-powered quiz' }}
         </p>
       </div>
 
@@ -44,9 +48,28 @@
           </button>
         </div>
 
-        <div v-if="selectedFile" class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <p class="text-green-800 dark:text-green-200">✓ {{ selectedFile.name }} selected</p>
+        <!-- Source Name — always visible so user can name before selecting file -->
+        <div class="mt-4 space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Source Name</label>
+            <input
+              v-model="sourceName"
+              type="text"
+              placeholder="e.g. Chapter 1, Lecture Notes"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">A friendly name for this PDF source</p>
+          </div>
+          <div v-if="selectedFile" class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <p class="text-green-800 dark:text-green-200">✓ {{ selectedFile.name }} selected</p>
+          </div>
         </div>
+      </div>
+
+      <!-- Source info when using existing source (non-editable) -->
+      <div v-if="mode !== 'normal' && existingSourceName" class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Source</p>
+        <p class="font-medium text-gray-900 dark:text-white">{{ existingSourceName }}</p>
       </div>
 
       <!-- Quiz Configuration -->
@@ -110,7 +133,7 @@
             :disabled="isCreating || (mode === 'normal' && !selectedFile)"
             class="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
-            {{ isCreating ? 'Creating Quiz...' : mode === 'focused' ? 'Generate Practice Quiz' : mode === 'full' ? 'Generate New Quiz' : 'Create Quiz' }}
+            {{ isCreating ? 'Creating Quiz...' : 'Create Quiz' }}
           </button>
         </form>
       </div>
@@ -133,6 +156,9 @@ const selectedFile = ref<File | null>(null)
 const mode = ref<'normal' | 'focused' | 'full'>('normal')
 const focusTopics = ref<string[]>([])
 const sourceId = ref<string | null>(null)
+const subjectId = ref<string | null>(null)
+const sourceName = ref('')            // editable name for new upload
+const existingSourceName = ref('')    // read-only display for existing source
 
 const formData = ref({
   quiz_name: '',
@@ -144,14 +170,14 @@ const formData = ref({
 const handleFileDrop = (e: DragEvent) => {
   isDragover.value = false
   const files = e.dataTransfer?.files
-  if (files?.length) {
+  if (files?.length && files[0]) {
     selectFile(files[0])
   }
 }
 
 const handleFileSelect = (e: Event) => {
   const files = (e.target as HTMLInputElement).files
-  if (files?.length) {
+  if (files?.length && files[0]) {
     selectFile(files[0])
   }
 }
@@ -162,19 +188,29 @@ const selectFile = (file: File) => {
     return
   }
   selectedFile.value = file
+  // Auto-fill source name with file name (without extension) if not already set
+  if (!sourceName.value) {
+    sourceName.value = file.name.replace(/\.pdf$/i, '')
+  }
 }
 
 onMounted(() => {
-  // Check if we're in focused or full retake mode
+  if (route.query.subject_id) subjectId.value = route.query.subject_id as string
+  if (route.query.source_name) existingSourceName.value = route.query.source_name as string
+
   if (route.query.focus_topics) {
     focusTopics.value = (route.query.focus_topics as string).split(',')
     mode.value = 'focused'
     sourceId.value = route.query.source_id as string
     formData.value.quiz_name = `Practice: ${focusTopics.value.slice(0, 2).join(', ')}`
-  } else if (route.query.mode === 'full' && route.query.source_id) {
-    mode.value = 'full'
+  } else if (route.query.source_id) {
+    // Any time a source_id is provided (retake or new quiz from existing source),
+    // skip the file upload — the source already exists.
     sourceId.value = route.query.source_id as string
-    formData.value.quiz_name = 'Full Quiz Retake'
+    mode.value = 'full'
+    if (route.query.mode === 'full') {
+      formData.value.quiz_name = 'Full Quiz Retake'
+    }
   }
 })
 
@@ -224,6 +260,12 @@ const createQuiz = async () => {
     formDataToSend.append('num_questions', String(formData.value.num_questions))
     if (formData.value.time_limit) {
       formDataToSend.append('time_limit', String(formData.value.time_limit))
+    }
+    if (subjectId.value) {
+      formDataToSend.append('subject_id', subjectId.value)
+    }
+    if (mode.value === 'normal' && sourceName.value.trim()) {
+      formDataToSend.append('source_name', sourceName.value.trim())
     }
 
     console.log('📤 Sending request to:', `${config.public.apiBase}${endpoint}`)

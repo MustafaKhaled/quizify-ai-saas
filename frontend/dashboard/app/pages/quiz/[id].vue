@@ -5,7 +5,7 @@
       <div v-if="quiz" class="mb-8 flex items-start justify-between gap-4">
         <div>
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h1>
-          <p class="text-gray-600 dark:text-gray-400">Question {{ currentQuestionIndex + 1 }} of {{ quiz.num_questions }}</p>
+          <p class="text-gray-600 dark:text-gray-400">Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
         </div>
 
         <!-- Countdown Timer -->
@@ -28,7 +28,7 @@
         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
           <div
             class="bg-blue-600 h-2 rounded-full transition-all"
-            :style="{ width: `${((currentQuestionIndex + 1) / quiz.num_questions) * 100}%` }"
+            :style="{ width: `${totalQuestions ? ((currentQuestionIndex + 1) / totalQuestions) * 100 : 0}%` }"
           ></div>
         </div>
 
@@ -42,21 +42,21 @@
               v-for="(option, idx) of currentQuestion.options"
               :key="idx"
               class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 cursor-pointer transition-colors"
-              :class="isAnswerSelected(idx) ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''"
+              :class="isAnswerSelected(Number(idx)) ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''"
             >
               <input
                 v-if="quiz.quiz_type === 'single_choice' || quiz.quiz_type === 'true_or_false'"
                 type="radio"
                 :name="`question-${currentQuestionIndex}`"
-                :checked="isAnswerSelected(idx)"
-                @change="selectAnswer(idx)"
+                :checked="isAnswerSelected(Number(idx))"
+                @change="selectAnswer(Number(idx))"
                 class="mr-3"
               />
               <input
                 v-else
                 type="checkbox"
-                :checked="isAnswerSelected(idx)"
-                @change="toggleAnswer(idx)"
+                :checked="isAnswerSelected(Number(idx))"
+                @change="toggleAnswer(Number(idx))"
                 class="mr-3"
               />
               <span class="text-gray-900 dark:text-white">{{ option }}</span>
@@ -114,6 +114,9 @@ const isLoading = ref(true)
 const isSubmitting = ref(false)
 const currentQuestionIndex = ref(0)
 const userAnswers = ref<Record<number, number | number[]>>({})
+
+// Always derive count from the actual questions array, not the stored num_questions
+const totalQuestions = computed<number>(() => quiz.value?.content?.questions?.length ?? 0)
 
 // Guard: prevent accidental navigation away mid-quiz
 const quizDone = ref(false)
@@ -196,7 +199,7 @@ const previousQuestion = () => {
 }
 
 const nextQuestion = () => {
-  if (currentQuestionIndex.value < (quiz.value?.num_questions || 0) - 1) {
+  if (currentQuestionIndex.value < totalQuestions.value - 1) {
     currentQuestionIndex.value++
   }
 }

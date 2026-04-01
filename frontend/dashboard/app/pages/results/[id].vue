@@ -119,9 +119,9 @@
 
         <!-- Actions -->
         <div class="mt-8 flex gap-4 flex-wrap">
-          <NuxtLink to="/quizzes">
+          <NuxtLink :to="backLink">
             <button class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-              ← Back to Quizzes
+              ← {{ backLabel }}
             </button>
           </NuxtLink>
 
@@ -132,20 +132,6 @@
             🔄 Retake This Quiz
           </button>
 
-          <button
-            v-if="hasWeakTopics"
-            @click="createFocusedQuiz"
-            class="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-          >
-            🎯 Practice Weak Areas
-          </button>
-
-          <button
-            @click="retakeFullQuiz"
-            class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            ✨ Generate New Quiz
-          </button>
         </div>
       </div>
 
@@ -172,6 +158,18 @@ const config = useRuntimeConfig()
 
 const result = ref<any>(null)
 const isLoading = ref(true)
+
+const backLink = computed(() => {
+  const subjectId = result.value?.quiz?.subject_id
+  if (subjectId) return `/subjects/${subjectId}`
+  const sourceSubjectId = result.value?.quiz?.source_subject_id
+  if (sourceSubjectId) return `/subjects/${sourceSubjectId}`
+  return '/quizzes'
+})
+
+const backLabel = computed(() =>
+  backLink.value.startsWith('/subjects') ? 'Back to Subject' : 'Back to Quizzes'
+)
 
 const correctCount = computed(() => {
   if (!result.value?.breakdown) return 0

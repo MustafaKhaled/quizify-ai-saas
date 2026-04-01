@@ -21,8 +21,21 @@ export interface SubscriptionInfo {
   trial_days_remaining: number
 }
 
+// Subject
+export interface Subject {
+  id: string
+  name: string
+  color: string | null
+  created_at: string
+}
+
+export interface SubjectDetail extends Subject {
+  source_count: number
+  quiz_count: number
+}
+
 // Quiz Types
-export type QuizType = 'single_choice' | 'multiple_select' | 'matching'
+export type QuizType = 'single_choice' | 'multiple_select' | 'true_or_false'
 
 export interface Question {
   id: string
@@ -33,9 +46,10 @@ export interface Question {
 }
 
 export interface Quiz {
-  id: number
-  user_id: number
-  source_id?: number
+  id: string
+  user_id: string
+  source_id?: string | null
+  subject_id?: string | null
   title: string
   quiz_type: QuizType
   num_questions: number
