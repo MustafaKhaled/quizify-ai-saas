@@ -18,8 +18,18 @@ const dashboardUrl = computed(() =>
 )
 
 function goToDashboard() {
-  const token = localStorage.getItem('auth_token')
-  window.location.href = `${dashboardUrl.value}?token=${token}`
+  window.location.href = dashboardUrl.value
+}
+
+async function logout() {
+  try {
+    await $fetch(`${config.public.apiBase || 'http://localhost:8000'}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    })
+  } catch {}
+  isLoggedIn.value = false
+  await navigateTo('/login')
 }
 
 const items = computed(() => [{
@@ -66,12 +76,27 @@ const items = computed(() => [{
           @click="goToDashboard"
         />
         <UButton
+          icon="i-lucide-log-out"
+          color="neutral"
+          variant="ghost"
+          class="lg:hidden"
+          @click="logout"
+        />
+        <UButton
           label="Your Account"
           color="primary"
           variant="solid"
           icon="i-lucide-layout-dashboard"
           class="hidden lg:inline-flex"
           @click="goToDashboard"
+        />
+        <UButton
+          label="Log out"
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-log-out"
+          class="hidden lg:inline-flex"
+          @click="logout"
         />
       </template>
 
@@ -117,8 +142,17 @@ const items = computed(() => [{
           variant="solid"
           icon="i-lucide-layout-dashboard"
           block
-          class="mb-1"
+          class="mb-3"
           @click="goToDashboard"
+        />
+        <UButton
+          label="Log out"
+          color="neutral"
+          variant="subtle"
+          icon="i-lucide-log-out"
+          block
+          class="mb-1"
+          @click="logout"
         />
       </template>
       <template v-else>

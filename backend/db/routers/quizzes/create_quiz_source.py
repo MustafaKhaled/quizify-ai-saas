@@ -46,6 +46,8 @@ async def create_quiz_from_file(
     # _ = Depends(verify_pro_access),  # Temporarily disabled for testing
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
+    subject_id: Optional[uuid.UUID] = Form(None),
+    source_name: Optional[str] = Form(None),
     quiz_type: Optional[str] = Form(None),
     quiz_name: str | None = Form(None),
     start_page: Optional[int] | None = Form(None),
@@ -58,52 +60,50 @@ async def create_quiz_from_file(
     source_to_use_id = None
     file_display_name = ""
 
-    # Inside your endpoint logic
+    # Build the question format example based on quiz type
     if quiz_type == "multiple_select":
-        format_instruction = """
-        "questions": [
-            {
-            "question_text": "Question here",
-            "options": ["A", "B", "C", "D"],
-            "correct_option_indices": [0, 2],
-            "explanation": "Why"
-            }
-        ]"""
+        question_format = """{
+      "question_text": "Question here",
+      "topic": "topic1",
+      "options": ["A", "B", "C", "D"],
+      "correct_option_indices": [0, 2],
+      "explanation": "Why"
+    }"""
+        type_instruction = "Each question must have exactly 4 options and 'correct_option_indices' as a list of integers."
     elif quiz_type == "true_or_false":
-        format_instruction = """
-        "questions": [
-            {
-            "question_text": "Statement here (must be evaluatable as true or false)",
-            "options": ["True", "False"],
-            "correct_option_index": 0,
-            "explanation": "Why"
-            }
-        ]"""
+        question_format = """{
+      "question_text": "A factual statement about the material (evaluatable as true or false)",
+      "topic": "topic1",
+      "options": ["True", "False"],
+      "correct_option_index": 0,
+      "explanation": "Why this statement is true or false"
+    }"""
+        type_instruction = "IMPORTANT: options MUST be exactly [\"True\", \"False\"]. Do NOT use A/B/C/D. correct_option_index is 0 for True, 1 for False. You MUST generate EXACTLY {num_questions} statements — create additional ones from the material if needed.".format(num_questions=num_questions)
     else:  # single_choice
-        format_instruction = """
-        "questions": [
-            {
-            "question_text": "Question here",
-            "options": ["A", "B", "C", "D"],
-            "correct_option_index": 0,
-            "explanation": "Why"
-            }
-        ]"""
+        question_format = """{
+      "question_text": "Question here",
+      "topic": "topic1",
+      "options": ["A", "B", "C", "D"],
+      "correct_option_index": 0,
+      "explanation": "Why"
+    }"""
+        type_instruction = "Each question must have exactly 4 options and 'correct_option_index' as a single integer."
 
     # 1. BRANCHING LOGIC: EXISTING SOURCE VS NEW UPLOAD
+    source_obj = None  # Holds reference to source record for topic persistence
     if source_id:
         # Security: Filter by both ID and currentUser.id
-        source = db.query(QuizSource).filter(
-            QuizSource.id == source_id, 
+        source_obj = db.query(QuizSource).filter(
+            QuizSource.id == source_id,
             QuizSource.user_id == currentUser.id
         ).first()
-        
-        if not source:
+
+        if not source_obj:
             raise HTTPException(404, "Source not found or unauthorized access")
-        
-        extracted_text = source.extracted_text
-        source_to_use_id = source.id
-        file_display_name = source.file_name
+
+        extracted_text = source_obj.extracted_text
+        source_to_use_id = source_obj.id
+        file_display_name = source_obj.file_name
 
     elif file:
         try:
@@ -126,19 +126,22 @@ async def create_quiz_from_file(
                     page = doc.load_page(page_num)
                     extracted_text += page.get_text()
 
-            if not extracted_text.strip():
+            extracted_text = compress_text(extracted_text)
+            if len(extracted_text) < 200:
                 raise HTTPException(400, "The selected page range contains no selectable text.")
                 # Save brand new source only if file is provided
             new_source = QuizSource(
                 id=uuid.uuid4(),
                 user_id=currentUser.id,
+                subject_id=subject_id,
+                name=source_name.strip() if source_name else None,
                 file_name=file.filename,
                 extracted_text=extracted_text,
                 upload_date=datetime.utcnow()
             )
             db.add(new_source)
-            db.flush() # Secure the ID for the Quiz foreign key
-            
+            db.flush()  # Secure the ID for the Quiz foreign key
+            source_obj = new_source  # Track for topic persistence
             source_to_use_id = new_source.id
             file_display_name = file.filename
         except Exception as e:
@@ -147,63 +150,77 @@ async def create_quiz_from_file(
         raise HTTPException(400, "Please provide either a PDF file or a valid source_id")
 
     # 2. AI GENERATION
+    # Compress text for the prompt (cap tokens, normalize whitespace)
+    prompt_text = compress_text(extracted_text)
+    if len(prompt_text) < 200:
+        raise HTTPException(400, "Not enough text content to generate a quiz.")
+
+    # Use stored topics if the source already has them — ensures consistency across quizzes
+    existing_topics = source_obj.topics.get("topics", []) if (source_obj and source_obj.topics) else []
+    existing_subject = source_obj.topics.get("primary_subject", "") if (source_obj and source_obj.topics) else ""
+
+    if existing_topics:
+        topics_instruction = f"""The topics for this source have already been defined as: {existing_topics}.
+You MUST use ONLY these topics — do not invent new ones.
+Set "primary_subject" to "{existing_subject}" and "topics" to {existing_topics}."""
+    else:
+        topics_instruction = """STEP 1: Analyze the provided text and identify:
+- The primary subject (e.g., "Biology", "Mathematics", "History")
+- 3-5 main topics covered in the text (e.g., "Cell Structure", "Photosynthesis")"""
+
     try:
-        # Prompt includes specific instruction for better results
         prompt = f"""
 Return ONLY valid JSON. Do NOT use markdown or conversational text.
 
-STEP 1: Analyze the provided text and identify:
-- The primary subject (e.g., "Biology", "Mathematics", "History")
-- 3-5 main topics covered in the text (e.g., "Cell Structure", "Photosynthesis")
+{topics_instruction}
 
-STEP 2: Generate exactly {num_questions} educational quiz questions.
-- Each question MUST be tagged with its most relevant topic
-- Distribute questions evenly across the identified topics
-- Use the quiz type {quiz_type}
+Generate EXACTLY {num_questions} questions of type '{quiz_type}'.
+- {type_instruction}
+- Each question MUST have a "topic" field set to one of the defined topics.
+- Distribute questions evenly across topics.
 
 CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text.
-If the text is in Spanish, the JSON output must be in Spanish.
-If the text is in Arabic, the JSON output must be in Arabic.
 
-Required JSON format:
+Each question follows this structure:
+{question_format}
+
+Return this JSON — the "questions" array MUST have EXACTLY {num_questions} objects, no more, no less:
 {{
-  "primary_subject": "string",
-  "topics": ["topic1", "topic2", "topic3"],
-  "questions": [
-    {{
-      "question_text": "Question here",
-      "topic": "topic1",
-      "options": ["A", "B", "C", "D"],
-      {"\"correct_option_index\": 0" if quiz_type in ("single_choice", "true_or_false") else "\"correct_option_indices\": [0, 2]"},
-      "explanation": "Why"
-    }}
-  ]
+  "primary_subject": "...",
+  "topics": ["topic1", "topic2"],
+  "questions": [ /* {num_questions} question objects here */ ]
 }}
 
 Text to analyze:
 ---
-{extracted_text}
+{prompt_text}
 ---
-
-CRITICAL INSTRUCTION:
-        If quiz_type is 'multiple_select', you must provide 'correct_option_indices' as a LIST of integers.
-        If quiz_type is 'single_choice', you must provide 'correct_option_index' as a single INTEGER.
-
 """
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash", # Use the current stable flash model
-            contents=prompt
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config={"thinking_config": {"thinking_budget": 0}},
         )
 
         # 3. PARSE AI OUTPUT (Using your helper function)
         quiz_content = extract_json_from_llm(response.text)
 
-        # 4. CREATE & SAVE QUIZ
+        # 4. ENFORCE QUESTION COUNT
+        questions = quiz_content.get("questions", [])
+        if len(questions) > num_questions:
+            quiz_content["questions"] = questions[:num_questions]
+        elif len(questions) < num_questions:
+            raise ValueError(f"AI returned {len(questions)} questions instead of {num_questions}. Try again.")
+
+        # 5. CREATE & SAVE QUIZ
         new_quiz = Quiz(
             id=uuid.uuid4(),
             user_id=currentUser.id,
             source_id=source_to_use_id,
+            # subject_id intentionally NOT set here — source-level quizzes inherit
+            # subject context via QuizSource.subject_id, not via Quiz.subject_id.
+            # Setting both causes duplicates in list_subject_quizzes.
             quiz_type=quiz_type,
             title=quiz_name or quiz_content.get("quiz_title", file_display_name),
             num_questions=len(quiz_content.get("questions", [])),
@@ -217,13 +234,20 @@ CRITICAL INSTRUCTION:
         )
 
         db.add(new_quiz)
+
+        # Persist topics to source if not set yet (first quiz = source of truth for topics)
+        if source_obj and not source_obj.topics:
+            source_obj.topics = {
+                "primary_subject": quiz_content.get("primary_subject", "Unknown"),
+                "topics": quiz_content.get("topics", []),
+            }
+
         db.commit()
         db.refresh(new_quiz)
         return new_quiz
 
     except Exception as e:
         db.rollback()
-        # Logging here would be helpful: logger.error(f"AI/DB Error: {e}")
         raise HTTPException(500, f"Error generating or saving quiz: {str(e)}")
 
 @router.post("/create-focused", response_model=QuizResponse)
@@ -251,53 +275,82 @@ async def create_focused_quiz(
     # Parse focus topics
     topics_list = [t.strip() for t in focus_topics.split(",")]
 
+    # Build format based on quiz type
+    if quiz_type == "multiple_select":
+        focused_question_format = """{
+      "question_text": "Question here",
+      "topic": "one of the focus topics",
+      "options": ["A", "B", "C", "D"],
+      "correct_option_indices": [0, 2],
+      "explanation": "Why"
+    }"""
+        focused_type_instruction = "Each question must have exactly 4 options and 'correct_option_indices' as a list of integers."
+    elif quiz_type == "true_or_false":
+        focused_question_format = """{
+      "question_text": "A factual statement about the topic (evaluatable as true or false)",
+      "topic": "one of the focus topics",
+      "options": ["True", "False"],
+      "correct_option_index": 0,
+      "explanation": "Why this statement is true or false"
+    }"""
+        focused_type_instruction = f"IMPORTANT: options MUST be exactly [\"True\", \"False\"]. Do NOT use A/B/C/D. correct_option_index is 0 for True, 1 for False. You MUST generate EXACTLY {num_questions} statements."
+    else:
+        focused_question_format = """{
+      "question_text": "Question here",
+      "topic": "one of the focus topics",
+      "options": ["A", "B", "C", "D"],
+      "correct_option_index": 0,
+      "explanation": "Why"
+    }"""
+        focused_type_instruction = "Each question must have exactly 4 options and 'correct_option_index' as a single integer."
+
+    # Compress source text for prompt
+    focused_prompt_text = compress_text(source.extracted_text or "")
+    if len(focused_prompt_text) < 200:
+        raise HTTPException(400, "Not enough text content in this source to generate a quiz.")
+
     # Enhanced prompt for focused quiz
     prompt = f"""
 Return ONLY valid JSON. Do NOT use markdown or conversational text.
 
-Generate exactly {num_questions} quiz questions focused ONLY on these specific topics:
-{', '.join(topics_list)}
+Generate EXACTLY {num_questions} questions of type '{quiz_type}' focused ONLY on these topics: {', '.join(topics_list)}
 
-You MUST:
-- Generate questions ONLY about these topics
-- Distribute questions evenly across the listed topics
-- Tag each question with its topic
-- Use quiz type: {quiz_type}
+- {focused_type_instruction}
+- Each question MUST have a "topic" field set to one of the listed topics.
+- Distribute evenly across topics.
 
-CRITICAL: You must generate the quiz in the SAME LANGUAGE as the provided text.
+CRITICAL: Generate the quiz in the SAME LANGUAGE as the provided text.
 
-Required JSON format:
+Each question follows this structure:
+{focused_question_format}
+
+Return this JSON — the "questions" array MUST have EXACTLY {num_questions} objects, no more, no less:
 {{
-  "primary_subject": "string",
+  "primary_subject": "...",
   "topics": {topics_list},
-  "questions": [
-    {{
-      "question_text": "Question here",
-      "topic": "one of the focus topics",
-      "options": ["A", "B", "C", "D"],
-      {"\"correct_option_index\": 0" if quiz_type in ("single_choice", "true_or_false") else "\"correct_option_indices\": [0, 2]"},
-      "explanation": "Why"
-    }}
-  ]
+  "questions": [ /* {num_questions} question objects here */ ]
 }}
 
 Text to use:
 ---
-{source.extracted_text}
+{focused_prompt_text}
 ---
-
-CRITICAL INSTRUCTION:
-        If quiz_type is 'multiple_select', you must provide 'correct_option_indices' as a LIST of integers.
-        If quiz_type is 'single_choice', you must provide 'correct_option_index' as a single INTEGER.
 """
 
     try:
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=prompt
+            contents=prompt,
+            config={"thinking_config": {"thinking_budget": 0}},
         )
 
         quiz_content = extract_json_from_llm(response.text)
+
+        questions = quiz_content.get("questions", [])
+        if len(questions) > num_questions:
+            quiz_content["questions"] = questions[:num_questions]
+        elif len(questions) < num_questions:
+            raise ValueError(f"AI returned {len(questions)} questions instead of {num_questions}. Try again.")
 
         new_quiz = Quiz(
             id=uuid.uuid4(),
@@ -360,6 +413,17 @@ async def delete_quiz_source(
         "status": "success",
         "message": f"Source {source_id} and all associated quizzes deleted."
     }
+
+
+def compress_text(text: str, max_chars: int = 40_000) -> str:
+    """Normalize whitespace and cap text length to reduce token usage."""
+    # Collapse runs of whitespace/newlines to at most 2 newlines
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    text = re.sub(r'[ \t]{2,}', ' ', text)
+    text = text.strip()
+    if len(text) > max_chars:
+        text = text[:max_chars]
+    return text
 
 
 def extract_json_from_llm(text: str) -> dict:
