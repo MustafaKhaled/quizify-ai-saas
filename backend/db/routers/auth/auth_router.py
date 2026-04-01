@@ -48,7 +48,7 @@ def set_auth_cookie(response: Response, token: str):
         value=token,
         httponly=True,
         secure=IS_PRODUCTION,
-        samesite="lax",
+        samesite="none" if IS_PRODUCTION else "lax",
         domain=COOKIE_DOMAIN,
         max_age=ACCESS_TOKEN_MAX_AGE,
         path="/"
@@ -61,7 +61,7 @@ def set_refresh_cookie(response: Response, token: str):
         value=token,
         httponly=True,
         secure=IS_PRODUCTION,
-        samesite="lax",
+        samesite="none" if IS_PRODUCTION else "lax",
         domain=COOKIE_DOMAIN,
         max_age=REFRESH_TOKEN_MAX_AGE,
         path="/auth/refresh"  # only sent to the refresh endpoint
