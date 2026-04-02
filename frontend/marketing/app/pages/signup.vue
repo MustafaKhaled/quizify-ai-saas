@@ -65,11 +65,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       },
     })
 
-    console.log('Register Success:', response)
-
-    // Save the auth token to localStorage (marketing site)
     if (response.access_token) {
-      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
+      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3000'
       window.location.replace(dashboardUrl)
     } else {
       toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'success' })

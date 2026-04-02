@@ -62,10 +62,8 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       body: formData,
     })
 
-    console.log('Login Success:', response)
-
     if (response.access_token) {
-      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3001'
+      const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3000'
       window.location.replace(dashboardUrl)
     }
 

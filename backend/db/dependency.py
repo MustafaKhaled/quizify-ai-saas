@@ -28,6 +28,8 @@ def get_token(request: Request, bearer: Optional[str] = Depends(oauth2_scheme)) 
     cookie = request.cookies.get("auth_token")
     if cookie:
         return cookie
+    import logging
+    logging.warning(f"[auth] No token found. Cookies received: {list(request.cookies.keys())}")
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Not authenticated",
