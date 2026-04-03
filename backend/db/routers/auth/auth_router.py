@@ -226,6 +226,9 @@ async def google_callback(request: Request, db: db_dep):
         db.add(user)
         db.commit()
         db.refresh(user)
+    elif not user.name and name:
+        user.name = name
+        db.commit()
 
     my_token = security.create_access_token(data={"sub": email})
 
