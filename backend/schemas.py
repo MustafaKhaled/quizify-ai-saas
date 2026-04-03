@@ -29,11 +29,14 @@ class UserUpdate(BaseModel):
 
 class SubscriptionInfo(BaseModel):
     status: str          # trial, active_monthly, active_yearly, expired
-    label: str           # "Pro Monthly", "Trial (5d left)"
-    is_eligible: bool    # Quick boolean for the UI to enable/disable AI buttons
+    label: Optional[str] = None           # "Pro Monthly", "Trial (5d left)"
+    is_eligible: Optional[bool] = None    # Quick boolean for the UI to enable/disable AI buttons
     ends_at: Optional[datetime] = None
     trial_ends_at: Optional[datetime] = None
     status_label: Optional[str] = None
+
+    class Config:
+        from_attributes = True
 
 class UserResponse(BaseModel):
     id: UUID
