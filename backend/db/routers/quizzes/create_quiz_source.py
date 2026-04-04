@@ -198,7 +198,7 @@ Text to analyze:
 """
 
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash-lite",
             contents=prompt,
             config={"thinking_config": {"thinking_budget": 0}},
         )
@@ -339,7 +339,7 @@ Text to use:
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-flash-lite",
             contents=prompt,
             config={"thinking_config": {"thinking_budget": 0}},
         )
