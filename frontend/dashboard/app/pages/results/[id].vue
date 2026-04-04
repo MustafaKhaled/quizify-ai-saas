@@ -126,7 +126,7 @@
           </NuxtLink>
 
           <button
-            @click="retakeQuiz"
+            @click="guardAction(() => retakeQuiz())"
             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
             🔄 Retake This Quiz
@@ -145,6 +145,8 @@
         </NuxtLink>
       </div>
     </UDashboardPanelContent>
+
+    <SubscriptionModal v-model="showSubscriptionModal" />
   </UDashboardPanel>
 </template>
 
@@ -158,6 +160,17 @@ const config = useRuntimeConfig()
 
 const result = ref<any>(null)
 const isLoading = ref(true)
+const showSubscriptionModal = ref(false)
+
+const { isEligible, fetchUser } = useSubscription()
+
+function guardAction(action: () => void) {
+  if (isEligible.value) {
+    action()
+  } else {
+    showSubscriptionModal.value = true
+  }
+}
 
 const backLink = computed(() => {
   const subjectId = result.value?.quiz?.subject_id
@@ -267,6 +280,7 @@ const retakeFullQuiz = async () => {
 }
 
 onMounted(async () => {
+  fetchUser()
   try {
     const resultId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
 

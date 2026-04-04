@@ -134,19 +134,19 @@
                   </div>
                   <!-- Actions -->
                   <div class="flex gap-2">
-                    <NuxtLink :to="`/quiz-new?subject_id=${subject.id}&source_id=${source.id}&source_name=${encodeURIComponent(source.name || source.file_name)}`">
-                      <button class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap">
-                        + New Quiz
-                      </button>
-                    </NuxtLink>
-                    <NuxtLink
-                      v-if="sourceWeakTopics(source.id).length > 0"
-                      :to="`/quiz-new?subject_id=${subject.id}&source_id=${source.id}&source_name=${encodeURIComponent(source.name || source.file_name)}&focus_topics=${sourceWeakTopics(source.id).join(',')}`"
+                    <button
+                      @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}&source_id=${source.id}&source_name=${encodeURIComponent(source.name || source.file_name)}`))"
+                      class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium whitespace-nowrap"
                     >
-                      <button class="px-3 py-1.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium whitespace-nowrap">
-                        🎯 Practice Weak Areas
-                      </button>
-                    </NuxtLink>
+                      + New Quiz
+                    </button>
+                    <button
+                      v-if="sourceWeakTopics(source.id).length > 0"
+                      @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}&source_id=${source.id}&source_name=${encodeURIComponent(source.name || source.file_name)}&focus_topics=${sourceWeakTopics(source.id).join(',')}`))"
+                      class="px-3 py-1.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium whitespace-nowrap"
+                    >
+                      🎯 Practice Weak Areas
+                    </button>
                     <button
                       @click="deleteSource(source.id)"
                       class="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 transition-colors text-sm whitespace-nowrap"

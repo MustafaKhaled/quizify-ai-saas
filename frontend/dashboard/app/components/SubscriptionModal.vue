@@ -46,7 +46,7 @@ function close() {
             @click="selectedPlan = 'monthly'"
           >
             <p class="font-semibold text-gray-900 dark:text-white">Monthly</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">$9<span class="text-sm font-normal text-gray-500">/mo</span></p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">€7.99<span class="text-sm font-normal text-gray-500">/mo</span></p>
           </button>
           <button
             class="p-4 rounded-lg border-2 text-left transition-colors relative"
@@ -57,7 +57,7 @@ function close() {
           >
             <span class="absolute -top-2.5 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 25%</span>
             <p class="font-semibold text-gray-900 dark:text-white">Yearly</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">$81<span class="text-sm font-normal text-gray-500">/yr</span></p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">€5.99<span class="text-sm font-normal text-gray-500">/mo</span></p>
           </button>
         </div>
 
