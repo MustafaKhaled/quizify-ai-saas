@@ -43,7 +43,7 @@ router = APIRouter(
 async def create_quiz_from_file(
     db: db_dep,
     currentUser: CurrentUser,
-    # _ = Depends(verify_pro_access),  # Temporarily disabled for testing
+    _pro = Depends(verify_pro_access),
     file: Optional[UploadFile] = File(None),
     source_id: Optional[uuid.UUID] = Form(None),
     subject_id: Optional[uuid.UUID] = Form(None),
@@ -255,6 +255,7 @@ Text to analyze:
 async def create_focused_quiz(
     db: db_dep,
     currentUser: CurrentUser,
+    _pro=Depends(verify_pro_access),
     source_id: uuid.UUID = Form(...),
     focus_topics: str = Form(...),  # Comma-separated list
     quiz_type: Optional[str] = Form("single_choice"),

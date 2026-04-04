@@ -12,6 +12,7 @@ from google import genai
 
 from db.dependency import get_current_user, get_db
 from db.models import Quiz, QuizResult, QuizSource, Subject, User
+from db.routers.subscription.subscription_router import verify_pro_access
 from schemas import (
     QuizResponse,
     SubjectCreate,
@@ -254,6 +255,7 @@ async def create_subject_quiz(
     subject_id: uuid.UUID,
     db: db_dep,
     current_user: CurrentUser,
+    _pro=Depends(verify_pro_access),
     quiz_type: Optional[str] = Form("single_choice"),
     quiz_name: Optional[str] = Form(None),
     num_questions: int = Form(10),

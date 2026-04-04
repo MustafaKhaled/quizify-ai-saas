@@ -138,6 +138,8 @@
         </form>
       </div>
     </UDashboardPanelContent>
+
+    <SubscriptionModal v-model="showSubscriptionModal" />
   </UDashboardPanel>
 </template>
 
@@ -151,6 +153,7 @@ const fileInput = ref<HTMLInputElement>()
 const isDragover = ref(false)
 const isCreating = ref(false)
 const selectedFile = ref<File | null>(null)
+const showSubscriptionModal = ref(false)
 
 // Support for focused quiz mode
 const mode = ref<'normal' | 'focused' | 'full'>('normal')
@@ -278,6 +281,10 @@ const createQuiz = async () => {
     })
 
     if (!response.ok) {
+      if (response.status === 403) {
+        showSubscriptionModal.value = true
+        return
+      }
       const errorData = await response.json().catch(() => ({}))
       throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`)
     }

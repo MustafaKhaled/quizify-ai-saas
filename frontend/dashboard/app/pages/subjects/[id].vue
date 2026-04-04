@@ -31,13 +31,14 @@
               <span class="text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
             </div>
             <div class="flex gap-2">
-              <NuxtLink :to="`/quiz-new?subject_id=${subject.id}`">
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                  + Upload Source
-                </button>
-              </NuxtLink>
               <button
-                @click="showSubjectQuizModal = true"
+                @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}`))"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              >
+                + Upload Source
+              </button>
+              <button
+                @click="guardAction(() => { showSubjectQuizModal = true })"
                 :disabled="sources.length === 0"
                 class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
@@ -63,7 +64,7 @@
               v-for="quiz in subjectQuizzes"
               :key="quiz.id"
               class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-purple-100 dark:border-purple-900/30 hover:bg-purple-50 dark:hover:bg-purple-900/10 cursor-pointer transition-colors group"
-              @click="quiz.latest_result_id ? navigateTo(`/results/${quiz.latest_result_id}`) : navigateTo(`/quiz/${quiz.id}`)"
+              @click="quiz.latest_result_id ? navigateTo(`/results/${quiz.latest_result_id}`) : guardAction(() => navigateTo(`/quiz/${quiz.id}`))"
             >
               <div>
                 <p class="font-semibold text-gray-900 dark:text-white">{{ quiz.title }}</p>
@@ -175,7 +176,7 @@
                 v-for="quiz in quizzesForSource(source.id)"
                 :key="quiz.id"
                 class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/40 cursor-pointer transition-colors group"
-                @click="quiz.latest_result_id ? navigateTo(`/results/${quiz.latest_result_id}`) : navigateTo(`/quiz/${quiz.id}`)"
+                @click="quiz.latest_result_id ? navigateTo(`/results/${quiz.latest_result_id}`) : guardAction(() => navigateTo(`/quiz/${quiz.id}`))"
               >
                 <div class="min-w-0 mr-4">
                   <p class="font-medium text-gray-900 dark:text-white truncate">{{ quiz.title }}</p>
@@ -257,6 +258,8 @@
         </div>
       </div>
     </UDashboardPanelContent>
+
+    <SubscriptionModal v-model="showSubscriptionModal" />
   </UDashboardPanel>
 </template>
 
@@ -272,7 +275,18 @@ const quizzes = ref<any[]>([])
 const myResults = ref<any[]>([])
 const isLoading = ref(true)
 const showSubjectQuizModal = ref(false)
+const showSubscriptionModal = ref(false)
 const isGenerating = ref(false)
+
+const { isEligible, fetchUser } = useSubscription()
+
+function guardAction(action: () => void) {
+  if (isEligible.value) {
+    action()
+  } else {
+    showSubscriptionModal.value = true
+  }
+}
 
 const subjectQuizForm = ref({
   quiz_name: '',
@@ -411,6 +425,11 @@ const createSubjectQuiz = async () => {
       body: formData,
     })
     if (!res.ok) {
+      if (res.status === 403) {
+        showSubjectQuizModal.value = false
+        showSubscriptionModal.value = true
+        return
+      }
       const err = await res.json().catch(() => ({}))
       throw new Error(err.detail || `HTTP ${res.status}`)
     }
@@ -424,5 +443,8 @@ const createSubjectQuiz = async () => {
   }
 }
 
-onMounted(loadData)
+onMounted(() => {
+  fetchUser()
+  loadData()
+})
 </script>

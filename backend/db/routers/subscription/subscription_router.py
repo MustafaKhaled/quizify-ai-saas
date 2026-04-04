@@ -38,24 +38,25 @@ def verify_pro_access(current_user: User = Depends(get_current_user)):
     )
 
 
+DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3001")
+
+
 @router.post("/create-checkout-session")
 async def create_checkout(
     payload: CheckoutRequest,
-    _: db_dep, 
+    _: db_dep,
     current_user: User = Depends(get_current_user)
 ):
-    print(payload.price_id)
     stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
     try:
-        # Create the session
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
             payment_method_types=['card'],
             line_items=[{'price': payload.price_id, 'quantity': 1}],
             mode='subscription',
-            # Stripe replaces {CHECKOUT_SESSION_ID} automatically
-            success_url="https://exam-sim.com/success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url="https://exam-sim.com/pricing",
+            success_url=f"{DASHBOARD_URL}/dashboard?subscription=success",
+            cancel_url=f"{FRONTEND_URL}/pricing",
         )
         return {"url": session.url}
     except Exception as e:

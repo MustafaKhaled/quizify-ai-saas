@@ -2,6 +2,12 @@
   <UDashboardPanel grow>
     <UDashboardPanelContent class="p-6 overflow-y-auto">
 
+      <!-- Subscription Success -->
+      <div v-if="subscriptionSuccess" class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center justify-between">
+        <p class="text-green-800 dark:text-green-200 font-medium">You're now a Pro member! Enjoy unlimited quiz generation.</p>
+        <button @click="subscriptionSuccess = false" class="text-green-600 hover:text-green-800 dark:text-green-400">&times;</button>
+      </div>
+
       <!-- Welcome -->
       <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
@@ -70,12 +76,18 @@
 definePageMeta({ layout: 'default' })
 
 const config = useRuntimeConfig()
+const route = useRoute()
 
 const userName = ref('')
+const subscriptionSuccess = ref(false)
 const recentSubjects = ref<any[]>([])
 const stats = ref({ totalQuizzes: 0, averageScore: 0 })
 
 onMounted(async () => {
+  if (route.query.subscription === 'success') {
+    subscriptionSuccess.value = true
+    navigateTo('/dashboard', { replace: true })
+  }
   const api = config.public.apiBase
 
   const [userRes, subjectsRes, quizzesRes, resultsRes] = await Promise.allSettled([
