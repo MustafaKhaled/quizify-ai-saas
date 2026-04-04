@@ -259,6 +259,7 @@ async def create_subject_quiz(
     num_questions: int = Form(10),
     time_limit: Optional[int] = Form(None),
 ):
+    num_questions = min(num_questions, 30)
     subject = _get_subject_or_404(subject_id, current_user.id, db)
 
     sources = (

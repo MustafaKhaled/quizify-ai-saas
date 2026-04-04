@@ -56,6 +56,7 @@ async def create_quiz_from_file(
     time_limit: int | None = Form(None)
 ):
     quiz_type: str = quiz_type or "single_choice"
+    num_questions = min(num_questions, 30)
     extracted_text = ""
     source_to_use_id = None
     file_display_name = ""
@@ -262,6 +263,7 @@ async def create_focused_quiz(
     time_limit: int | None = Form(None)
 ):
     """Generate a quiz focused on specific topics from an existing source"""
+    num_questions = min(num_questions, 30)
 
     # Get the source
     source = db.query(QuizSource).filter(
