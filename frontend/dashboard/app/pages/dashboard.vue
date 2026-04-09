@@ -78,7 +78,7 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 
-const { refreshUser } = useSubscription()
+const { refreshUser, isPro } = useSubscription()
 
 const userName = ref('')
 const subscriptionSuccess = ref(false)
