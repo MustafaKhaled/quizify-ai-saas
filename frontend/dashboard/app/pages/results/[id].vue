@@ -92,21 +92,46 @@
             </div>
 
             <div class="space-y-3">
-              <!-- User's Answer -->
-              <div>
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Your Answer:</p>
-                <p class="text-gray-900 dark:text-white">
-                  {{ formatAnswer(item.user_choice) }}
-                </p>
+              <!-- Question text -->
+              <p v-if="item.question" class="text-gray-900 dark:text-white font-medium">
+                {{ item.question }}
+              </p>
+
+              <!-- All Options -->
+              <div v-if="item.options && item.options.length" class="space-y-2">
+                <div
+                  v-for="(option, optIdx) in item.options"
+                  :key="optIdx"
+                  class="flex items-start gap-3 p-3 rounded-lg border"
+                  :class="getOptionClass(optIdx, item)"
+                >
+                  <span class="font-bold text-sm mt-0.5">{{ String.fromCharCode(65 + optIdx) }}.</span>
+                  <span class="flex-1 text-gray-900 dark:text-white">{{ option }}</span>
+                  <div class="flex items-center gap-2 text-xs font-medium">
+                    <span v-if="isUserChoice(optIdx, item)" class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                      Your answer
+                    </span>
+                    <span v-if="isCorrectChoice(optIdx, item)" class="px-2 py-0.5 rounded bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      ✓ Correct
+                    </span>
+                    <span v-else-if="isUserChoice(optIdx, item)" class="px-2 py-0.5 rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                      ✗ Incorrect
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <!-- Correct Answer (if wrong) -->
-              <div v-if="!item.is_correct">
-                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Correct Answer:</p>
-                <p class="text-green-700 dark:text-green-300 font-medium">
-                  {{ formatAnswer(item.correct_answer) }}
-                </p>
-              </div>
+              <!-- Fallback when options aren't available -->
+              <template v-else>
+                <div>
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Your Answer:</p>
+                  <p class="text-gray-900 dark:text-white">{{ formatAnswer(item.user_choice) }}</p>
+                </div>
+                <div v-if="!item.is_correct">
+                  <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Correct Answer:</p>
+                  <p class="text-green-700 dark:text-green-300 font-medium">{{ formatAnswer(item.correct_answer) }}</p>
+                </div>
+              </template>
 
               <!-- Explanation -->
               <div v-if="item.explanation" class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
@@ -197,6 +222,25 @@ const formatAnswer = (answer: number | number[] | null | undefined) => {
     return answer.length > 0 ? `Options: ${answer.map((a: number) => a + 1).join(', ')}` : 'No answer provided'
   }
   return `Option ${answer + 1}`
+}
+
+const toIndexSet = (val: any): number[] => {
+  if (val === null || val === undefined) return []
+  return Array.isArray(val) ? val : [val]
+}
+
+const isUserChoice = (optIdx: number, item: any) =>
+  toIndexSet(item.user_choice).includes(optIdx)
+
+const isCorrectChoice = (optIdx: number, item: any) =>
+  toIndexSet(item.correct_answer).includes(optIdx)
+
+const getOptionClass = (optIdx: number, item: any) => {
+  const isCorrect = isCorrectChoice(optIdx, item)
+  const isUser = isUserChoice(optIdx, item)
+  if (isCorrect) return 'bg-green-50 dark:bg-green-900/20 border-green-500'
+  if (isUser) return 'bg-red-50 dark:bg-red-900/20 border-red-500'
+  return 'bg-gray-50 dark:bg-gray-700/30 border-gray-200 dark:border-gray-700'
 }
 
 const getBarColor = (accuracy: number) => {

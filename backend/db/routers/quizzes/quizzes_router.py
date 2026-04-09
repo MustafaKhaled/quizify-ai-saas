@@ -194,10 +194,23 @@ async def get_result_review(
     quiz = result.quiz
     source_subject_id = quiz.source.subject_id if quiz.source else None
 
+    # Enrich breakdown with question text and options so the review screen
+    # can show every option and indicate which were correct.
+    questions = (quiz.content or {}).get("questions", []) if isinstance(quiz.content, dict) else []
+    breakdown = []
+    for item in (result.user_answers or []):
+        enriched = dict(item)
+        idx = item.get("question_index")
+        if isinstance(idx, int) and 0 <= idx < len(questions):
+            q = questions[idx]
+            enriched["question"] = q.get("question") or q.get("question_text") or q.get("text")
+            enriched["options"] = q.get("options", [])
+        breakdown.append(enriched)
+
     return {
         "score": float(result.score_percentage),
         "date": result.attempt_date,
-        "breakdown": result.user_answers,
+        "breakdown": breakdown,
         "quiz": {
             "id": str(quiz.id),
             "source_id": str(quiz.source_id) if quiz.source_id else None,

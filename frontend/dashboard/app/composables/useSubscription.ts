@@ -31,16 +31,26 @@ export function useSubscription() {
 
   const startCheckout = async (priceId: string) => {
     try {
+      if (!priceId || typeof priceId !== 'string' || !priceId.trim()) {
+        throw new Error('Missing price ID — cannot start checkout')
+      }
+      const body = { price_id: priceId.trim() }
       const res = await fetch(`${config.public.apiBase}/subscription/create-checkout-session`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price_id: priceId }),
+        body: JSON.stringify(body),
       })
-      if (!res.ok) throw new Error('Failed to create checkout')
+      if (!res.ok) {
+        let detail = ''
+        try { detail = (await res.json())?.detail || '' } catch {}
+        throw new Error(detail || `Failed to create checkout (${res.status})`)
+      }
       const { url } = await res.json()
+      if (!url) throw new Error('Checkout URL missing in response')
       window.location.href = url
     } catch (e: any) {
+      console.error('startCheckout failed:', e)
       alert(e?.message || 'Failed to start checkout')
     }
   }
