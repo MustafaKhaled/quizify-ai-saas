@@ -78,6 +78,8 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 
+const { refreshUser } = useSubscription()
+
 const userName = ref('')
 const subscriptionSuccess = ref(false)
 const recentSubjects = ref<any[]>([])
@@ -86,6 +88,23 @@ const stats = ref({ totalQuizzes: 0, averageScore: 0 })
 onMounted(async () => {
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true
+    const sessionId = route.query.session_id as string | undefined
+
+    // Synchronously confirm the Stripe Checkout Session so we don't race the
+    // async webhook. The backend updates is_pro before responding.
+    if (sessionId) {
+      try {
+        await fetch(`${config.public.apiBase}/subscription/verify-session`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId }),
+        })
+      } catch (e) {
+        console.error('verify-session failed:', e)
+      }
+    }
+    await refreshUser()
     navigateTo('/dashboard', { replace: true })
   }
   const api = config.public.apiBase
