@@ -78,7 +78,7 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 
-const { refreshUser, isPro } = useSubscription()
+const { fetchUser: fetchSubscriptionUser, refreshUser, isPro } = useSubscription()
 
 const userName = ref('')
 const subscriptionSuccess = ref(false)
@@ -90,6 +90,8 @@ onMounted(async () => {
     subscriptionSuccess.value = true
     await refreshUser()
     navigateTo('/dashboard', { replace: true })
+  } else {
+    await fetchSubscriptionUser()
   }
   const api = config.public.apiBase
 
