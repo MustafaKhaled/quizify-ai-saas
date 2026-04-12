@@ -154,7 +154,7 @@ const subscriptionTextMuted = computed(() => {
 onMounted(async () => {
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true
-    await refreshUser()
+    await refreshUser(true)
     navigateTo('/dashboard', { replace: true })
   } else {
     await fetchSubscriptionUser()

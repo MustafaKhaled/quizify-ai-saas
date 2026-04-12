@@ -24,9 +24,16 @@ export function useSubscription() {
     loaded.value = true
   }
 
-  const refreshUser = async () => {
+  const refreshUser = async (sync = false) => {
     loaded.value = false
-    await fetchUser()
+    try {
+      const url = sync
+        ? `${config.public.apiBase}/users/me?sync=true`
+        : `${config.public.apiBase}/users/me`
+      const res = await fetch(url, { credentials: 'include' })
+      if (res.ok) user.value = await res.json()
+    } catch {}
+    loaded.value = true
   }
 
   const startCheckout = async (priceId: string) => {
