@@ -15,6 +15,29 @@
         </h1>
       </div>
 
+      <!-- Subscription Status -->
+      <div v-if="subUser" class="mb-8">
+        <div
+          class="rounded-lg shadow p-5 flex items-center justify-between"
+          :class="subscriptionCardClass"
+        >
+          <div>
+            <p class="text-sm font-medium" :class="subscriptionTextMuted">Subscription</p>
+            <p class="text-lg font-bold" :class="subscriptionTextPrimary">{{ subUser.subscription?.label || 'No Plan' }}</p>
+            <p v-if="subscriptionDetail" class="text-sm mt-1" :class="subscriptionTextMuted">
+              {{ subscriptionDetail }}
+            </p>
+          </div>
+          <button
+            v-if="!subUser.subscription?.is_eligible"
+            @click="showSubscriptionModal = true"
+            class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
+          >
+            Upgrade to Pro
+          </button>
+        </div>
+      </div>
+
       <!-- Quick Actions -->
       <div class="mb-10">
         <NuxtLink to="/subjects/new">
@@ -69,6 +92,8 @@
       </div>
 
     </UDashboardPanelContent>
+
+    <SubscriptionModal v-model="showSubscriptionModal" />
   </UDashboardPanel>
 </template>
 
@@ -82,8 +107,49 @@ const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser, isPro } = 
 
 const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
+const showSubscriptionModal = ref(false)
 const recentSubjects = ref<any[]>([])
 const stats = ref({ totalQuizzes: 0, averageScore: 0 })
+
+const subscriptionDetail = computed(() => {
+  const sub = subUser.value?.subscription
+  if (!sub) return ''
+  const status = sub.status || ''
+
+  if (status.startsWith('active_') && sub.ends_at) {
+    const ends = new Date(sub.ends_at)
+    const now = new Date()
+    const daysLeft = Math.ceil((ends.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    return `Renews on ${ends.toLocaleDateString()} (${daysLeft} days left)`
+  }
+  if (status.startsWith('expired_')) {
+    const ends = sub.ends_at ? new Date(sub.ends_at).toLocaleDateString() : ''
+    return ends ? `Expired on ${ends}` : 'Subscription expired'
+  }
+  if (status === 'trial_expired') return 'Your free trial has ended'
+  return ''
+})
+
+const subscriptionCardClass = computed(() => {
+  const status = subUser.value?.subscription?.status || ''
+  if (status.startsWith('active_')) return 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+  if (status === 'trial_active') return 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+  return 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+})
+
+const subscriptionTextPrimary = computed(() => {
+  const status = subUser.value?.subscription?.status || ''
+  if (status.startsWith('active_')) return 'text-green-800 dark:text-green-200'
+  if (status === 'trial_active') return 'text-blue-800 dark:text-blue-200'
+  return 'text-red-800 dark:text-red-200'
+})
+
+const subscriptionTextMuted = computed(() => {
+  const status = subUser.value?.subscription?.status || ''
+  if (status.startsWith('active_')) return 'text-green-600 dark:text-green-400'
+  if (status === 'trial_active') return 'text-blue-600 dark:text-blue-400'
+  return 'text-red-600 dark:text-red-400'
+})
 
 onMounted(async () => {
   if (route.query.subscription === 'success') {
