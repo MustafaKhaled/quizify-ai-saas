@@ -55,82 +55,13 @@ async def create_checkout(
             payment_method_types=['card'],
             line_items=[{'price': payload.price_id, 'quantity': 1}],
             mode='subscription',
-            success_url=f"{DASHBOARD_URL}/dashboard?subscription=success&session_id={{CHECKOUT_SESSION_ID}}",
+            success_url=f"{DASHBOARD_URL}/dashboard?subscription=success",
             cancel_url=f"{FRONTEND_URL}/pricing",
         )
         return {"url": session.url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.post("/confirm-checkout")
-async def confirm_checkout(
-    payload: dict,
-    db: db_dep,
-    current_user: User = Depends(get_current_user),
-):
-    """Called by the frontend after Stripe redirects back.
-    Verifies the checkout session with Stripe and updates the DB
-    synchronously so /users/me returns fresh data immediately."""
-    session_id = (payload or {}).get("session_id")
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id is required")
-
-    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-    try:
-        session = stripe.checkout.Session.retrieve(session_id)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid session: {e}")
-
-    if session.get("payment_status") != "paid":
-        raise HTTPException(status_code=400, detail="Payment not completed")
-
-    # Ensure session belongs to this user
-    session_email = (session.get("customer_details") or {}).get("email", "")
-    if session_email.lower() != (current_user.email or "").lower():
-        raise HTTPException(status_code=403, detail="Session does not belong to current user")
-
-    stripe_sub_id = session.get("subscription")
-    stripe_customer_id = session.get("customer")
-
-    # Update user (idempotent — webhook may have already done this)
-    current_user.is_pro = True
-    if stripe_sub_id:
-        current_user.stripe_subscription_id = stripe_sub_id
-    if stripe_customer_id:
-        current_user.stripe_customer_id = stripe_customer_id
-
-    # Calculate subscription end date
-    ends_at = None
-    if stripe_sub_id:
-        try:
-            sub = stripe.Subscription.retrieve(stripe_sub_id)
-            if sub.get("current_period_end"):
-                ends_at = datetime.fromtimestamp(sub["current_period_end"])
-        except Exception:
-            pass
-    if not ends_at:
-        ends_at = datetime.utcnow() + relativedelta(months=1)
-
-    # Update or create Subscription record
-    sub_record = db.query(Subscription).filter(Subscription.user_id == current_user.id).first()
-    if sub_record:
-        sub_record.ends_at = ends_at
-        sub_record.status = "active"
-        if stripe_customer_id:
-            sub_record.stripe_customer_id = stripe_customer_id
-    else:
-        db.add(Subscription(
-            user_id=current_user.id,
-            stripe_customer_id=stripe_customer_id,
-            status="active",
-            ends_at=ends_at,
-            created_at=datetime.utcnow(),
-        ))
-
-    db.commit()
-    return {"ok": True}
-
-
 @router.post("/stripe-webhook")
 async def handle_webhook(request: Request, stripe_signature: str = Header(None)):
     payload = await request.body()

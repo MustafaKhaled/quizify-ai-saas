@@ -154,24 +154,6 @@ const subscriptionTextMuted = computed(() => {
 onMounted(async () => {
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true
-    const sessionId = route.query.session_id as string | undefined
-
-    // Confirm the checkout with the backend so it updates the DB
-    // synchronously before we fetch the user. This avoids the race
-    // with the async Stripe webhook.
-    if (sessionId) {
-      try {
-        await fetch(`${config.public.apiBase}/subscription/confirm-checkout`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: sessionId }),
-        })
-      } catch (e) {
-        console.error('confirm-checkout failed:', e)
-      }
-    }
-
     await refreshUser()
     navigateTo('/dashboard', { replace: true })
   } else {
