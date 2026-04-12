@@ -78,9 +78,9 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 
-const { fetchUser: fetchSubscriptionUser, refreshUser, isPro } = useSubscription()
+const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser, isPro } = useSubscription()
 
-const userName = ref('')
+const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
 const recentSubjects = ref<any[]>([])
 const stats = ref({ totalQuizzes: 0, averageScore: 0 })
@@ -95,17 +95,11 @@ onMounted(async () => {
   }
   const api = config.public.apiBase
 
-  const [userRes, subjectsRes, quizzesRes, resultsRes] = await Promise.allSettled([
-    fetch(`${api}/users/me`, { credentials: 'include' }),
+  const [subjectsRes, quizzesRes, resultsRes] = await Promise.allSettled([
     fetch(`${api}/subjects`, { credentials: 'include' }),
     fetch(`${api}/quizzes/my_quizzes`, { credentials: 'include' }),
     fetch(`${api}/quizzes/my_results`, { credentials: 'include' }),
   ])
-
-  if (userRes.status === 'fulfilled' && userRes.value.ok) {
-    const u = await userRes.value.json()
-    userName.value = u.name || ''
-  }
 
   if (subjectsRes.status === 'fulfilled' && subjectsRes.value.ok) {
     const all = await subjectsRes.value.json()
