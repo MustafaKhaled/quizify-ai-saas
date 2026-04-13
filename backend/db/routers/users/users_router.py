@@ -45,9 +45,10 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
                     current_user.is_pro = True
                     current_user.stripe_subscription_id = sub.id
                     current_user.stripe_customer_id = customer.id
+                    period_end = getattr(sub, 'current_period_end', None)
                     ends_at = (
-                        datetime.fromtimestamp(sub.current_period_end)
-                        if sub.current_period_end
+                        datetime.fromtimestamp(period_end)
+                        if period_end
                         else datetime.utcnow() + relativedelta(months=1)
                     )
                     sub_record = db.query(Subscription).filter(

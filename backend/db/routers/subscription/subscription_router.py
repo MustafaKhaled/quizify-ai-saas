@@ -101,8 +101,9 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
                     
                     # Calculate ends_at: current time + subscription period (typically 1 month)
                     # Use the current_period_end from Stripe if available
-                    if subscription.current_period_end:
-                        ends_at = datetime.fromtimestamp(subscription.current_period_end)
+                    period_end = getattr(subscription, 'current_period_end', None)
+                    if period_end:
+                        ends_at = datetime.fromtimestamp(period_end)
                     else:
                         # Fallback: add 1 month from now
                         ends_at = datetime.utcnow() + relativedelta(months=1)
