@@ -30,7 +30,7 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
 
     # When sync=true, look up the user's subscription on Stripe by email.
     # Used after checkout redirect to avoid racing the async webhook.
-    if sync and not current_user.is_pro:
+    if sync:
         import stripe, os
         from dateutil.relativedelta import relativedelta
         stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
