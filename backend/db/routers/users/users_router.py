@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Annotated
 from datetime import datetime
-
+import stripe, os
+from dateutil.relativedelta import relativedelta
 from db.models import User, Subscription
 from schemas import UserAdminResponse, UserResponse, UserUpdate
 from db.dependency import get_db, get_current_user
@@ -31,8 +32,6 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
     # When sync=true, look up the user's subscription on Stripe by email.
     # Used after checkout redirect to avoid racing the async webhook.
     if sync:
-        import stripe, os
-        from dateutil.relativedelta import relativedelta
         stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
         try:
             # Find the customer by email on Stripe
@@ -69,7 +68,9 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
                     db.commit()
                     db.refresh(current_user)
         except Exception as e:
+            import traceback
             print(f"Stripe sync failed: {e}")
+            traceback.print_exc()
 
     # Build user response with subscription info and counts
     user_data = build_user_response(current_user, db)
