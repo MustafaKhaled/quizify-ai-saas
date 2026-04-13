@@ -91,6 +91,7 @@ pytz==2025.2
 pyzmq==26.0.3
 referencing==0.37.0
 requests==2.31.0
+resend>=2.0.0
 rpds-py==0.29.0
 rsa==4.9
 setuptools==69.5.1

@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return
 
-  const publicPages = ['/auth/login', '/auth/register']
+  const publicPages = ['/auth/login', '/auth/register', '/verify-email']
   if (publicPages.includes(to.path)) return
 
   const config = useRuntimeConfig()

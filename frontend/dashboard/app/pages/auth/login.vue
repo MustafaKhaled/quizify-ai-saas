@@ -3,25 +3,31 @@ definePageMeta({
   layout: 'auth'
 })
 
+const config = useRuntimeConfig()
 const router = useRouter()
-const { $fetch } = useNuxtApp()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
+const showResend = ref(false)
+const resendMessage = ref('')
+const resendLoading = ref(false)
 
 const handleLogin = async () => {
   errorMessage.value = ''
+  showResend.value = false
   loading.value = true
 
   try {
-    const response = await $fetch('/api/auth/login', {
+    const formData = new FormData()
+    formData.append('username', email.value)
+    formData.append('password', password.value)
+
+    const response = await $fetch(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
-      body: {
-        email: email.value,
-        password: password.value
-      }
-    })
+      body: formData,
+      credentials: 'include'
+    }) as any
 
     if (response.access_token) {
       localStorage.setItem('auth_token', response.access_token)
@@ -29,9 +35,29 @@ const handleLogin = async () => {
       router.push('/dashboard')
     }
   } catch (error: any) {
-    errorMessage.value = error.data?.detail || 'Login failed'
+    const detail = error.data?.detail || error.message || 'Login failed'
+    errorMessage.value = detail
+    if (detail.toLowerCase().includes('verify your email')) {
+      showResend.value = true
+    }
   } finally {
     loading.value = false
+  }
+}
+
+const handleResend = async () => {
+  resendLoading.value = true
+  resendMessage.value = ''
+  try {
+    await $fetch(`${config.public.apiBase}/auth/resend-verification`, {
+      method: 'POST',
+      body: { email: email.value }
+    })
+    resendMessage.value = 'Verification email sent! Check your inbox.'
+  } catch {
+    resendMessage.value = 'Failed to resend. Please try again.'
+  } finally {
+    resendLoading.value = false
   }
 }
 </script>
@@ -72,6 +98,16 @@ const handleLogin = async () => {
 
       <div v-if="errorMessage" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
         {{ errorMessage }}
+        <div v-if="showResend" class="mt-2">
+          <button
+            @click="handleResend"
+            :disabled="resendLoading"
+            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium text-sm underline disabled:opacity-50"
+          >
+            {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
+          </button>
+          <p v-if="resendMessage" class="mt-1 text-blue-600 dark:text-blue-400 text-xs">{{ resendMessage }}</p>
+        </div>
       </div>
 
       <button

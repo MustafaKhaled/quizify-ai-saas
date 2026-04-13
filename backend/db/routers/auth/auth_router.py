@@ -10,7 +10,9 @@ from db.routers.util import build_user_response
 
 import schemas, security
 from authlib.integrations.starlette_client import OAuth
-import os
+from email_service import send_verification_email
+import os, secrets as _secrets_mod
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -77,10 +79,8 @@ def issue_refresh_token(response: Response, user_id, db: Session):
     set_refresh_cookie(response, raw)
 
 
-@router.post("/register", response_model=schemas.AuthenticationSuccessResponse, status_code=status.HTTP_201_CREATED)
-async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
-    from sqlalchemy.orm import joinedload
-
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+async def register(user_in: schemas.UserCreate, db: db_dep):
     expiration_date = datetime.now(timezone.utc) + timedelta(minutes=3)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
@@ -99,6 +99,7 @@ async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
         name=user_in.name,
         trial_ends_at=expiration_date,
         is_pro=False,
+        is_verified=False,
         is_admin=user_in.is_admin or False
     )
 
@@ -106,16 +107,23 @@ async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
     db.commit()
     db.refresh(new_user)
 
-    access_token = security.create_access_token(data={"sub": new_user.email})
-    set_auth_cookie(response, access_token)
-    issue_refresh_token(response, new_user.id, db)
+    # Create verification token and send email
+    token = _secrets_mod.token_urlsafe(32)
+    db.add(models.EmailVerificationToken(
+        user_id=new_user.id,
+        token=token,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+    ))
+    db.commit()
 
-    user_data = build_user_response(new_user, db)
+    try:
+        send_verification_email(new_user.email, token)
+    except Exception as e:
+        print(f"Failed to send verification email: {e}")
 
     return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": user_data
+        "message": "Registration successful. Please check your email to verify your account.",
+        "requires_verification": True
     }
 
 
@@ -141,6 +149,12 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please verify your email before logging in. Check your inbox for the verification link.",
         )
 
     access_token = security.create_access_token(data={"sub": user.email})
@@ -222,12 +236,15 @@ async def google_callback(request: Request, db: db_dep):
     user = db.query(models.User).filter(models.User.email == email).first()
 
     if not user:
-        user = models.User(email=email, name=name)
+        user = models.User(email=email, name=name, is_verified=True)
         db.add(user)
         db.commit()
         db.refresh(user)
-    elif not user.name and name:
-        user.name = name
+    else:
+        if not user.is_verified:
+            user.is_verified = True
+        if not user.name and name:
+            user.name = name
         db.commit()
 
     my_token = security.create_access_token(data={"sub": email})
@@ -247,6 +264,73 @@ async def verify_token(
     current_user: Annotated[models.User, Depends(get_current_user)]
 ):
     return current_user
+
+
+@router.get("/verify-email")
+async def verify_email(token: str, response: Response, db: db_dep):
+    """Verify user email via the token sent in the activation link."""
+    record = db.query(models.EmailVerificationToken).filter(
+        models.EmailVerificationToken.token == token
+    ).first()
+
+    if not record:
+        raise HTTPException(status_code=400, detail="Invalid verification link")
+
+    if record.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        db.delete(record)
+        db.commit()
+        raise HTTPException(status_code=400, detail="Verification link has expired. Please request a new one.")
+
+    user = db.query(models.User).filter(models.User.id == record.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_verified = True
+    db.delete(record)
+    db.commit()
+
+    # Auto-login after verification
+    access_token = security.create_access_token(data={"sub": user.email})
+    set_auth_cookie(response, access_token)
+    issue_refresh_token(response, user.id, db)
+
+    return RedirectResponse(url=f"{DASHBOARD_URL}/dashboard?verified=true", status_code=302)
+
+
+@router.post("/resend-verification")
+async def resend_verification(payload: dict, db: db_dep):
+    """Resend verification email to a user who hasn't verified yet."""
+    email = (payload or {}).get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        # Don't reveal whether the email exists
+        return {"message": "If that email is registered, a verification link has been sent."}
+
+    if user.is_verified:
+        return {"message": "Email is already verified. You can log in."}
+
+    # Delete old tokens for this user
+    db.query(models.EmailVerificationToken).filter(
+        models.EmailVerificationToken.user_id == user.id
+    ).delete()
+
+    token = _secrets_mod.token_urlsafe(32)
+    db.add(models.EmailVerificationToken(
+        user_id=user.id,
+        token=token,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+    ))
+    db.commit()
+
+    try:
+        send_verification_email(user.email, token)
+    except Exception as e:
+        print(f"Failed to resend verification email: {e}")
+
+    return {"message": "If that email is registered, a verification link has been sent."}
 
 
 @router.post("/exchange")
