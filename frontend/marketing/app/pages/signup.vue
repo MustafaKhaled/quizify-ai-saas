@@ -50,9 +50,12 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
+const verificationSent = ref(false)
+const registeredEmail = ref('')
+
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
-    const response = await $fetch<{ access_token?: string }>(`${config.public.apiBase}/auth/register`, {
+    const response = await $fetch<{ access_token?: string, requires_verification?: boolean, message?: string }>(`${config.public.apiBase}/auth/register`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -65,22 +68,66 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       },
     })
 
-    if (response.access_token) {
+    if (response.requires_verification) {
+      registeredEmail.value = payload.data.email
+      verificationSent.value = true
+    } else if (response.access_token) {
       const dashboardUrl = config.public.dashboardUrl || 'http://localhost:3000'
       window.location.replace(dashboardUrl)
-    } else {
-      toast.add({ title: 'Success', description: 'Account created! Please login.', color: 'success' })
-      setTimeout(() => navigateTo('/login'), 2000)
     }
 
-  } catch (error) {
-    toast.add({ title: 'Error', description: 'Failed to create account', color: 'error' })
+  } catch (error: any) {
+    const detail = error?.data?.detail || 'Failed to create account'
+    toast.add({ title: 'Error', description: detail, color: 'error' })
+  }
+}
+
+const resendLoading = ref(false)
+
+async function handleResend() {
+  resendLoading.value = true
+  try {
+    await $fetch(`${config.public.apiBase}/auth/resend-verification`, {
+      method: 'POST',
+      body: { email: registeredEmail.value }
+    })
+    toast.add({ title: 'Sent', description: 'Verification email resent. Check your inbox.', color: 'success' })
+  } catch {
+    toast.add({ title: 'Error', description: 'Failed to resend. Please try again.', color: 'error' })
+  } finally {
+    resendLoading.value = false
   }
 }
 </script>
 
 <template>
+  <!-- Verification Sent Screen -->
+  <div v-if="verificationSent" class="max-w-md w-full mx-auto text-center py-12">
+    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+      <span class="text-3xl">&#9993;</span>
+    </div>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Check your email</h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-2">
+      We sent a verification link to <strong class="text-gray-900 dark:text-white">{{ registeredEmail }}</strong>
+    </p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      Click the link in the email to activate your account. The link expires in 24 hours.
+    </p>
+    <button
+      @click="handleResend"
+      :disabled="resendLoading"
+      class="text-primary font-medium text-sm disabled:opacity-50"
+    >
+      {{ resendLoading ? 'Sending...' : "Didn't receive it? Resend email" }}
+    </button>
+    <p class="mt-6">
+      <ULink to="/login" class="text-primary font-medium">Back to Login</ULink>
+    </p>
+  </div>
+
+  <!-- Registration Form -->
   <UAuthForm
+    v-else
     :fields="fields"
     :schema="schema"
     :providers="providers"

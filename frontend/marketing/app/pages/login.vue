@@ -70,7 +70,33 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   } catch (error: any) {
     console.error('Login Failed:', error.data)
     const toast = useToast()
-    toast.add({ title: 'Error', description: 'Invalid login credentials', color: 'error' })
+    const detail = error?.data?.detail || 'Invalid login credentials'
+    toast.add({ title: 'Error', description: detail, color: 'error' })
+
+    if (detail.toLowerCase().includes('verify your email')) {
+      showResend.value = true
+      loginEmail.value = payload.data.email
+    }
+  }
+}
+
+const showResend = ref(false)
+const loginEmail = ref('')
+const resendLoading = ref(false)
+
+async function handleResendFromLogin() {
+  resendLoading.value = true
+  const toast = useToast()
+  try {
+    await $fetch(`${config.public.apiBase}/auth/resend-verification`, {
+      method: 'POST',
+      body: { email: loginEmail.value }
+    })
+    toast.add({ title: 'Sent', description: 'Verification email resent. Check your inbox.', color: 'success' })
+  } catch {
+    toast.add({ title: 'Error', description: 'Failed to resend. Please try again.', color: 'error' })
+  } finally {
+    resendLoading.value = false
   }
 }
 </script>
@@ -100,6 +126,15 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     </template>
 
     <template #footer>
+      <div v-if="showResend" class="mb-3 text-center">
+        <button
+          @click="handleResendFromLogin"
+          :disabled="resendLoading"
+          class="text-primary font-medium text-sm underline disabled:opacity-50"
+        >
+          {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
+        </button>
+      </div>
       By signing in, you agree to our <ULink
         to="/"
         class="text-primary font-medium"
