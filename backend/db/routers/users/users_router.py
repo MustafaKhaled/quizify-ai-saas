@@ -28,37 +28,46 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
     # Access subscription to trigger lazy load if needed
     _ = current_user.subscription
 
-    # When sync=true, check Stripe for the latest subscription status.
+    # When sync=true, look up the user's subscription on Stripe by email.
     # Used after checkout redirect to avoid racing the async webhook.
-    if sync and current_user.stripe_subscription_id and not current_user.is_pro:
+    if sync and not current_user.is_pro:
         import stripe, os
         from dateutil.relativedelta import relativedelta
         stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
         try:
-            sub = stripe.Subscription.retrieve(current_user.stripe_subscription_id)
-            if sub.get("status") in ("active", "trialing"):
-                current_user.is_pro = True
-                ends_at = (
-                    datetime.fromtimestamp(sub["current_period_end"])
-                    if sub.get("current_period_end")
-                    else datetime.utcnow() + relativedelta(months=1)
-                )
-                sub_record = db.query(Subscription).filter(
-                    Subscription.user_id == current_user.id
-                ).first()
-                if sub_record:
-                    sub_record.ends_at = ends_at
-                    sub_record.status = sub.get("status", "active")
-                else:
-                    db.add(Subscription(
-                        user_id=current_user.id,
-                        stripe_customer_id=current_user.stripe_customer_id,
-                        status=sub.get("status", "active"),
-                        ends_at=ends_at,
-                        created_at=datetime.utcnow(),
-                    ))
-                db.commit()
-                db.refresh(current_user)
+            # Find the customer by email on Stripe
+            customers = stripe.Customer.list(email=current_user.email, limit=1)
+            if customers.data:
+                customer = customers.data[0]
+                # Get their active subscriptions
+                subs = stripe.Subscription.list(customer=customer.id, status="active", limit=1)
+                if subs.data:
+                    sub = subs.data[0]
+                    current_user.is_pro = True
+                    current_user.stripe_subscription_id = sub.id
+                    current_user.stripe_customer_id = customer.id
+                    ends_at = (
+                        datetime.fromtimestamp(sub["current_period_end"])
+                        if sub.get("current_period_end")
+                        else datetime.utcnow() + relativedelta(months=1)
+                    )
+                    sub_record = db.query(Subscription).filter(
+                        Subscription.user_id == current_user.id
+                    ).first()
+                    if sub_record:
+                        sub_record.ends_at = ends_at
+                        sub_record.status = sub.get("status", "active")
+                        sub_record.stripe_customer_id = customer.id
+                    else:
+                        db.add(Subscription(
+                            user_id=current_user.id,
+                            stripe_customer_id=customer.id,
+                            status=sub.get("status", "active"),
+                            ends_at=ends_at,
+                            created_at=datetime.utcnow(),
+                        ))
+                    db.commit()
+                    db.refresh(current_user)
         except Exception as e:
             print(f"Stripe sync failed: {e}")
 
