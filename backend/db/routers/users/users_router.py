@@ -46,8 +46,8 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
                     current_user.stripe_subscription_id = sub.id
                     current_user.stripe_customer_id = customer.id
                     ends_at = (
-                        datetime.fromtimestamp(sub["current_period_end"])
-                        if sub.get("current_period_end")
+                        datetime.fromtimestamp(sub.current_period_end)
+                        if sub.current_period_end
                         else datetime.utcnow() + relativedelta(months=1)
                     )
                     sub_record = db.query(Subscription).filter(
@@ -55,13 +55,13 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
                     ).first()
                     if sub_record:
                         sub_record.ends_at = ends_at
-                        sub_record.status = sub.get("status", "active")
+                        sub_record.status = sub.status or "active"
                         sub_record.stripe_customer_id = customer.id
                     else:
                         db.add(Subscription(
                             user_id=current_user.id,
                             stripe_customer_id=customer.id,
-                            status=sub.get("status", "active"),
+                            status=sub.status or "active",
                             ends_at=ends_at,
                             created_at=datetime.utcnow(),
                         ))

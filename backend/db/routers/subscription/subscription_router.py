@@ -79,10 +79,10 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
         session = event['data']['object']
         print(f"Payment succeeded for {session.customer_details.email}")
         
-        # Get user identifier (using email or metadata)
-        customer_email = session.get("customer_details", {}).get("email")
-        stripe_sub_id = session.get("subscription")  # e.g., sub_1Qjs...
-        stripe_customer_id = session.get("customer")  # e.g., cus_Pjs...
+        # Get user identifier — Stripe objects use attribute access, not .get()
+        customer_email = session.customer_details.email
+        stripe_sub_id = session.subscription
+        stripe_customer_id = session.customer
 
         # Open a database session
         with SessionLocal() as db:
@@ -101,8 +101,8 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
                     
                     # Calculate ends_at: current time + subscription period (typically 1 month)
                     # Use the current_period_end from Stripe if available
-                    if subscription.get('current_period_end'):
-                        ends_at = datetime.fromtimestamp(subscription['current_period_end'])
+                    if subscription.current_period_end:
+                        ends_at = datetime.fromtimestamp(subscription.current_period_end)
                     else:
                         # Fallback: add 1 month from now
                         ends_at = datetime.utcnow() + relativedelta(months=1)
@@ -114,14 +114,14 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
                     
                     if subscription_record:
                         subscription_record.ends_at = ends_at
-                        subscription_record.status = subscription.get('status', 'active')
+                        subscription_record.status = subscription.status or 'active'
                         subscription_record.stripe_customer_id = stripe_customer_id
                     else:
                         # Create new subscription record if it doesn't exist
                         subscription_record = Subscription(
                             user_id=user.id,
                             stripe_customer_id=stripe_customer_id,
-                            status=subscription.get('status', 'active'),
+                            status=subscription.status or 'active',
                             ends_at=ends_at,
                             created_at=datetime.utcnow()
                         )
