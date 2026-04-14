@@ -44,7 +44,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-md w-full text-center">
+  <div class="max-w-md w-full mx-auto text-center">
     <!-- Loading -->
     <div v-if="status === 'loading'">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>

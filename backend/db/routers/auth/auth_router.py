@@ -259,13 +259,6 @@ async def google_callback(request: Request, db: db_dep):
     return RedirectResponse(url=f"{DASHBOARD_URL}?code={code}")
 
 
-@router.get("/verify", response_model=schemas.UserAdminResponse)
-async def verify_token(
-    current_user: Annotated[models.User, Depends(get_current_user)]
-):
-    return current_user
-
-
 @router.get("/verify-email")
 async def verify_email(token: str, response: Response, db: db_dep):
     """Verify user email via the token sent in the activation link."""
@@ -295,6 +288,13 @@ async def verify_email(token: str, response: Response, db: db_dep):
     issue_refresh_token(response, user.id, db)
 
     return RedirectResponse(url=f"{DASHBOARD_URL}/dashboard?verified=true", status_code=302)
+
+
+@router.get("/verify", response_model=schemas.UserAdminResponse)
+async def verify_token(
+    current_user: Annotated[models.User, Depends(get_current_user)]
+):
+    return current_user
 
 
 @router.post("/resend-verification")
