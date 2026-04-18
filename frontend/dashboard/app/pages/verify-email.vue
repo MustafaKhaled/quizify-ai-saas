@@ -49,7 +49,7 @@ onMounted(async () => {
       redirect: 'manual'
     })
 
-    if (response.type === 'opaqueredirect' || response.ok) {
+    if (response.status === 302 || response.ok) {
       status.value = 'success'
       setTimeout(() => {
         navigateTo('/dashboard?verified=true')

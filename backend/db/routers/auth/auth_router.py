@@ -109,17 +109,12 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
 
     # Create verification token and send email
     token = _secrets_mod.token_urlsafe(32)
-    try:
-        db.add(models.EmailVerificationToken(
-            user_id=new_user.id,
-            token=token,
-            expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
-        ))
-        db.commit()
-        print(f"[register] Verification token saved for {new_user.email}")
-    except Exception as e:
-        print(f"[register] Failed to save verification token: {e}")
-        db.rollback()
+    db.add(models.EmailVerificationToken(
+        user_id=new_user.id,
+        token=token,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+    ))
+    db.commit()
 
     try:
         send_verification_email(new_user.email, token)
