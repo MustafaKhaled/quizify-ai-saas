@@ -45,11 +45,10 @@ onMounted(async () => {
 
   try {
     const response = await fetch(`${config.public.apiBase}/auth/verify-email?token=${encodeURIComponent(token)}`, {
-      credentials: 'include',
-      redirect: 'manual'
+      credentials: 'include'
     })
 
-    if (response.status === 302 || response.ok) {
+    if (response.ok) {
       status.value = 'success'
       setTimeout(() => {
         navigateTo('/dashboard?verified=true')

@@ -288,7 +288,7 @@ async def verify_email(token: str, response: Response, db: db_dep):
     set_auth_cookie(response, access_token)
     issue_refresh_token(response, user.id, db)
 
-    return RedirectResponse(url=f"{DASHBOARD_URL}/dashboard?verified=true", status_code=302)
+    return {"message": "Email verified successfully", "verified": True}
 
 
 @router.get("/verify", response_model=schemas.UserAdminResponse)
