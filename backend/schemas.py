@@ -34,6 +34,7 @@ class SubscriptionInfo(BaseModel):
     ends_at: Optional[datetime] = None
     trial_ends_at: Optional[datetime] = None
     status_label: Optional[str] = None
+    trial_quiz_limit: Optional[int] = None
 
     class Config:
         from_attributes = True

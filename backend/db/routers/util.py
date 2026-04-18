@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from db.models import User
+from db.routers.subscription.subscription_router import TRIAL_QUIZ_LIMIT
 
 def get_subscription_status(user: User) -> dict:
     now = datetime.now(timezone.utc) - timedelta(hours=1)  # Small buffer to avoid edge cases
@@ -53,8 +54,9 @@ def get_subscription_status(user: User) -> dict:
             "status": "trial_active",
             "label": f"Trial ({total_seconds // 60}m {total_seconds % 60}s left)",
             "is_eligible": True,
-            "ends_at": None,      # No subscription end date yet
-            "trial_ends": trial_limit
+            "ends_at": None,
+            "trial_ends": trial_limit,
+            "trial_quiz_limit": TRIAL_QUIZ_LIMIT
         }
 
     # 4. Logic Branch 3: Trial has ended, never paid

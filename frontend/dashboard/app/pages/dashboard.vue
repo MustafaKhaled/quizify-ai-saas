@@ -126,6 +126,12 @@ const subscriptionDetail = computed(() => {
     const ends = sub.ends_at ? new Date(sub.ends_at).toLocaleDateString() : ''
     return ends ? `Expired on ${ends}` : 'Subscription expired'
   }
+  if (status === 'trial_active') {
+    const limit = sub.trial_quiz_limit ?? 3
+    const used = subUser.value?.quizzes_count ?? 0
+    const remaining = Math.max(0, limit - used)
+    return `${remaining} of ${limit} quizzes remaining`
+  }
   if (status === 'trial_expired') return 'Your free trial has ended'
   return ''
 })

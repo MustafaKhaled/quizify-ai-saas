@@ -20,17 +20,27 @@ db_dep = Annotated[Session, Depends(get_db)]
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 
-def verify_pro_access(current_user: User = Depends(get_current_user)):
+TRIAL_QUIZ_LIMIT = 3
+
+
+def verify_pro_access(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     now = datetime.utcnow()
-    
+
     # Priority 1: Check if they are a paid subscriber
     if current_user.is_pro:
         return True
-        
+
     # Priority 2: Check if trial is still active
     if current_user.trial_ends_at and now < current_user.trial_ends_at:
+        from db.models import Quiz
+        quiz_count = db.query(Quiz).filter(Quiz.user_id == current_user.id).count()
+        if quiz_count >= TRIAL_QUIZ_LIMIT:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Trial limit reached. You can only create {TRIAL_QUIZ_LIMIT} quizzes during your trial. Upgrade to Pro for unlimited quizzes."
+            )
         return True
-        
+
     # If both fail, raise an error
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
