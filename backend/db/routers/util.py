@@ -86,7 +86,8 @@ def build_user_response(user: User, db_session=None) -> dict:
         "is_eligible": sub_data["is_eligible"],
         "ends_at": sub_data.get("ends_at"),
         "trial_ends_at": sub_data.get("trial_ends"),
-        "status_label": sub_data["label"]  # Use label as status_label
+        "status_label": sub_data["label"],
+        "trial_quiz_limit": sub_data.get("trial_quiz_limit"),
     }
     
     return {

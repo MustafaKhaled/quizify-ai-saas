@@ -10,13 +10,13 @@
             ? `Generate a quiz focused on: ${focusTopics.join(', ')}`
             : existingSourceName
               ? `Generating from source: ${existingSourceName}`
-              : 'Upload a PDF and generate an AI-powered quiz' }}
+              : 'Upload a file and generate an AI-powered quiz' }}
         </p>
       </div>
 
       <!-- Upload Section (only for normal mode) -->
       <div v-if="mode === 'normal'" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload PDF</h2>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload File</h2>
         
         <div
           class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center transition-colors"
@@ -58,7 +58,7 @@
               placeholder="e.g. Chapter 1, Lecture Notes"
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">A friendly name for this PDF source</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">A friendly name for this source</p>
           </div>
           <div v-if="selectedFile" class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
             <p class="text-green-800 dark:text-green-200">✓ {{ selectedFile.name }} selected</p>
@@ -228,7 +228,7 @@ const createQuiz = async () => {
 
   // For normal mode, file is required
   if (mode.value === 'normal' && !selectedFile.value) {
-    alert('Please select a PDF first')
+    alert('Please select a file first')
     return
   }
 

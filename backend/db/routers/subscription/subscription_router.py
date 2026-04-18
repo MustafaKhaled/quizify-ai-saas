@@ -24,22 +24,27 @@ TRIAL_QUIZ_LIMIT = 3
 
 
 def verify_pro_access(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    now = datetime.utcnow()
+    from datetime import timezone
+    now = datetime.now(timezone.utc)
 
     # Priority 1: Check if they are a paid subscriber
     if current_user.is_pro:
         return True
 
     # Priority 2: Check if trial is still active
-    if current_user.trial_ends_at and now < current_user.trial_ends_at:
-        from db.models import Quiz
-        quiz_count = db.query(Quiz).filter(Quiz.user_id == current_user.id).count()
-        if quiz_count >= TRIAL_QUIZ_LIMIT:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Trial limit reached. You can only create {TRIAL_QUIZ_LIMIT} quizzes during your trial. Upgrade to Pro for unlimited quizzes."
-            )
-        return True
+    if current_user.trial_ends_at:
+        trial_end = current_user.trial_ends_at
+        if trial_end.tzinfo is None:
+            trial_end = trial_end.replace(tzinfo=timezone.utc)
+        if now < trial_end:
+            from db.models import Quiz
+            quiz_count = db.query(Quiz).filter(Quiz.user_id == current_user.id).count()
+            if quiz_count >= TRIAL_QUIZ_LIMIT:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail=f"Trial limit reached. You can only create {TRIAL_QUIZ_LIMIT} quizzes during your trial. Upgrade to Pro for unlimited quizzes."
+                )
+            return True
 
     # If both fail, raise an error
     raise HTTPException(
