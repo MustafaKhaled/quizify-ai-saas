@@ -94,6 +94,7 @@ def build_user_response(user: User, db_session=None) -> dict:
         "created_at": user.created_at,
         "is_admin": user.is_admin,
         "is_pro": user.is_pro,
+        "is_verified": user.is_verified,
         "quizzes_count": quizzes_count,
         "sources_count": sources_count,
         "subscription": subscription_info

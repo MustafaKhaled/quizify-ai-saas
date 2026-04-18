@@ -25,9 +25,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   try {
-    await $fetch(`${apiBase}/auth/verify`, {
+    const user = await $fetch<{ is_verified?: boolean }>(`${apiBase}/auth/verify`, {
       credentials: 'include'
     })
+
+    if (user && user.is_verified === false) {
+      return navigateTo('/verify-email', { replace: true })
+    }
   } catch {
     window.location.href = `${marketingUrl}/login`
   }

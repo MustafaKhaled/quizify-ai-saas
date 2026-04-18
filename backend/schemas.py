@@ -47,9 +47,10 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 class UserAdminResponse(UserResponse):
-    created_at: Optional[datetime] = None 
+    created_at: Optional[datetime] = None
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None
+    is_verified: Optional[bool] = None
     quizzes_count: int = 0
     sources_count: int = 0
     subscription: Optional[SubscriptionInfo] = None
