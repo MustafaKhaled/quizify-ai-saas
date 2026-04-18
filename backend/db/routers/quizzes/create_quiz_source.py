@@ -3,6 +3,9 @@ from typing import Annotated, Optional
 import uuid
 import streamlit as st
 import fitz  # PyMuPDF
+import io
+from docx import Document as DocxDocument
+from pptx import Presentation
 from datetime import datetime
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, File, Form, UploadFile, HTTPException
@@ -107,30 +110,49 @@ async def create_quiz_from_file(
         file_display_name = source_obj.file_name
 
     elif file:
+        SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".pptx", ".txt"}
+        filename = file.filename or ""
+        ext = os.path.splitext(filename)[1].lower()
+
+        if ext not in SUPPORTED_EXTENSIONS:
+            raise HTTPException(400, f"Unsupported file type '{ext}'. Supported: PDF, DOCX, PPTX, TXT.")
+
         try:
             file_content = await file.read()
             extracted_text = ""
-        
-            with fitz.open(stream=file_content, filetype="pdf") as doc:
-                total_pages = len(doc)
-                
-                # 1. Set Defaults for optional ranges
-                s = (start_page if start_page is not None else 1)
-                e = (end_page if end_page is not None else total_pages)
-                
-                # 2. Basic Validation
-                if s < 1 or e > total_pages or s > e:
-                    raise HTTPException(400, f"Invalid page range. PDF has {total_pages} pages.")
 
-                # 3. Targeted Extraction (PyMuPDF uses 0-based indexing)
-                for page_num in range(s - 1, e):
-                    page = doc.load_page(page_num)
-                    extracted_text += page.get_text()
+            if ext == ".pdf":
+                with fitz.open(stream=file_content, filetype="pdf") as doc:
+                    total_pages = len(doc)
+                    s = start_page if start_page is not None else 1
+                    e = end_page if end_page is not None else total_pages
+                    if s < 1 or e > total_pages or s > e:
+                        raise HTTPException(400, f"Invalid page range. PDF has {total_pages} pages.")
+                    for page_num in range(s - 1, e):
+                        page = doc.load_page(page_num)
+                        extracted_text += page.get_text()
+
+            elif ext == ".docx":
+                doc = DocxDocument(io.BytesIO(file_content))
+                extracted_text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+
+            elif ext == ".pptx":
+                prs = Presentation(io.BytesIO(file_content))
+                for slide in prs.slides:
+                    for shape in slide.shapes:
+                        if shape.has_text_frame:
+                            for paragraph in shape.text_frame.paragraphs:
+                                text = paragraph.text.strip()
+                                if text:
+                                    extracted_text += text + "\n"
+
+            elif ext == ".txt":
+                extracted_text = file_content.decode("utf-8", errors="ignore")
 
             extracted_text = compress_text(extracted_text)
             if len(extracted_text) < 200:
-                raise HTTPException(400, "The selected page range contains no selectable text.")
-                # Save brand new source only if file is provided
+                raise HTTPException(400, "The file contains insufficient text content to generate a quiz.")
+
             new_source = QuizSource(
                 id=uuid.uuid4(),
                 user_id=currentUser.id,
@@ -141,14 +163,16 @@ async def create_quiz_from_file(
                 upload_date=datetime.utcnow()
             )
             db.add(new_source)
-            db.flush()  # Secure the ID for the Quiz foreign key
-            source_obj = new_source  # Track for topic persistence
+            db.flush()
+            source_obj = new_source
             source_to_use_id = new_source.id
             file_display_name = file.filename
+        except HTTPException:
+            raise
         except Exception as e:
             raise HTTPException(400, f"File processing error: {e}")
     else:
-        raise HTTPException(400, "Please provide either a PDF file or a valid source_id")
+        raise HTTPException(400, "Please provide a file (PDF, DOCX, PPTX, or TXT) or a valid source_id")
 
     # 2. AI GENERATION
     # Compress text for the prompt (cap tokens, normalize whitespace)

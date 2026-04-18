@@ -30,12 +30,12 @@
               <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h24a4 4 0 004-4V20m-8-12l-4-4m0 0l-4 4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <p class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Drag and drop your PDF</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">or click to browse</p>
+          <p class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Drag and drop your file</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">PDF, DOCX, PPTX, or TXT</p>
           <input
             ref="fileInput"
             type="file"
-            accept=".pdf"
+            accept=".pdf,.docx,.pptx,.txt"
             class="hidden"
             @change="handleFileSelect"
           />
@@ -44,7 +44,7 @@
             :disabled="isCreating"
             class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
-            Choose PDF
+            Choose File
           </button>
         </div>
 
@@ -185,15 +185,18 @@ const handleFileSelect = (e: Event) => {
   }
 }
 
+const SUPPORTED_EXTENSIONS = ['.pdf', '.docx', '.pptx', '.txt']
+
 const selectFile = (file: File) => {
-  if (!file.type.includes('pdf')) {
-    alert('Please upload a PDF file')
+  const ext = '.' + file.name.split('.').pop()?.toLowerCase()
+  if (!SUPPORTED_EXTENSIONS.includes(ext)) {
+    alert('Unsupported file type. Please upload a PDF, DOCX, PPTX, or TXT file.')
     return
   }
   selectedFile.value = file
   // Auto-fill source name with file name (without extension) if not already set
   if (!sourceName.value) {
-    sourceName.value = file.name.replace(/\.pdf$/i, '')
+    sourceName.value = file.name.replace(/\.[^.]+$/, '')
   }
 }
 

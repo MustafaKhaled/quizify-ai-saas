@@ -6,7 +6,7 @@ items:
   - label: "Does the timer simulate real exam conditions?"
     content: "Yes! You can customize the timer to match your specific exam duration. It helps you build 'exam stamina' and master your pacing, so you don't run out of time on the big day."
   - label: "What types of files can I upload?"
-    content: "Currently, we support PDF files up to 25MB. We are working on adding support for .docx, .pptx, and direct URL links (like Wikipedia or research papers) in the very near future."
+    content: "We support PDF, DOCX (Word), PPTX (PowerPoint), and TXT files. Page range selection is available for PDFs. We are working on adding support for direct URL links (like Wikipedia or research papers) in the near future."
   - label: "Can I share my quizzes with study groups?"
     content: "Pro users can generate 'Share Links' for their quizzes. This allows your classmates to take the same quiz you generated, making it a perfect tool for collaborative study sessions."
   - label: "Is there a limit to how many pages a PDF can have?"
