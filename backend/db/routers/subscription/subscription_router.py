@@ -106,6 +106,7 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
             if user:
                 # Update User Status
                 user.is_pro = True
+                user.is_verified = True
                 user.stripe_subscription_id = stripe_sub_id
                 user.stripe_customer_id = stripe_customer_id
                 

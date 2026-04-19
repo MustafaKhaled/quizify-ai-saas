@@ -130,7 +130,7 @@ const subscriptionDetail = computed(() => {
     const limit = sub.trial_quiz_limit ?? 3
     const used = subUser.value?.quizzes_count ?? 0
     const remaining = Math.max(0, limit - used)
-    return `${remaining} of ${limit} quizzes remaining`
+    return `${remaining} ${remaining === 1 ? 'quiz' : 'quizzes'} remaining`
   }
   if (status === 'trial_expired') return 'Your free trial has ended'
   return ''

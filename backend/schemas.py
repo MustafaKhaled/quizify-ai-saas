@@ -22,6 +22,7 @@ class UserCreate(BaseModel):
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None
     expiration_date: Optional[datetime] = None
+    price_id: Optional[str] = None
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None

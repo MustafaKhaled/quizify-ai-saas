@@ -42,6 +42,15 @@ const providers = [{
   }
 }]
 
+const PRO_MONTHLY_PRICE_ID = 'price_1Slw1QGxfejNiimXsa3DfZ8R'
+const PRO_YEARLY_PRICE_ID = 'price_1Slw1jGxfejNiimXMN0PHObK'
+
+const route = useRoute()
+const plan = route.query.plan as string | undefined
+const priceId = plan === 'yearly' ? PRO_YEARLY_PRICE_ID
+  : plan === 'monthly' ? PRO_MONTHLY_PRICE_ID
+  : undefined
+
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.email('Invalid email'),
@@ -55,20 +64,23 @@ const registeredEmail = ref('')
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
-    const response = await $fetch<{ access_token?: string, requires_verification?: boolean, message?: string }>(`${config.public.apiBase}/auth/register`, {
+    const response = await $fetch<{ access_token?: string, requires_verification?: boolean, checkout_url?: string, message?: string }>(`${config.public.apiBase}/auth/register`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: {
         name: payload.data.name,
         email: payload.data.email,
-        password: payload.data.password
+        password: payload.data.password,
+        ...(priceId ? { price_id: priceId } : {})
       },
     })
 
-    if (response.requires_verification) {
+    if (response.checkout_url) {
+      // Paid plan: go straight to Stripe, webhook will verify the user on payment
+      window.location.href = response.checkout_url
+    } else if (response.requires_verification) {
+      // Trial plan: require email verification
       registeredEmail.value = payload.data.email
       verificationSent.value = true
     } else if (response.access_token) {

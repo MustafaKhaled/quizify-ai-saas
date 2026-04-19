@@ -107,7 +107,30 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
     db.commit()
     db.refresh(new_user)
 
-    # Create verification token and send email
+    # Paid plan selected — skip email verification, create Stripe checkout
+    if user_in.price_id:
+        import stripe
+        stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+        DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
+        FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3001")
+        try:
+            session = stripe.checkout.Session.create(
+                customer_email=new_user.email,
+                payment_method_types=['card'],
+                line_items=[{'price': user_in.price_id, 'quantity': 1}],
+                mode='subscription',
+                success_url=f"{DASHBOARD_URL}/dashboard?subscription=success",
+                cancel_url=f"{FRONTEND_URL}/pricing",
+            )
+            return {
+                "message": "Registration successful. Redirecting to payment.",
+                "checkout_url": session.url
+            }
+        except Exception as e:
+            print(f"[register] Stripe checkout creation failed: {e}")
+            raise HTTPException(status_code=500, detail="Failed to create payment session. Please try again.")
+
+    # Trial plan — require email verification
     token = _secrets_mod.token_urlsafe(32)
     db.add(models.EmailVerificationToken(
         user_id=new_user.id,
@@ -152,7 +175,7 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if not user.is_verified:
+    if not user.is_verified and not user.is_pro:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Please verify your email before logging in. Check your inbox for the verification link.",

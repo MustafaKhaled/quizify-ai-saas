@@ -67,6 +67,9 @@ const items = ref([
           v-bind="plan"
           :price="isYearly === '1' ? plan.price.year : plan.price.month"
           :billing-cycle="isYearly === '1' ? '/year' : '/month'"
+          :button="plan.button?.to === '/signup'
+            ? { ...plan.button, to: `/signup?plan=${isYearly === '1' ? 'yearly' : 'monthly'}` }
+            : plan.button"
         />
       </UPricingPlans>
     </UContainer>
