@@ -80,7 +80,7 @@ def issue_refresh_token(response: Response, user_id, db: Session):
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(user_in: schemas.UserCreate, db: db_dep):
+async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
     expiration_date = datetime.now(timezone.utc) + timedelta(minutes=3)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
@@ -122,6 +122,11 @@ async def register(user_in: schemas.UserCreate, db: db_dep):
                 success_url=f"{DASHBOARD_URL}/dashboard?subscription=success",
                 cancel_url=f"{FRONTEND_URL}/pricing",
             )
+            # Set auth cookie so user is logged in when they return from Stripe
+            access_token = security.create_access_token(data={"sub": new_user.email})
+            set_auth_cookie(response, access_token)
+            issue_refresh_token(response, new_user.id, db)
+
             return {
                 "message": "Registration successful. Redirecting to payment.",
                 "checkout_url": session.url

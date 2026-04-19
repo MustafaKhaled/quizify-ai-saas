@@ -29,7 +29,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       credentials: 'include'
     })
 
-    if (user && user.is_verified === false) {
+    if (user && user.is_verified === false && to.query.subscription !== 'success') {
       return navigateTo('/verify-email', { replace: true })
     }
   } catch {
