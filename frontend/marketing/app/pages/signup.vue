@@ -46,10 +46,13 @@ const PRO_MONTHLY_PRICE_ID = 'price_1Slw1QGxfejNiimXsa3DfZ8R'
 const PRO_YEARLY_PRICE_ID = 'price_1Slw1jGxfejNiimXMN0PHObK'
 
 const route = useRoute()
-const plan = route.query.plan as string | undefined
-const priceId = plan === 'yearly' ? PRO_YEARLY_PRICE_ID
-  : plan === 'monthly' ? PRO_MONTHLY_PRICE_ID
-  : undefined
+
+const priceId = computed(() => {
+  const plan = route.query.plan as string | undefined
+  if (plan === 'yearly') return PRO_YEARLY_PRICE_ID
+  if (plan === 'monthly') return PRO_MONTHLY_PRICE_ID
+  return undefined
+})
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -72,12 +75,11 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         name: payload.data.name,
         email: payload.data.email,
         password: payload.data.password,
-        ...(priceId ? { price_id: priceId } : {})
+        ...(priceId.value ? { price_id: priceId.value } : {})
       },
     })
 
     if (response.checkout_url) {
-      // Paid plan: go straight to Stripe, webhook will verify the user on payment
       window.location.href = response.checkout_url
     } else if (response.requires_verification) {
       // Trial plan: require email verification
