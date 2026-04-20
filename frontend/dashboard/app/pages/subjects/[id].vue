@@ -1,6 +1,6 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
       <div v-if="isLoading" class="flex items-center justify-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
@@ -16,8 +16,8 @@
             </NuxtLink>
             <div class="w-4 h-10 rounded-full flex-shrink-0" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
             <div>
-              <h1 class="text-4xl font-bold text-gray-900 dark:text-white">{{ subject.name }}</h1>
-              <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+              <h1 class="text-4xl font-bold gradient-text">{{ subject.name }}</h1>
+              <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 {{ sources.length }} {{ sources.length === 1 ? 'source' : 'sources' }} •
                 {{ allSourceQuizzes.length }} {{ allSourceQuizzes.length === 1 ? 'quiz' : 'quizzes' }}
               </p>
@@ -26,23 +26,23 @@
 
           <div class="flex items-center gap-4 flex-shrink-0 flex-wrap">
             <!-- Subject overall % -->
-            <div v-if="subjectOverall !== null" class="text-center px-4 py-2 bg-white dark:bg-gray-800 rounded-xl shadow">
-              <p class="text-xs text-gray-400 dark:text-gray-500 mb-0.5">Overall</p>
+            <div v-if="subjectOverall !== null" class="text-center px-4 py-2 glass-card rounded-2xl">
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Overall</p>
               <span class="text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
             </div>
             <div class="flex gap-2">
               <button
                 @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}`))"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                class="px-4 py-2 btn-gradient rounded-xl transition-colors text-sm font-medium"
               >
                 + Upload Source
               </button>
               <button
                 @click="guardAction(() => { showSubjectQuizModal = true })"
                 :disabled="sources.length === 0"
-                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 shadow-lg shadow-purple-500/20 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
-                ✨ Subject Quiz
+                <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Subject Quiz
               </button>
               <button
                 @click="confirmDelete"

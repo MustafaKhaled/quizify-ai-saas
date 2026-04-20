@@ -1,13 +1,13 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-4xl font-bold text-gray-900 dark:text-white">My Quizzes</h1>
-          <p class="text-gray-600 dark:text-gray-400 mt-2">Manage and retake your quizzes</p>
+          <h1 class="text-4xl font-bold gradient-text">My Quizzes</h1>
+          <p class="text-slate-500 dark:text-slate-400 mt-2">Manage and retake your quizzes</p>
         </div>
         <NuxtLink to="/quiz-new">
-          <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+          <button class="btn-gradient rounded-xl px-6 py-2 font-medium">
             + New Quiz
           </button>
         </NuxtLink>
@@ -18,9 +18,9 @@
       </div>
 
       <div v-else-if="quizzes.length === 0" class="text-center py-12">
-        <p class="text-gray-600 dark:text-gray-400 mb-4">No quizzes yet</p>
+        <p class="text-slate-500 dark:text-slate-400 mb-4">No quizzes yet</p>
         <NuxtLink to="/quiz-new">
-          <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button class="btn-gradient rounded-xl px-6 py-2">
             Create Your First Quiz
           </button>
         </NuxtLink>
@@ -30,24 +30,24 @@
         <div
           v-for="quiz of quizzes"
           :key="quiz.id"
-          class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6 cursor-pointer"
+          class="glass-card rounded-2xl hover:shadow-2xl transition-all hover:scale-[1.02] p-6 cursor-pointer"
           @click="handleQuizClick(quiz.id)"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h3>
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2">{{ quiz.title }}</h3>
 
-          <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
-            <p>📝 {{ quiz.num_questions }} questions</p>
-            <p v-if="quiz.time_limit">⏱️ {{ quiz.time_limit }} minutes</p>
-            <p>{{ quiz.quiz_type === 'single_choice' ? '✓ Multiple Choice' : '✓✓ Multiple Select' }}</p>
-            <p v-if="quiz.lastResult" class="text-blue-600 dark:text-blue-400 font-medium">
-              ✓ Completed - {{ Math.round(quiz.lastResult.score_percentage) }}%
+          <div class="space-y-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
+            <p class="flex items-center gap-2"><UIcon name="i-lucide-file-text" /> {{ quiz.num_questions }} questions</p>
+            <p v-if="quiz.time_limit" class="flex items-center gap-2"><UIcon name="i-lucide-clock" /> {{ quiz.time_limit }} minutes</p>
+            <p class="flex items-center gap-2"><UIcon name="i-lucide-check" /> {{ quiz.quiz_type === 'single_choice' ? 'Multiple Choice' : 'Multiple Select' }}</p>
+            <p v-if="quiz.lastResult" class="text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2">
+              <UIcon name="i-lucide-check" /> Completed - <span class="gradient-text font-bold">{{ Math.round(quiz.lastResult.score_percentage) }}%</span>
             </p>
           </div>
 
           <div class="flex gap-2">
             <button
               @click.stop="deleteQuiz(quiz.id)"
-              class="px-3 py-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded text-sm"
+              class="px-3 py-1 text-red-600 dark:text-red-400 hover:bg-red-500/10 rounded-lg text-sm transition-colors"
             >
               Delete
             </button>

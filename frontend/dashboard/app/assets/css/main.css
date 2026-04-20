@@ -11,3 +11,95 @@
   --ui-bg-elevated: var(--ui-color-neutral-900);
   --ui-bg-accented: var(--ui-color-neutral-800);
 }
+
+/* ── Glassmorphism utilities ── */
+
+.glass-card {
+  background: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.06);
+}
+.dark .glass-card {
+  background: rgb(15 23 42 / 0.6);
+  border-color: rgb(255 255 255 / 0.08);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.3);
+}
+
+.glass-card-elevated {
+  background: rgb(255 255 255 / 0.85);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.1);
+}
+.dark .glass-card-elevated {
+  background: rgb(15 23 42 / 0.75);
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.4);
+}
+
+/* ── Gradient text ── */
+
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Gradient button ── */
+
+.btn-gradient {
+  background: linear-gradient(135deg, #3b82f6, #7c3aed);
+  color: white;
+  border: none;
+  transition: all 0.2s ease;
+}
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #2563eb, #6d28d9);
+  box-shadow: 0 4px 20px rgb(99 102 241 / 0.4);
+  transform: translateY(-1px);
+}
+.btn-gradient:disabled {
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Mesh background ── */
+
+.bg-mesh {
+  background-color: rgb(248 250 252);
+  background-image:
+    radial-gradient(at 20% 20%, rgb(59 130 246 / 0.08) 0%, transparent 50%),
+    radial-gradient(at 80% 80%, rgb(139 92 246 / 0.08) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgb(236 72 153 / 0.04) 0%, transparent 50%);
+}
+.dark .bg-mesh {
+  background-color: rgb(2 6 23);
+  background-image:
+    radial-gradient(at 20% 20%, rgb(59 130 246 / 0.12) 0%, transparent 50%),
+    radial-gradient(at 80% 80%, rgb(139 92 246 / 0.1) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgb(236 72 153 / 0.06) 0%, transparent 50%);
+}
+
+/* ── Progress gradient ── */
+
+.progress-gradient {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+}
+
+/* ── Glass input ── */
+
+.glass-input {
+  background: rgb(255 255 255 / 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+}
+.dark .glass-input {
+  background: rgb(30 41 59 / 0.5);
+  border-color: rgb(255 255 255 / 0.1);
+}

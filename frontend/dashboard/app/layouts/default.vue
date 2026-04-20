@@ -23,8 +23,8 @@ const links = [[{
       v-model:open="open"
       collapsible
       resizable
-      class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
+      class="glass-card border-r border-white/10"
+      :ui="{ footer: 'lg:border-t lg:border-white/10' }"
     >
       <template #header="{ collapsed }">
         <TeamsMenu :collapsed="collapsed" />

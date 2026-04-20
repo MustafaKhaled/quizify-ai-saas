@@ -1,47 +1,47 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
 
       <!-- Subscription Success -->
-      <div v-if="subscriptionSuccess" class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center justify-between">
-        <p class="text-green-800 dark:text-green-200 font-medium">You're now a Pro member! Enjoy unlimited quiz generation.</p>
-        <button @click="subscriptionSuccess = false" class="text-green-600 hover:text-green-800 dark:text-green-400">&times;</button>
+      <div v-if="subscriptionSuccess" class="mb-6 p-4 glass-card border-green-500/30 rounded-2xl flex items-center justify-between">
+        <p class="text-green-700 dark:text-green-300 font-medium">You're now a Pro member! Enjoy unlimited quiz generation.</p>
+        <button @click="subscriptionSuccess = false" class="text-green-500 hover:text-green-700 dark:text-green-400">&times;</button>
       </div>
 
-      <!-- Welcome -->
-      <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white">
-          Welcome{{ userName ? `, ${userName}` : '' }} 👋
+      <!-- Welcome + Subscription Badge -->
+      <div class="flex items-start justify-between mb-8">
+        <h1 class="text-4xl font-bold">
+          <span class="gradient-text">Welcome{{ userName ? `, ${userName}` : '' }}</span> 👋
         </h1>
-      </div>
 
-      <!-- Subscription Status -->
-      <div v-if="subUser" class="mb-8">
-        <div
-          class="rounded-lg shadow p-5 flex items-center justify-between"
-          :class="subscriptionCardClass"
-        >
-          <div>
-            <p class="text-sm font-medium" :class="subscriptionTextMuted">Subscription</p>
-            <p class="text-lg font-bold" :class="subscriptionTextPrimary">{{ subUser.subscription?.label || 'No Plan' }}</p>
-            <p v-if="subscriptionDetail" class="text-sm mt-1" :class="subscriptionTextMuted">
-              {{ subscriptionDetail }}
-            </p>
-          </div>
-          <button
-            v-if="!subUser.subscription?.is_eligible"
-            @click="showSubscriptionModal = true"
-            class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
+        <UPopover v-if="subscriptionBadgeLabel">
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border cursor-pointer select-none"
+            :class="subscriptionBadgeColor"
           >
-            Upgrade to Pro
-          </button>
-        </div>
+            <span class="w-1.5 h-1.5 rounded-full" :class="subscriptionDotColor" />
+            {{ subscriptionBadgeLabel }}
+          </span>
+          <template #content>
+            <div class="px-4 py-3 text-sm text-slate-700 dark:text-slate-300 max-w-56">
+              <p class="font-semibold mb-1">{{ subscriptionBadgeLabel }}</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">{{ subscriptionBadgeDetail }}</p>
+              <button
+                v-if="!subUser?.subscription?.is_eligible"
+                @click="showSubscriptionModal = true"
+                class="mt-2 w-full px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold"
+              >
+                Upgrade to Pro
+              </button>
+            </div>
+          </template>
+        </UPopover>
       </div>
 
       <!-- Quick Actions -->
       <div class="mb-10">
         <NuxtLink to="/subjects/new">
-          <button class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+          <button class="px-6 py-2.5 btn-gradient rounded-xl font-semibold">
             + Create Subject
           </button>
         </NuxtLink>
@@ -49,41 +49,41 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
-          <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Total Quizzes</p>
-          <p class="text-4xl font-bold text-gray-900 dark:text-white">{{ stats.totalQuizzes }}</p>
+        <div class="glass-card rounded-2xl p-6 text-center">
+          <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Total Quizzes</p>
+          <p class="text-4xl font-bold gradient-text">{{ stats.totalQuizzes }}</p>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
-          <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Average Score</p>
-          <p class="text-4xl font-bold text-gray-900 dark:text-white">{{ stats.averageScore }}%</p>
+        <div class="glass-card rounded-2xl p-6 text-center">
+          <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Average Score</p>
+          <p class="text-4xl font-bold gradient-text">{{ stats.averageScore }}%</p>
         </div>
       </div>
 
       <!-- Recent Subjects -->
       <div class="mb-10">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Recent Subjects</h2>
-          <NuxtLink to="/subjects" class="text-sm text-blue-600 hover:underline">View all →</NuxtLink>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Recent Subjects</h2>
+          <NuxtLink to="/subjects" class="text-sm font-medium gradient-text hover:opacity-80 transition-opacity">View all &rarr;</NuxtLink>
         </div>
 
-        <div v-if="recentSubjects.length === 0" class="text-gray-500 dark:text-gray-400 text-sm">
-          No subjects yet. <NuxtLink to="/subjects/new" class="text-blue-600 hover:underline">Create your first subject</NuxtLink>.
+        <div v-if="recentSubjects.length === 0" class="text-slate-500 dark:text-slate-400 text-sm">
+          No subjects yet. <NuxtLink to="/subjects/new" class="gradient-text font-medium hover:opacity-80">Create your first subject</NuxtLink>.
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
             v-for="subject in recentSubjects"
             :key="subject.id"
-            class="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-md transition-shadow cursor-pointer border border-gray-100 dark:border-gray-700 overflow-hidden"
+            class="glass-card rounded-2xl hover:shadow-xl hover:shadow-blue-500/10 transition-all hover:-translate-y-0.5 cursor-pointer overflow-hidden"
             @click="navigateTo(`/subjects/${subject.id}`)"
           >
-            <div class="h-1.5" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
+            <div class="h-1 rounded-t-2xl" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
             <div class="p-4">
               <div class="flex items-center gap-3 mb-2">
                 <div class="w-3 h-3 rounded-full flex-shrink-0" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
-                <h3 class="font-bold text-gray-900 dark:text-white truncate">{{ subject.name }}</h3>
+                <h3 class="font-bold text-slate-900 dark:text-white truncate">{{ subject.name }}</h3>
               </div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-slate-500 dark:text-slate-400">
                 {{ subject.quiz_count }} {{ subject.quiz_count === 1 ? 'quiz' : 'quizzes' }}
               </p>
             </div>
@@ -108,54 +108,56 @@ const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser, isPro } = 
 const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
 const showSubscriptionModal = ref(false)
-const recentSubjects = ref<any[]>([])
-const stats = ref({ totalQuizzes: 0, averageScore: 0 })
 
-const subscriptionDetail = computed(() => {
+const subscriptionBadgeLabel = computed(() => {
+  const status = subUser.value?.subscription?.status || ''
+  if (status === 'trial_active') return 'Trial'
+  if (status === 'trial_expired') return 'Expired'
+  if (status.startsWith('expired_')) return 'Expired'
+  if (status.startsWith('active_')) return 'Pro'
+  return ''
+})
+
+const subscriptionBadgeDetail = computed(() => {
   const sub = subUser.value?.subscription
   if (!sub) return ''
   const status = sub.status || ''
 
-  if (status.startsWith('active_') && sub.ends_at) {
-    const ends = new Date(sub.ends_at)
-    const now = new Date()
-    const daysLeft = Math.ceil((ends.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    return `Renews on ${ends.toLocaleDateString()} (${daysLeft} days left)`
-  }
-  if (status.startsWith('expired_')) {
-    const ends = sub.ends_at ? new Date(sub.ends_at).toLocaleDateString() : ''
-    return ends ? `Expired on ${ends}` : 'Subscription expired'
-  }
   if (status === 'trial_active') {
     const limit = sub.trial_quiz_limit ?? 3
     const used = subUser.value?.quizzes_count ?? 0
     const remaining = Math.max(0, limit - used)
-    return `${remaining} ${remaining === 1 ? 'quiz' : 'quizzes'} remaining`
+    const parts = [`${remaining} ${remaining === 1 ? 'quiz' : 'quizzes'} remaining`]
+    if (sub.trial_ends_at) parts.push(`Expires ${new Date(sub.trial_ends_at).toLocaleDateString()}`)
+    return parts.join(' · ')
   }
-  if (status === 'trial_expired') return 'Your free trial has ended'
+  if (status === 'trial_expired') {
+    return sub.trial_ends_at ? `Expired on ${new Date(sub.trial_ends_at).toLocaleDateString()}` : 'Trial expired'
+  }
+  if (status.startsWith('expired_')) {
+    return sub.ends_at ? `Expired on ${new Date(sub.ends_at).toLocaleDateString()}` : 'Subscription expired'
+  }
+  if (status.startsWith('active_') && sub.ends_at) {
+    return `Renews ${new Date(sub.ends_at).toLocaleDateString()}`
+  }
   return ''
 })
 
-const subscriptionCardClass = computed(() => {
+const subscriptionBadgeColor = computed(() => {
   const status = subUser.value?.subscription?.status || ''
-  if (status.startsWith('active_')) return 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-  if (status === 'trial_active') return 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
-  return 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+  if (status.startsWith('active_')) return 'text-green-700 dark:text-green-300 bg-green-500/10 border-green-500/20'
+  if (status === 'trial_active') return 'text-blue-700 dark:text-blue-300 bg-blue-500/10 border-blue-500/20'
+  return 'text-red-700 dark:text-red-300 bg-red-500/10 border-red-500/20'
 })
 
-const subscriptionTextPrimary = computed(() => {
+const subscriptionDotColor = computed(() => {
   const status = subUser.value?.subscription?.status || ''
-  if (status.startsWith('active_')) return 'text-green-800 dark:text-green-200'
-  if (status === 'trial_active') return 'text-blue-800 dark:text-blue-200'
-  return 'text-red-800 dark:text-red-200'
+  if (status.startsWith('active_')) return 'bg-green-500'
+  if (status === 'trial_active') return 'bg-blue-500'
+  return 'bg-red-500'
 })
-
-const subscriptionTextMuted = computed(() => {
-  const status = subUser.value?.subscription?.status || ''
-  if (status.startsWith('active_')) return 'text-green-600 dark:text-green-400'
-  if (status === 'trial_active') return 'text-blue-600 dark:text-blue-400'
-  return 'text-red-600 dark:text-red-400'
-})
+const recentSubjects = ref<any[]>([])
+const stats = ref({ totalQuizzes: 0, averageScore: 0 })
 
 onMounted(async () => {
   if (route.query.subscription === 'success') {

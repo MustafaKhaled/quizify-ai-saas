@@ -1,11 +1,11 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 class="text-4xl font-bold gradient-text mb-2">
           {{ mode === 'focused' ? '🎯 Practice Weak Areas' : 'Create Quiz' }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400">
+        <p class="text-slate-500 dark:text-slate-400">
           {{ mode === 'focused'
             ? `Generate a quiz focused on: ${focusTopics.join(', ')}`
             : existingSourceName
@@ -15,12 +15,12 @@
       </div>
 
       <!-- Upload Section (only for normal mode) -->
-      <div v-if="mode === 'normal'" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+      <div v-if="mode === 'normal'" class="glass-card rounded-2xl p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload File</h2>
         
         <div
-          class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center transition-colors"
-          :class="isDragover ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500' : ''"
+          class="border-2 border-dashed border-white/30 dark:border-white/15 rounded-2xl p-8 text-center transition-colors"
+          :class="isDragover ? 'bg-blue-500/10 border-blue-500/40' : ''"
           @dragover.prevent="isDragover = true"
           @dragleave.prevent="isDragover = false"
           @drop.prevent="handleFileDrop"
@@ -30,8 +30,8 @@
               <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h24a4 4 0 004-4V20m-8-12l-4-4m0 0l-4 4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <p class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Drag and drop your file</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">PDF, DOCX, PPTX, or TXT</p>
+          <p class="text-lg font-semibold text-slate-900 dark:text-white mb-1">Drag and drop your file</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">PDF, DOCX, PPTX, or TXT</p>
           <input
             ref="fileInput"
             type="file"
@@ -42,7 +42,7 @@
           <button
             @click="fileInput?.click()"
             :disabled="isCreating"
-            class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            class="inline-block px-6 py-2 btn-gradient rounded-xl disabled:opacity-50 transition-colors"
           >
             Choose File
           </button>
@@ -56,12 +56,12 @@
               v-model="sourceName"
               type="text"
               placeholder="e.g. Chapter 1, Lecture Notes"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-4 py-2 glass-input rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">A friendly name for this source</p>
+            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">A friendly name for this source</p>
           </div>
-          <div v-if="selectedFile" class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <p class="text-green-800 dark:text-green-200">✓ {{ selectedFile.name }} selected</p>
+          <div v-if="selectedFile" class="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+            <p class="text-green-800 dark:text-green-200"><UIcon name="i-lucide-check-circle" class="w-4 h-4 inline text-green-500" /> {{ selectedFile.name }} selected</p>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@
       </div>
 
       <!-- Quiz Configuration -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="glass-card rounded-2xl p-6">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quiz Settings</h2>
         
         <form @submit.prevent="createQuiz" class="space-y-4">
@@ -85,7 +85,7 @@
               type="text"
               placeholder="e.g., Introduction to Biology"
               required
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-4 py-2 glass-input rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -94,7 +94,7 @@
             <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Question Type</label>
             <select
               v-model="formData.quiz_type"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-4 py-2 glass-input rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="single_choice">Multiple Choice</option>
               <option value="multiple_select">Multiple Select</option>
@@ -111,7 +111,7 @@
               min="1"
               max="30"
               required
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-4 py-2 glass-input rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -123,7 +123,7 @@
               type="number"
               min="1"
               placeholder="Leave empty for unlimited"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full px-4 py-2 glass-input rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -131,7 +131,7 @@
           <button
             type="submit"
             :disabled="isCreating || (mode === 'normal' && !selectedFile)"
-            class="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            class="w-full px-6 py-2 btn-gradient rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {{ isCreating ? 'Creating Quiz...' : 'Create Quiz' }}
           </button>

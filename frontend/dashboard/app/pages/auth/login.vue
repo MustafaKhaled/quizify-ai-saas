@@ -63,46 +63,46 @@ const handleResend = async () => {
 </script>
 
 <template>
-  <div class="max-w-md w-full">
+  <div class="max-w-md w-full glass-card-elevated rounded-2xl p-8">
     <div class="text-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h1>
-      <p class="text-gray-600 dark:text-gray-400">Sign in to your Quizify AI account</p>
+      <h1 class="text-2xl font-bold gradient-text mb-2">Welcome Back</h1>
+      <p class="text-slate-500 dark:text-slate-400">Sign in to your Quizify AI account</p>
     </div>
 
     <form @submit.prevent="handleLogin" class="space-y-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
           Email
         </label>
         <input
           v-model="email"
           type="email"
           placeholder="you@example.com"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+          class="w-full px-4 py-2 glass-input rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 text-slate-900 dark:text-white"
           required
         />
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
           Password
         </label>
         <input
           v-model="password"
           type="password"
           placeholder="••••••••"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+          class="w-full px-4 py-2 glass-input rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 text-slate-900 dark:text-white"
           required
         />
       </div>
 
-      <div v-if="errorMessage" class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-sm">
+      <div v-if="errorMessage" class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-700 dark:text-red-400 text-sm">
         {{ errorMessage }}
         <div v-if="showResend" class="mt-2">
           <button
             @click="handleResend"
             :disabled="resendLoading"
-            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium text-sm underline disabled:opacity-50"
+            class="gradient-text font-medium text-sm underline disabled:opacity-50"
           >
             {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
           </button>
@@ -113,15 +113,15 @@ const handleResend = async () => {
       <button
         type="submit"
         :disabled="loading"
-        class="w-full py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium rounded-lg transition-colors"
+        class="w-full py-2 btn-gradient rounded-xl disabled:opacity-50 font-medium"
       >
         {{ loading ? 'Signing in...' : 'Sign In' }}
       </button>
     </form>
 
-    <p class="text-center text-gray-600 dark:text-gray-400 mt-4">
+    <p class="text-center text-slate-500 dark:text-slate-400 mt-4">
       Don't have an account?
-      <NuxtLink to="/auth/register" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-medium">
+      <NuxtLink to="/auth/register" class="gradient-text font-medium">
         Create one
       </NuxtLink>
     </p>

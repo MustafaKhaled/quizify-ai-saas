@@ -27,19 +27,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :class="isDark ? 'dark' : ''" class="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+  <div :class="isDark ? 'dark' : ''" class="min-h-screen bg-mesh transition-colors">
     <div class="min-h-screen flex items-center justify-center px-4 py-6">
       <div class="w-full">
         <!-- Header with Logo and Dark Mode Toggle -->
         <div class="flex justify-between items-center mb-12">
-          <NuxtLink to="/" class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <NuxtLink to="/" class="text-2xl font-bold gradient-text">
             Quizify AI
           </NuxtLink>
           <button
             @click="toggleDarkMode"
-            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            class="p-2 glass-card rounded-xl text-slate-600 dark:text-slate-300 hover:shadow-lg transition-all"
           >
-            {{ isDark ? '☀️' : '🌙' }}
+            <UIcon :name="isDark ? 'i-lucide-sun' : 'i-lucide-moon'" class="w-5 h-5" />
           </button>
         </div>
 
@@ -47,8 +47,8 @@ onMounted(() => {
         <slot />
 
         <!-- Footer -->
-        <div class="mt-12 text-center text-gray-600 dark:text-gray-400 text-sm">
-          <p>© 2024 Quizify AI. All rights reserved.</p>
+        <div class="mt-12 text-center text-slate-500 dark:text-slate-400 text-sm">
+          <p>&copy; 2024 Quizify AI. All rights reserved.</p>
         </div>
       </div>
     </div>

@@ -1,18 +1,18 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
       <!-- Quiz Header -->
       <div v-if="quiz" class="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">{{ quiz.title }}</h1>
-          <p class="text-gray-600 dark:text-gray-400">Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
+          <h1 class="text-4xl font-bold gradient-text mb-2">{{ quiz.title }}</h1>
+          <p class="text-slate-500 dark:text-slate-400">Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
         </div>
 
         <!-- Countdown Timer -->
         <div
           v-if="quiz.time_limit"
-          class="flex-shrink-0 flex flex-col items-center justify-center rounded-xl px-5 py-3 min-w-[120px] text-center font-mono font-bold text-2xl shadow"
-          :class="timerUrgent ? 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 ring-2 ring-red-500 animate-pulse' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'"
+          class="flex-shrink-0 flex flex-col items-center justify-center rounded-2xl px-5 py-3 min-w-[120px] text-center font-mono font-bold text-2xl glass-card"
+          :class="timerUrgent ? 'border-red-500/50 text-red-600 dark:text-red-400 ring-2 ring-red-500/50 animate-pulse' : 'text-blue-700 dark:text-blue-300'"
         >
           <span class="text-xs font-sans font-medium mb-1 opacity-70">Time left</span>
           {{ formattedTimeLeft }}
@@ -20,29 +20,29 @@
       </div>
 
       <div v-if="isLoading" class="flex items-center justify-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
       </div>
 
       <div v-else-if="quiz && currentQuestion" class="space-y-6">
         <!-- Progress Bar -->
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div class="w-full bg-white/30 dark:bg-white/10 rounded-full h-2.5 backdrop-blur-sm">
           <div
-            class="bg-blue-600 h-2 rounded-full transition-all"
+            class="progress-gradient h-2.5 rounded-full transition-all"
             :style="{ width: `${totalQuestions ? ((currentQuestionIndex + 1) / totalQuestions) * 100 : 0}%` }"
           ></div>
         </div>
 
         <!-- Question Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">{{ currentQuestion.question_text }}</h2>
+        <div class="glass-card rounded-2xl p-8">
+          <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-6">{{ currentQuestion.question_text }}</h2>
 
           <!-- Answer Options -->
           <div class="space-y-3 mb-8">
             <label
               v-for="(option, idx) of currentQuestion.options"
               :key="idx"
-              class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 cursor-pointer transition-colors"
-              :class="isAnswerSelected(Number(idx)) ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''"
+              class="flex items-center p-4 border border-white/20 dark:border-white/10 rounded-xl hover:border-blue-500/50 cursor-pointer transition-all backdrop-blur-sm bg-white/30 dark:bg-white/5"
+              :class="isAnswerSelected(Number(idx)) ? 'border-blue-500/60 bg-blue-500/10 dark:bg-blue-500/15 shadow-lg shadow-blue-500/10' : ''"
             >
               <input
                 v-if="quiz.quiz_type === 'single_choice' || quiz.quiz_type === 'true_or_false'"
@@ -59,7 +59,7 @@
                 @change="toggleAnswer(Number(idx))"
                 class="mr-3"
               />
-              <span class="text-gray-900 dark:text-white">{{ option }}</span>
+              <span class="text-slate-900 dark:text-white">{{ option }}</span>
             </label>
           </div>
 
@@ -68,30 +68,30 @@
             <button
               @click="previousQuestion"
               :disabled="currentQuestionIndex === 0"
-              class="px-6 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg disabled:opacity-50 transition-colors"
+              class="px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 disabled:opacity-50 transition-all"
             >
-              ← Previous
+              &larr; Previous
             </button>
 
             <div class="flex gap-2">
               <button
                 v-if="currentQuestionIndex < quiz.num_questions - 1"
                 @click="nextQuestion"
-                class="px-6 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
+                class="px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 hover:shadow-lg transition-all"
               >
-                Next →
+                Next &rarr;
               </button>
               <button
                 v-else
                 @click="submitQuiz"
                 :disabled="isSubmitting"
-                class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                class="px-6 py-2 rounded-xl text-white bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 shadow-lg shadow-green-500/20 disabled:opacity-50 transition-all"
               >
                 {{ isSubmitting ? 'Submitting...' : 'Submit Quiz' }}
               </button>
             </div>
 
-            <div class="text-sm text-gray-600 dark:text-gray-400">
+            <div class="text-sm text-slate-500 dark:text-slate-400">
               {{ Object.keys(userAnswers).length }} of {{ quiz.num_questions }} answered
             </div>
           </div>

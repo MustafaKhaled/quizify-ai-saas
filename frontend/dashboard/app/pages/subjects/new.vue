@@ -1,29 +1,29 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto">
+    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
       <div>
         <div class="mb-8">
           <NuxtLink to="/subjects" class="text-sm text-blue-600 hover:underline">← Back to Subjects</NuxtLink>
-          <h1 class="text-4xl font-bold text-gray-900 dark:text-white mt-2">New Subject</h1>
+          <h1 class="text-4xl font-bold gradient-text mt-2">New Subject</h1>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+        <div class="glass-card rounded-2xl p-6">
           <form @submit.prevent="createSubject" class="space-y-6">
             <!-- Name -->
             <div>
-              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Subject Name *</label>
+              <label class="block text-sm font-medium text-slate-900 dark:text-white mb-2">Subject Name *</label>
               <input
                 v-model="name"
                 type="text"
                 placeholder="e.g. Organic Chemistry, World History"
                 required
-                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-4 py-2 glass-input rounded-xl text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <!-- Color -->
             <div>
-              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Color</label>
+              <label class="block text-sm font-medium text-slate-900 dark:text-white mb-2">Color</label>
               <div class="flex gap-3 flex-wrap">
                 <button
                   v-for="c in palette"
@@ -38,18 +38,18 @@
             </div>
 
             <!-- Preview -->
-            <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div class="rounded-xl overflow-hidden border border-white/20 dark:border-white/10">
               <div class="h-2" :style="{ backgroundColor: color }"></div>
               <div class="p-4 bg-gray-50 dark:bg-gray-700/50">
-                <p class="font-bold text-gray-900 dark:text-white">{{ name || 'Subject Name' }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">0 sources • 0 quizzes</p>
+                <p class="font-bold text-slate-900 dark:text-white">{{ name || 'Subject Name' }}</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">0 sources • 0 quizzes</p>
               </div>
             </div>
 
             <button
               type="submit"
               :disabled="isSaving || !name.trim()"
-              class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              class="w-full py-2 btn-gradient rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {{ isSaving ? 'Creating...' : 'Create Subject' }}
             </button>
