@@ -1,13 +1,14 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
-      <div class="flex items-center justify-between mb-8">
+    <UDashboardNavbar class="lg:hidden" title="My Quizzes" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8">
         <div>
-          <h1 class="text-4xl font-bold gradient-text">My Quizzes</h1>
-          <p class="text-slate-500 dark:text-slate-400 mt-2">Manage and retake your quizzes</p>
+          <h1 class="text-2xl sm:text-4xl font-bold gradient-text">My Quizzes</h1>
+          <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-2">Manage and retake your quizzes</p>
         </div>
         <NuxtLink to="/quiz-new">
-          <button class="btn-gradient rounded-xl px-6 py-2 font-medium">
+          <button class="btn-gradient rounded-xl px-4 sm:px-6 py-2 font-medium text-sm sm:text-base">
             + New Quiz
           </button>
         </NuxtLink>

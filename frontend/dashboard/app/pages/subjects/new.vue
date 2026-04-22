@@ -1,13 +1,14 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
+    <UDashboardNavbar class="lg:hidden" title="New Subject" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
       <div>
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
           <NuxtLink to="/subjects" class="text-sm text-blue-600 hover:underline">← Back to Subjects</NuxtLink>
-          <h1 class="text-4xl font-bold gradient-text mt-2">New Subject</h1>
+          <h1 class="text-2xl sm:text-4xl font-bold gradient-text mt-2">New Subject</h1>
         </div>
 
-        <div class="glass-card rounded-2xl p-6">
+        <div class="glass-card rounded-2xl p-4 sm:p-6">
           <form @submit.prevent="createSubject" class="space-y-6">
             <!-- Name -->
             <div>

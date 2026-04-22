@@ -1,11 +1,12 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
-      <div class="mb-8">
-        <h1 class="text-4xl font-bold gradient-text mb-2">
+    <UDashboardNavbar class="lg:hidden" title="Create Quiz" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
+      <div class="mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-4xl font-bold gradient-text mb-2">
           {{ mode === 'focused' ? '🎯 Practice Weak Areas' : 'Create Quiz' }}
         </h1>
-        <p class="text-slate-500 dark:text-slate-400">
+        <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">
           {{ mode === 'focused'
             ? `Generate a quiz focused on: ${focusTopics.join(', ')}`
             : existingSourceName
@@ -15,11 +16,11 @@
       </div>
 
       <!-- Upload Section (only for normal mode) -->
-      <div v-if="mode === 'normal'" class="glass-card rounded-2xl p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload File</h2>
-        
+      <div v-if="mode === 'normal'" class="glass-card rounded-2xl p-4 sm:p-6 mb-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">Upload File</h2>
+
         <div
-          class="border-2 border-dashed border-white/30 dark:border-white/15 rounded-2xl p-8 text-center transition-colors"
+          class="border-2 border-dashed border-white/30 dark:border-white/15 rounded-2xl p-4 sm:p-8 text-center transition-colors"
           :class="isDragover ? 'bg-blue-500/10 border-blue-500/40' : ''"
           @dragover.prevent="isDragover = true"
           @dragleave.prevent="isDragover = false"
@@ -73,8 +74,8 @@
       </div>
 
       <!-- Quiz Configuration -->
-      <div class="glass-card rounded-2xl p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quiz Settings</h2>
+      <div class="glass-card rounded-2xl p-4 sm:p-6">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">Quiz Settings</h2>
         
         <form @submit.prevent="createQuiz" class="space-y-4">
           <!-- Quiz Title -->

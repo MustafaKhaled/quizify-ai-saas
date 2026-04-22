@@ -10,7 +10,7 @@ useHead({
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', type: 'image/png', href: '/quizify_icon.png' }
   ],
   htmlAttrs: {
     lang: 'en'
@@ -18,9 +18,10 @@ useHead({
 })
 
 useSeoMeta({
-  titleTemplate: '%s - Nuxt SaaS template',
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/saas-light.png',
-  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/saas-light.png',
+  title: 'Quizify AI',
+  titleTemplate: (titleChunk?: string) => titleChunk && titleChunk !== 'Quizify AI' ? `${titleChunk} — Quizify AI` : 'Quizify AI',
+  ogImage: '/quizify_ai_logo.png',
+  twitterImage: '/quizify_ai_logo.png',
   twitterCard: 'summary_large_image'
 })
 

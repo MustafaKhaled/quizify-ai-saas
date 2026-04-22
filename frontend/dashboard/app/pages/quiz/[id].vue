@@ -1,17 +1,18 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
+    <UDashboardNavbar class="lg:hidden" title="Quiz" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
       <!-- Quiz Header -->
-      <div v-if="quiz" class="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 class="text-4xl font-bold gradient-text mb-2">{{ quiz.title }}</h1>
-          <p class="text-slate-500 dark:text-slate-400">Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
+      <div v-if="quiz" class="mb-6 sm:mb-8 flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+        <div class="min-w-0">
+          <h1 class="text-2xl sm:text-4xl font-bold gradient-text mb-2 break-words">{{ quiz.title }}</h1>
+          <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">Question {{ currentQuestionIndex + 1 }} of {{ totalQuestions }}</p>
         </div>
 
         <!-- Countdown Timer -->
         <div
           v-if="quiz.time_limit"
-          class="flex-shrink-0 flex flex-col items-center justify-center rounded-2xl px-5 py-3 min-w-[120px] text-center font-mono font-bold text-2xl glass-card"
+          class="flex-shrink-0 flex flex-col items-center justify-center rounded-2xl px-4 sm:px-5 py-2 sm:py-3 min-w-[100px] sm:min-w-[120px] text-center font-mono font-bold text-xl sm:text-2xl glass-card"
           :class="timerUrgent ? 'border-red-500/50 text-red-600 dark:text-red-400 ring-2 ring-red-500/50 animate-pulse' : 'text-blue-700 dark:text-blue-300'"
         >
           <span class="text-xs font-sans font-medium mb-1 opacity-70">Time left</span>
@@ -33,8 +34,8 @@
         </div>
 
         <!-- Question Card -->
-        <div class="glass-card rounded-2xl p-8">
-          <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mb-6">{{ currentQuestion.question_text }}</h2>
+        <div class="glass-card rounded-2xl p-4 sm:p-8">
+          <h2 class="text-lg sm:text-2xl font-semibold text-slate-900 dark:text-white mb-4 sm:mb-6">{{ currentQuestion.question_text }}</h2>
 
           <!-- Answer Options -->
           <div class="space-y-3 mb-8">
@@ -64,20 +65,20 @@
           </div>
 
           <!-- Navigation Buttons -->
-          <div class="flex justify-between items-center">
+          <div class="flex flex-wrap justify-between items-center gap-3">
             <button
               @click="previousQuestion"
               :disabled="currentQuestionIndex === 0"
-              class="px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 disabled:opacity-50 transition-all"
+              class="px-4 sm:px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 disabled:opacity-50 transition-all text-sm sm:text-base order-1"
             >
               &larr; Previous
             </button>
 
-            <div class="flex gap-2">
+            <div class="flex gap-2 order-3 sm:order-2 w-full sm:w-auto">
               <button
                 v-if="currentQuestionIndex < quiz.num_questions - 1"
                 @click="nextQuestion"
-                class="px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 hover:shadow-lg transition-all"
+                class="px-4 sm:px-6 py-2 glass-card rounded-xl text-slate-700 dark:text-slate-200 hover:shadow-lg transition-all text-sm sm:text-base w-full sm:w-auto"
               >
                 Next &rarr;
               </button>
@@ -85,13 +86,13 @@
                 v-else
                 @click="submitQuiz"
                 :disabled="isSubmitting"
-                class="px-6 py-2 rounded-xl text-white bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 shadow-lg shadow-green-500/20 disabled:opacity-50 transition-all"
+                class="px-4 sm:px-6 py-2 rounded-xl text-white bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 shadow-lg shadow-green-500/20 disabled:opacity-50 transition-all text-sm sm:text-base w-full sm:w-auto"
               >
                 {{ isSubmitting ? 'Submitting...' : 'Submit Quiz' }}
               </button>
             </div>
 
-            <div class="text-sm text-slate-500 dark:text-slate-400">
+            <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 order-2 sm:order-3">
               {{ Object.keys(userAnswers).length }} of {{ quiz.num_questions }} answered
             </div>
           </div>

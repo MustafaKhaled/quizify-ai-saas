@@ -1,22 +1,23 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
+    <UDashboardNavbar class="lg:hidden" title="Subject" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
       <div v-if="isLoading" class="flex items-center justify-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
 
       <template v-else-if="subject">
         <!-- ── Subject Header ─────────────────────────────── -->
-        <div class="flex items-start justify-between mb-8 gap-4 flex-wrap">
-          <div class="flex items-center gap-4">
-            <NuxtLink to="/subjects" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+        <div class="flex items-start justify-between mb-6 sm:mb-8 gap-3 flex-wrap">
+          <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+            <NuxtLink to="/subjects" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors flex-shrink-0">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
               </svg>
             </NuxtLink>
-            <div class="w-4 h-10 rounded-full flex-shrink-0" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
-            <div>
-              <h1 class="text-4xl font-bold gradient-text">{{ subject.name }}</h1>
+            <div class="w-3 h-8 sm:w-4 sm:h-10 rounded-full flex-shrink-0" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
+            <div class="min-w-0">
+              <h1 class="text-2xl sm:text-4xl font-bold gradient-text truncate">{{ subject.name }}</h1>
               <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 {{ sources.length }} {{ sources.length === 1 ? 'source' : 'sources' }} •
                 {{ allSourceQuizzes.length }} {{ allSourceQuizzes.length === 1 ? 'quiz' : 'quizzes' }}
@@ -24,13 +25,13 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-4 flex-shrink-0 flex-wrap">
+          <div class="flex items-center gap-3 sm:gap-4 flex-wrap w-full sm:w-auto">
             <!-- Subject overall % -->
-            <div v-if="subjectOverall !== null" class="text-center px-4 py-2 glass-card rounded-2xl">
+            <div v-if="subjectOverall !== null" class="text-center px-3 sm:px-4 py-1.5 sm:py-2 glass-card rounded-2xl">
               <p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">Overall</p>
-              <span class="text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
+              <span class="text-xl sm:text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 flex-wrap">
               <button
                 @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}`))"
                 class="px-4 py-2 btn-gradient rounded-xl transition-colors text-sm font-medium"

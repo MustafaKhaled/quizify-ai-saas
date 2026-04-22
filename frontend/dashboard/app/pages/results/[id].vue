@@ -1,6 +1,7 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
+    <UDashboardNavbar class="lg:hidden" title="Results" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
       <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -10,19 +11,19 @@
       <div v-else-if="result" class="space-y-6">
         <!-- Header -->
         <div class="mb-4">
-          <h1 class="text-4xl font-bold gradient-text mb-2">Quiz Results</h1>
-          <p class="text-slate-500 dark:text-slate-400">
+          <h1 class="text-2xl sm:text-4xl font-bold gradient-text mb-2">Quiz Results</h1>
+          <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">
             Completed on {{ new Date(result.date).toLocaleDateString() }} at {{ new Date(result.date).toLocaleTimeString() }}
           </p>
         </div>
 
         <!-- Score Card -->
-        <div class="glass-card rounded-2xl p-8 mb-6">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 mb-6">
           <div class="text-center">
-            <div class="text-6xl font-bold mb-4 gradient-text">
+            <div class="text-5xl sm:text-6xl font-bold mb-4 gradient-text">
               {{ Math.round(result.score) }}%
             </div>
-            <div class="text-xl text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+            <div class="text-lg sm:text-xl text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
               <template v-if="result.score >= 70">
                 <UIcon name="i-lucide-trophy" class="text-yellow-500 text-2xl" /> Passed!
               </template>
@@ -30,7 +31,7 @@
                 <UIcon name="i-lucide-target" class="text-red-500 text-2xl" /> Failed
               </template>
             </div>
-            <p class="text-slate-500 dark:text-slate-400">
+            <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">
               You answered {{ correctCount }} out of {{ result.breakdown.length }} questions correctly
             </p>
           </div>
@@ -47,14 +48,14 @@
 
           <div class="space-y-4">
             <div v-for="(stats, topic) in topicPerformance" :key="topic" class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-slate-900 dark:text-white">{{ topic }}</span>
-                <div class="flex items-center gap-3">
-                  <span class="text-sm text-slate-500 dark:text-slate-400">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="font-semibold text-slate-900 dark:text-white break-words min-w-0">{{ topic }}</span>
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <span class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                     {{ stats.correct }}/{{ stats.total }} correct
                   </span>
                   <span
-                    class="text-sm font-bold px-3 py-1 rounded-md"
+                    class="text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-md"
                     :class="getPerformanceColor(stats.accuracy)"
                   >
                     {{ getPerformanceLabel(stats.accuracy) }}

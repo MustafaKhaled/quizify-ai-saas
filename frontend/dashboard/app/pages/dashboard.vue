@@ -1,6 +1,7 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh">
+    <UDashboardNavbar class="lg:hidden" title="Dashboard" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
 
       <!-- Subscription Success -->
       <div v-if="subscriptionSuccess" class="mb-6 p-4 glass-card border-green-500/30 rounded-2xl flex items-center justify-between">
@@ -9,8 +10,8 @@
       </div>
 
       <!-- Welcome + Subscription Badge -->
-      <div class="flex items-start justify-between mb-8">
-        <h1 class="text-4xl font-bold">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-4xl font-bold">
           <span class="gradient-text">Welcome{{ userName ? `, ${userName}` : '' }}</span> 👋
         </h1>
 
@@ -48,7 +49,7 @@
       </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
         <div class="glass-card rounded-2xl p-6 text-center">
           <p class="text-slate-500 dark:text-slate-400 text-sm mb-2">Total Quizzes</p>
           <p class="text-4xl font-bold gradient-text">{{ stats.totalQuizzes }}</p>

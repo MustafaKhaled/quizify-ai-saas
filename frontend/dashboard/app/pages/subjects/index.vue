@@ -1,13 +1,14 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardPanelContent class="p-6 overflow-y-auto bg-mesh min-h-full">
-      <div class="flex items-center justify-between mb-8">
+    <UDashboardNavbar class="lg:hidden" title="My Subjects" />
+    <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8">
         <div>
-          <h1 class="text-4xl font-bold gradient-text mb-1">My Subjects</h1>
-          <p class="text-slate-500 dark:text-slate-400">Organize your study material by subject</p>
+          <h1 class="text-2xl sm:text-4xl font-bold gradient-text mb-1">My Subjects</h1>
+          <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">Organize your study material by subject</p>
         </div>
         <NuxtLink to="/subjects/new">
-          <button class="px-5 py-2 btn-gradient rounded-xl transition-colors font-medium">
+          <button class="px-4 sm:px-5 py-2 btn-gradient rounded-xl transition-colors font-medium text-sm sm:text-base">
             + New Subject
           </button>
         </NuxtLink>
