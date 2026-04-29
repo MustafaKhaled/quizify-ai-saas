@@ -17,10 +17,18 @@
             </NuxtLink>
             <div class="w-3 h-8 sm:w-4 sm:h-10 rounded-full flex-shrink-0" :style="{ backgroundColor: subject.color || '#3B82F6' }"></div>
             <div class="min-w-0">
-              <h1 class="text-2xl sm:text-4xl font-bold gradient-text truncate">{{ subject.name }}</h1>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="text-2xl sm:text-4xl font-bold gradient-text truncate">{{ subject.name }}</h1>
+                <span v-if="isPMP" class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-orange-700 dark:text-orange-300 bg-orange-500/10 border border-orange-500/20">Predefined</span>
+              </div>
               <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
-                {{ sources.length }} {{ sources.length === 1 ? 'source' : 'sources' }} •
-                {{ allSourceQuizzes.length }} {{ allSourceQuizzes.length === 1 ? 'quiz' : 'quizzes' }}
+                <template v-if="isPMP">
+                  {{ pmpChapters.length }} chapters • {{ allSourceQuizzes.length + subjectQuizzes.length }} {{ (allSourceQuizzes.length + subjectQuizzes.length) === 1 ? 'quiz' : 'quizzes' }}
+                </template>
+                <template v-else>
+                  {{ sources.length }} {{ sources.length === 1 ? 'source' : 'sources' }} •
+                  {{ allSourceQuizzes.length }} {{ allSourceQuizzes.length === 1 ? 'quiz' : 'quizzes' }}
+                </template>
               </p>
             </div>
           </div>
@@ -32,24 +40,74 @@
               <span class="text-xl sm:text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
             </div>
             <div class="flex gap-2 flex-wrap">
+              <template v-if="isPMP">
+                <button
+                  @click="guardAction(() => openPMPQuizModal())"
+                  class="px-4 py-2 rounded-xl text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
+                  style="background: linear-gradient(135deg, #F97316, #FB923C); box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.5)"
+                >
+                  <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Generate PMP Quiz
+                </button>
+                <button
+                  v-if="pmpWeakChapterSlugs.length > 0"
+                  @click="guardAction(() => openPMPQuizModal(pmpWeakChapterSlugs))"
+                  class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 transition-colors"
+                >
+                  🎯 Practice Weak Chapters
+                </button>
+              </template>
+              <template v-else>
+                <button
+                  @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}`))"
+                  class="px-4 py-2 btn-gradient rounded-xl transition-colors text-sm font-medium"
+                >
+                  + Upload Source
+                </button>
+                <button
+                  @click="guardAction(() => { showSubjectQuizModal = true })"
+                  :disabled="sources.length === 0"
+                  class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 shadow-lg shadow-purple-500/20 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                >
+                  <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Subject Quiz
+                </button>
+              </template>
               <button
-                @click="guardAction(() => navigateTo(`/quiz-new?subject_id=${subject.id}`))"
-                class="px-4 py-2 btn-gradient rounded-xl transition-colors text-sm font-medium"
-              >
-                + Upload Source
-              </button>
-              <button
-                @click="guardAction(() => { showSubjectQuizModal = true })"
-                :disabled="sources.length === 0"
-                class="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 shadow-lg shadow-purple-500/20 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
-              >
-                <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Subject Quiz
-              </button>
-              <button
+                v-if="!isPMP"
                 @click="confirmDelete"
                 class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors text-sm"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PMP Chapters Grid ──────────────────────────── -->
+        <div v-if="isPMP && pmpChapters.length > 0" class="mb-8">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">PMBOK Chapters</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div
+              v-for="ch in pmpChapters"
+              :key="ch.slug"
+              class="glass-card rounded-2xl p-4 flex flex-col gap-3"
+              :class="{ 'ring-2 ring-orange-500/40': pmpChapterStats[ch.name] && pmpChapterStats[ch.name].accuracy < 70 }"
+            >
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-semibold text-slate-900 dark:text-white text-sm leading-snug">{{ ch.name }}</h3>
+                <span
+                  v-if="pmpChapterStats[ch.name]"
+                  class="px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0"
+                  :class="scoreBadge(pmpChapterStats[ch.name].accuracy)"
+                >{{ pmpChapterStats[ch.name].accuracy }}%</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 flex-1">{{ ch.summary }}</p>
+              <button
+                type="button"
+                @click="guardAction(() => openPMPQuizModal([ch.slug]))"
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white self-start transition-transform hover:-translate-y-0.5"
+                style="background: linear-gradient(135deg, #F97316, #FB923C)"
+              >
+                Quiz this chapter
               </button>
             </div>
           </div>
@@ -91,7 +149,7 @@
         </div>
 
         <!-- ── No sources empty state ─────────────────────── -->
-        <div v-if="sources.length === 0" class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow">
+        <div v-if="!isPMP && sources.length === 0" class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow">
           <div class="text-5xl mb-3">📄</div>
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No sources yet</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-5">Upload your first PDF to start generating quizzes</p>
@@ -103,7 +161,7 @@
         </div>
 
         <!-- ── Sources ────────────────────────────────────── -->
-        <div v-else class="space-y-6">
+        <div v-else-if="!isPMP" class="space-y-6">
           <div
             v-for="source in sources"
             :key="source.id"
@@ -209,6 +267,79 @@
         </div>
       </template>
 
+      <!-- ── PMP Quiz Modal ───────────────────────────────── -->
+      <div
+        v-if="showPMPQuizModal"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+        @click.self="showPMPQuizModal = false"
+      >
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Generate PMP Quiz</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
+            <template v-if="pmpQuizForm.focus_chapters.length > 0">
+              Focused on {{ pmpQuizForm.focus_chapters.length }} {{ pmpQuizForm.focus_chapters.length === 1 ? 'chapter' : 'chapters' }}.
+            </template>
+            <template v-else>
+              Covers all {{ pmpChapters.length }} PMBOK knowledge areas (questions distributed evenly).
+            </template>
+          </p>
+          <form @submit.prevent="createPMPQuiz" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Quiz Title</label>
+              <input v-model="pmpQuizForm.quiz_name" type="text" placeholder="PMP — Practice Quiz"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Question Type</label>
+              <select v-model="pmpQuizForm.quiz_type"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
+                <option value="single_choice">Multiple Choice</option>
+                <option value="multiple_select">Multiple Select</option>
+                <option value="true_or_false">True or False</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                Number of Questions
+                <span class="text-xs text-gray-500 dark:text-gray-400 ml-1 font-normal">
+                  (max {{ pmpMaxQuestions }})
+                </span>
+              </label>
+              <input v-model.number="pmpQuizForm.num_questions" type="number" min="1" :max="pmpMaxQuestions"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
+              <p v-if="pmpQuizForm.focus_chapters.length === 0" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Full coverage uses chunked generation across all chapters — slightly slower, no truncation.
+              </p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Time Limit (minutes, optional)</label>
+              <input v-model.number="pmpQuizForm.time_limit" type="number" min="1" placeholder="Leave empty for unlimited"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
+            </div>
+            <div v-if="pmpQuizForm.focus_chapters.length > 0" class="flex flex-wrap gap-2 pt-1">
+              <span
+                v-for="slug in pmpQuizForm.focus_chapters"
+                :key="slug"
+                class="px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium"
+              >
+                {{ pmpChapters.find(c => c.slug === slug)?.name || slug }}
+              </span>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button type="button" @click="showPMPQuizModal = false"
+                class="flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
+                Cancel
+              </button>
+              <button type="submit" :disabled="isGenerating"
+                class="flex-1 py-2 rounded-lg text-white font-medium text-sm disabled:opacity-50"
+                style="background: linear-gradient(135deg, #F97316, #FB923C)">
+                {{ isGenerating ? 'Generating...' : 'Generate Quiz' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- ── Subject-Wide Quiz Modal ──────────────────────── -->
       <div
         v-if="showSubjectQuizModal"
@@ -276,8 +407,29 @@ const quizzes = ref<any[]>([])
 const myResults = ref<any[]>([])
 const isLoading = ref(true)
 const showSubjectQuizModal = ref(false)
+const showPMPQuizModal = ref(false)
 const showSubscriptionModal = ref(false)
 const isGenerating = ref(false)
+
+type PMPChapter = { slug: string; name: string; summary: string }
+const pmpChapters = ref<PMPChapter[]>([])
+
+const isPMP = computed(() => subject.value?.name === 'PMP')
+
+const PMP_MAX_FOCUSED = 30
+const PMP_MAX_FULL = 60
+
+const pmpQuizForm = ref({
+  quiz_name: '',
+  quiz_type: 'single_choice',
+  num_questions: 10,
+  time_limit: null as number | null,
+  focus_chapters: [] as string[],
+})
+
+const pmpMaxQuestions = computed(() =>
+  pmpQuizForm.value.focus_chapters.length > 0 ? PMP_MAX_FOCUSED : PMP_MAX_FULL
+)
 
 const { isEligible, fetchUser } = useSubscription()
 
@@ -329,13 +481,50 @@ const sourceAverage = (sourceId: string): number | null => {
   return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
 }
 
-// Subject overall: average of all source averages
+// Subject overall: average of all source averages (or all subject quizzes for PMP)
 const subjectOverall = computed<number | null>(() => {
+  if (isPMP.value) {
+    const scores = quizzes.value
+      .map((q: any) => quizLatestScore(q))
+      .filter((s): s is number => s !== null)
+    if (!scores.length) return null
+    return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+  }
   const avgs: number[] = sources.value
     .map((s: any) => sourceAverage(s.id))
     .filter((s): s is number => s !== null)
   if (!avgs.length) return null
   return Math.round(avgs.reduce((a, b) => a + b, 0) / avgs.length)
+})
+
+// Per-chapter accuracy for PMP, derived from all quiz attempts in this subject
+const pmpChapterStats = computed<Record<string, { total: number; correct: number; accuracy: number }>>(() => {
+  if (!isPMP.value) return {}
+  const subjectQuizIds = new Set(quizzes.value.map((q: any) => q.id))
+  const stats: Record<string, { total: number; correct: number }> = {}
+  for (const result of myResults.value) {
+    if (!subjectQuizIds.has(result.quiz_id)) continue
+    for (const ans of (result.user_answers || [])) {
+      const topic: string = ans.topic || 'Unknown'
+      if (!stats[topic]) stats[topic] = { total: 0, correct: 0 }
+      stats[topic].total++
+      if (ans.is_correct) stats[topic].correct++
+    }
+  }
+  const out: Record<string, { total: number; correct: number; accuracy: number }> = {}
+  for (const [topic, s] of Object.entries(stats)) {
+    out[topic] = { ...s, accuracy: Math.round((s.correct / s.total) * 100) }
+  }
+  return out
+})
+
+const pmpWeakChapterSlugs = computed<string[]>(() => {
+  if (!isPMP.value) return []
+  const stats = pmpChapterStats.value
+  return pmpChapters.value
+    .filter(ch => stats[ch.name] && stats[ch.name].total >= 1 && stats[ch.name].accuracy < 70)
+    .sort((a, b) => stats[a.name].accuracy - stats[b.name].accuracy)
+    .map(ch => ch.slug)
 })
 
 // Weak topics for a source: topics with < 70% accuracy across all quiz attempts
@@ -411,6 +600,57 @@ const confirmDelete = async () => {
   else alert('Failed to delete subject')
 }
 
+const openPMPQuizModal = (focusSlugs: string[] = []) => {
+  pmpQuizForm.value = {
+    quiz_name: '',
+    quiz_type: 'single_choice',
+    num_questions: 10,
+    time_limit: null,
+    focus_chapters: [...focusSlugs],
+  }
+  showPMPQuizModal.value = true
+}
+
+const createPMPQuiz = async () => {
+  pmpQuizForm.value.num_questions = Math.min(
+    Math.max(Number(pmpQuizForm.value.num_questions) || 1, 1),
+    pmpMaxQuestions.value,
+  )
+  isGenerating.value = true
+  try {
+    const body: Record<string, any> = {
+      quiz_type: pmpQuizForm.value.quiz_type,
+      num_questions: pmpQuizForm.value.num_questions,
+    }
+    if (pmpQuizForm.value.quiz_name) body.quiz_name = pmpQuizForm.value.quiz_name
+    if (pmpQuizForm.value.time_limit) body.time_limit = pmpQuizForm.value.time_limit
+    if (pmpQuizForm.value.focus_chapters.length > 0) body.focus_chapters = pmpQuizForm.value.focus_chapters
+
+    const res = await fetch(`${config.public.apiBase}/predefined/pmp/quiz`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) {
+      if (res.status === 403) {
+        showPMPQuizModal.value = false
+        showSubscriptionModal.value = true
+        return
+      }
+      const err = await res.json().catch(() => ({}))
+      throw new Error(err.detail || `HTTP ${res.status}`)
+    }
+    const quiz = await res.json()
+    showPMPQuizModal.value = false
+    await navigateTo(`/quiz/${quiz.id}`, { replace: true })
+  } catch (e: any) {
+    alert(e?.message || 'Failed to generate PMP quiz')
+  } finally {
+    isGenerating.value = false
+  }
+}
+
 const createSubjectQuiz = async () => {
   isGenerating.value = true
   try {
@@ -444,8 +684,20 @@ const createSubjectQuiz = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   fetchUser()
-  loadData()
+  await loadData()
+  if (isPMP.value) {
+    try {
+      const res = await fetch(`${config.public.apiBase}/predefined/pmp/chapters`, { credentials: 'include' })
+      if (res.ok) pmpChapters.value = await res.json()
+    } catch (e) {
+      console.error('Failed to load PMP chapters:', e)
+    }
+    const focus = route.query.focus_chapter
+    if (typeof focus === 'string' && focus) {
+      openPMPQuizModal([focus])
+    }
+  }
 })
 </script>
