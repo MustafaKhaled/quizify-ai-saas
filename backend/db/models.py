@@ -171,3 +171,23 @@ class QuizResult(Base):
 
     quiz = relationship("Quiz", back_populates="quiz_results")
     user = relationship("User", back_populates="quiz_results")
+
+
+# -----------------------------------
+# 4. Predefined-Subject Exam Banks
+# -----------------------------------
+class PMPExamQuestion(Base):
+    __tablename__ = "pmp_exam_questions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    content_hash = Column(String(64), unique=True, nullable=False, index=True)  # sha256 of (stem|source)
+    chapter_slug = Column(String(64), nullable=False, index=True)
+    stem = Column(String, nullable=False)
+    quiz_type = Column(String(32), nullable=False, default="single_choice")
+    options = Column(JSONB, nullable=False)
+    correct_index = Column(Integer, nullable=True)
+    correct_option_indices = Column(JSONB, nullable=True)
+    explanation = Column(String, nullable=False)
+    source = Column(String(255), nullable=False)
+    difficulty = Column(String(16), nullable=False, default="medium")
+    created_at = Column(TIMESTAMP(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)

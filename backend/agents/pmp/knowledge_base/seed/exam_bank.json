@@ -1,0 +1,482 @@
+[
+  {
+    "id": "pmp_001",
+    "chapter_slug": "project_framework",
+    "stem": "Which of the following is NOT a feature of a project?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Constrained by limited resources",
+      "Planned, executed and controlled",
+      "Creates unique product or service",
+      "May be ongoing and repetitive"
+    ],
+    "correct_index": 3,
+    "explanation": "Operations and projects differ primarily in that operations are ongoing and repetitive while projects are temporary and unique. A project is a temporary endeavor undertaken to create a unique product or service.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_002",
+    "chapter_slug": "quality_management",
+    "stem": "In an automobile company for which you are the project manager, the allowable standard deviation for a product required from the contractor is within 0.002 inches. While examining the product, you find that the standard deviation is slightly more than 0.002 inches. You believe the deviation is very small and hence acceptable. What must you do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Allow the product because it is a very small deviation from the company standard which you think is acceptable",
+      "Document the lower quality level, ask the contractor for an explanation, and try to find a solution",
+      "Reject the product outright",
+      "Allow the lower standard this time but inform the contractor to be more quality conscious going forward"
+    ],
+    "correct_index": 1,
+    "explanation": "Any decrease in quality level should be documented and discussed with the contractor. Rejecting outright is too harsh; allowing lower quality without documentation is not advisable.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_003",
+    "chapter_slug": "project_integration",
+    "stem": "All these statements about the project charter are correct EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project charter includes or references the business need and product description",
+      "Project charter provides authority to the project manager",
+      "Project charter formally authorizes a project",
+      "Project charter is issued by the project sponsor"
+    ],
+    "correct_index": 3,
+    "explanation": "The project charter should be issued by a manager external to the project, and at a level appropriate to the needs of the project — not necessarily the project sponsor.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_004",
+    "chapter_slug": "cost_management",
+    "stem": "All the following are tools for Estimate Costs EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Analogous Estimating",
+      "Parametric Modeling",
+      "Computerized tools",
+      "Alternatives Identification"
+    ],
+    "correct_index": 3,
+    "explanation": "Alternatives Identification is a tool for Plan Human Resource Management, not Estimate Costs.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_005",
+    "chapter_slug": "resource_management",
+    "stem": "All the following are tools and techniques for Plan Human Resource Management EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Matrix",
+      "Networking",
+      "Organizational Theory",
+      "Recognition and rewards"
+    ],
+    "correct_index": 3,
+    "explanation": "Recognition and rewards is a tool for Develop Project Team, not Plan Human Resource Management.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_006",
+    "chapter_slug": "risk_management",
+    "stem": "In your project, you are creating a diagram that describes the decision under consideration and the implications of choosing one or another of the available alternatives. This will help in:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Getting a qualitative analysis of the risk",
+      "Determining which risks can impact the project the most",
+      "Translating the uncertainties at a detailed level into potential impact on objectives expressed at the level of the total project",
+      "Determining which decision yields the greatest expected value"
+    ],
+    "correct_index": 3,
+    "explanation": "A Decision Tree is a diagram that describes a decision under consideration and the implications of choosing one or another of the available alternatives. It incorporates probabilities of risks and costs or rewards of each logical path, indicating which decision yields the greatest expected value.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_007",
+    "chapter_slug": "procurement_management",
+    "stem": "You are considering whether to buy or make a software product. If you buy, the cost is $80,000 and the cost of procurement and integration is $1,000. If you build, it requires 7 software engineers working 3 months at $4,000/month each, with overhead costs of $2,000. Which option will you choose?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Buy",
+      "Build",
+      "Neither build nor buy",
+      "Need more information about the suppliers before making a decision"
+    ],
+    "correct_index": 0,
+    "explanation": "Buy cost: $80,000 + $1,000 = $81,000. Build cost: $4,000 × 7 × 3 + $2,000 = $86,000. Buying is cheaper.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_008",
+    "chapter_slug": "project_integration",
+    "stem": "In your project, you have designated a group of people to monitor changes to the project baselines, manage the approvals, and do the necessary paperwork. These are examples of:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Configuration Management",
+      "Change Control System",
+      "Risk management",
+      "Project plan execution"
+    ],
+    "correct_index": 1,
+    "explanation": "A Change Control System is a collection of formal, documented procedures that defines how project performance will be monitored and evaluated, including paperwork, tracking systems, processes, and approval levels necessary for authorizing changes.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_009",
+    "chapter_slug": "schedule_management",
+    "stem": "When referring to inputs for schedule development, responsibility (i.e. who will perform the work), activity type (i.e. summary or detailed), and WBS classification are part of:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Constraints",
+      "Activity Attributes",
+      "Resource Pool Description",
+      "Activity Duration Estimates"
+    ],
+    "correct_index": 1,
+    "explanation": "Activity Attributes include responsibility, geographic area, activity type, and WBS classification — important for further selection and sorting of planned activities.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_010",
+    "chapter_slug": "quality_management",
+    "stem": "For Quality Planning, you are using Design of Experiments to determine which factors might influence specific variables. Which of the following is a variable (not a measure)?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Dollars",
+      "Kilograms",
+      "Weight",
+      "Pounds"
+    ],
+    "correct_index": 2,
+    "explanation": "Weight is a variable. Dollars, Kilograms, and Pounds are all units of measure, not variables.",
+    "difficulty": "hard",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_011",
+    "chapter_slug": "communications_management",
+    "stem": "In your last project status meeting, you had 15 team members. The meeting was very disorderly with too many sidebar conversations and arguments. In order to better regulate the meeting next time, you should:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Decrease the number of people in one meeting",
+      "Publish a meeting agenda",
+      "Ensure that you control the channels of communication",
+      "Give incentives to team members for conforming to desired norms of the meeting"
+    ],
+    "correct_index": 1,
+    "explanation": "Publishing a meeting agenda is the best way to ensure meetings are conducted in an orderly fashion. Controlling all communication channels is not feasible — for N people there are N×(N-1) channels.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_012",
+    "chapter_slug": "project_framework",
+    "stem": "In a Weak Matrix organization, the role of a project manager is that of a:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Coordinator and expeditor",
+      "Project manager with considerable authority",
+      "Support person",
+      "Functional manager"
+    ],
+    "correct_index": 0,
+    "explanation": "Weak matrix organizations maintain many characteristics of a functional organization, and the project manager role is more that of a coordinator or expediter than that of a manager.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_013",
+    "chapter_slug": "ethics_professional_conduct",
+    "stem": "In your new company, you realize that some financial statements do not follow US GAAP Accounting Standards and are hence inaccurate. What should you do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Inform the US government agencies of the inaccurate accounting practices in the company",
+      "Talk to your finance managers about why you think they may be violating the standard accounting standards",
+      "Since you are new to the company, assume that finance standards are different and do not do anything",
+      "Talk with a finance manager in your previous company to get expert opinion"
+    ],
+    "correct_index": 1,
+    "explanation": "Talking to the finance managers first aims at understanding and resolving the problem internally. Going to government agencies is a last resort. Talking to previous employer's finance manager risks compromising proprietary information.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_014",
+    "chapter_slug": "scope_management",
+    "stem": "In your project, a team member suggested the addition of a functionality to improve customer satisfaction. Your approach would be to:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Allow for the functionality because satisfying the customer is your objective",
+      "Do not allow for the new requirement, because it will be a change in scope, and the customer did not explicitly mention the requirement",
+      "Make changes to the project plan to accommodate the new requirement",
+      "Ask the customer for additional funding for implementing the requirement"
+    ],
+    "correct_index": 1,
+    "explanation": "A project must prevent gold plating — adding requirements not explicitly stated in the project scope. Define Scope ensures the project includes all the work required, and only the work required.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_015",
+    "chapter_slug": "cost_management",
+    "stem": "In your construction project, the CPI is 1.30 and SPI is 0.85. What could be the potential reason?",
+    "quiz_type": "single_choice",
+    "options": [
+      "A critical resource went on sick leave for a long period of time, and this had not been anticipated earlier",
+      "The cost of raw materials required for construction increased 10%",
+      "You had not taken into account the inflation rate",
+      "There were 4 days of waiting time in the curing of cement, and no work could be done during that time"
+    ],
+    "correct_index": 0,
+    "explanation": "Options 2 and 3 increase costs — but CPI > 1 means cost is fine. Option 4 was a known factor that should have been planned for. Only option 1 could cause schedule delay (SPI < 1) without affecting cost performance.",
+    "difficulty": "hard",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_016",
+    "chapter_slug": "resource_management",
+    "stem": "Team Development is a very critical component of Develop Project Team. All the following are inputs EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Resource Calendars",
+      "Project Staff Assignments",
+      "Work Performance Reports",
+      "Human Resource Management Plan"
+    ],
+    "correct_index": 2,
+    "explanation": "Work Performance Reports is an input to Manage Project Team, not Develop Project Team.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_017",
+    "chapter_slug": "risk_management",
+    "stem": "You have just completed Qualitative Risk Analysis of the project. What should you be doing next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Sensitivity Analysis",
+      "Risk Probability and Impact",
+      "Data Precision Ranking",
+      "Brainstorming"
+    ],
+    "correct_index": 0,
+    "explanation": "Risk Probability and Impact and Data Precision Ranking are part of Qualitative Analysis (already done). Brainstorming is part of Identify Risks (already done). Sensitivity Analysis is the next step in Quantitative Risk Management.",
+    "difficulty": "hard",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_018",
+    "chapter_slug": "procurement_management",
+    "stem": "If a project needs to be terminated early, then you will have to do:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Procurement Planning",
+      "Contract Administration",
+      "Procurement Audits",
+      "Source Selection"
+    ],
+    "correct_index": 2,
+    "explanation": "Procurement Audits are needed to capture procurement lessons learned, which is essential when a project is terminated early.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_019",
+    "chapter_slug": "project_framework",
+    "stem": "You are the Project Manager for a company doing research on alternative fuels for automobiles. Which of the following is a valid assumption?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Cost of the project is $5 Million",
+      "The project scope is to develop alternative fuels only for automobile vehicles weighing less than 10 tons",
+      "Gasoline fuels will become very expensive and less readily available after 10 years",
+      "The project has to be completed within 2 years"
+    ],
+    "correct_index": 2,
+    "explanation": "Assumptions are factors considered to be true without proof. Options 1, 2, and 4 are constraints (applicable restrictions). Only option 3 is an assumption — a future belief treated as true for planning purposes.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_020",
+    "chapter_slug": "schedule_management",
+    "stem": "Your project will most likely be completed in 10 weeks. Worst case scenario, the project will require 19 weeks, and if everything goes well it will be completed in 7 weeks. What is the PERT estimate for the task?",
+    "quiz_type": "single_choice",
+    "options": [
+      "10 weeks",
+      "11 weeks",
+      "9 weeks",
+      "Cannot be determined with the information provided"
+    ],
+    "correct_index": 1,
+    "explanation": "PERT estimate = (Optimistic + 4×Most Likely + Pessimistic) / 6 = (7 + 4×10 + 19) / 6 = 66 / 6 = 11 weeks.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_021",
+    "chapter_slug": "quality_management",
+    "stem": "Control Quality involves monitoring specific project results to determine if they comply with relevant quality standards. To evaluate Control Quality outputs, the project team should have a working knowledge of:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Prevention and Inspection",
+      "Sampling and Probability",
+      "Special Causes and Random Causes",
+      "Tolerances and Control Limits"
+    ],
+    "correct_index": 1,
+    "explanation": "The project management team must have a working knowledge of statistical quality control, especially sampling and probability, to help evaluate quality control outputs.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_022",
+    "chapter_slug": "communications_management",
+    "stem": "In a sender-receiver model, all the following are true EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Sender is responsible for making information clear, unambiguous and complete",
+      "Sender confirms that information is understood",
+      "Receiver is responsible for making sure that the information is completely received and understood",
+      "All the statements above are true"
+    ],
+    "correct_index": 3,
+    "explanation": "All three statements are actually correct: the sender is responsible for clear, unambiguous, complete information and for confirming it is understood; the receiver is responsible for making sure information is received entirely and understood correctly. So 'All statements are true' is actually the correct answer here — the EXCEPT refers to finding the false statement, and there is none.",
+    "difficulty": "hard",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_023",
+    "chapter_slug": "project_framework",
+    "stem": "Preparing the Financial plan for your project will require:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project Management skills",
+      "Industry specific skills",
+      "Financial Subject Matter Expertise",
+      "Both Project Management and Industry specific skills"
+    ],
+    "correct_index": 3,
+    "explanation": "Preparing a financial plan requires both Project Management skills and Industry specific skills working together.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_024",
+    "chapter_slug": "ethics_professional_conduct",
+    "stem": "All the following are responsibilities of a certified PMP EXCEPT:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Ensure that there is no conflict of interest that can compromise the legitimate interests of a client or customer",
+      "Ensure that the technical specifications are appropriately defined",
+      "Disseminate PMP Code of Professional Conduct to other PMI certificants",
+      "Cooperate with PMI concerning ethics violations and the collection of related information"
+    ],
+    "correct_index": 1,
+    "explanation": "The project manager may not be a technical expert to determine the accuracy of technical specifications. All others are mentioned in the PMP Code of Professional Conduct as responsibilities of the project manager.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_025",
+    "chapter_slug": "scope_management",
+    "stem": "Work Breakdown Structure (WBS) is:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Developed in the Scope Planning Phase",
+      "A deliverable-oriented grouping of project components",
+      "Similar to the chart of accounts",
+      "Depicts work elements assigned to different organizational units"
+    ],
+    "correct_index": 1,
+    "explanation": "WBS is a deliverable-oriented grouping of project components that organizes and defines the total scope of the project. Work not in the WBS is out of scope.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_026",
+    "chapter_slug": "project_integration",
+    "stem": "In a project you are presented with four options. Which project should you select?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project A with Opportunity Cost of $100,000",
+      "Project B with Benefit-Cost Ratio of 0.75",
+      "Project C with IRR of -2%",
+      "Project D with NPV of $100,000"
+    ],
+    "correct_index": 3,
+    "explanation": "Project B (BCR < 1) and Project C (negative IRR) result in losses. Opportunity Cost is not a project selection criterion. Project D with a positive NPV of $100,000 is the best choice.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_027",
+    "chapter_slug": "resource_management",
+    "stem": "What is the factor which will help a project manager gain the maximum support of the assigned project personnel?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Expertise of the project manager",
+      "Work Challenge",
+      "Ability of the project manager to penalize team members",
+      "Ability of project manager to provide promotions to team members"
+    ],
+    "correct_index": 0,
+    "explanation": "Expertise of the project manager is the most important factor in getting support from project personnel. The ability to penalize is actually the least important factor.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_028",
+    "chapter_slug": "risk_management",
+    "stem": "The Risk Management Plan may include:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Budgeting, Timing, Thresholds, Methodology",
+      "Risks, Triggers, Inputs to other processes",
+      "Avoided, Transferred, Mitigated and Accepted Risks",
+      "Risk Response Audits, Earned Value Analysis, Technical Performance Measurement"
+    ],
+    "correct_index": 0,
+    "explanation": "The Risk Management Plan includes budgeting (resources for risk activities), timing (when risk processes will be performed), thresholds, and methodology. Options 2 and 3 describe the Risk Register. Option 4 describes tools for risk monitoring.",
+    "difficulty": "hard",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_029",
+    "chapter_slug": "procurement_management",
+    "stem": "Procurement Negotiations is carried out as part of:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Solicitation Planning",
+      "Solicitation",
+      "Conduct Procurements",
+      "Contract Administration"
+    ],
+    "correct_index": 2,
+    "explanation": "Procurement Negotiations take place during Conduct Procurements, where the buyer and seller negotiate the final contract terms and conditions.",
+    "difficulty": "medium",
+    "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_030",
+    "chapter_slug": "project_integration",
+    "stem": "You are the Project Manager for a construction project. Your job requires that you sanction work to others and ensure that the work is done at the right time. The tool you use is:",
+    "quiz_type": "single_choice",
+    "options": [
+      "Work Authorization System",
+      "Project Scheduling Techniques",
+      "Project Plan",
+      "Network Diagram"
+    ],
+    "correct_index": 0,
+    "explanation": "A Work Authorization System is a formal procedure for sanctioning project work to ensure that work is done at the right time and in the proper sequence.",
+    "difficulty": "easy",
+    "source": "Projex Academy – PMP Practice Questions"
+  }
+]
