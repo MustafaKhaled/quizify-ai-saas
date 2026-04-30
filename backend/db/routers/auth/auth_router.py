@@ -10,7 +10,7 @@ from db.routers.util import build_user_response
 
 import schemas, security
 from authlib.integrations.starlette_client import OAuth
-from email_service import send_verification_email
+from email_service import send_password_reset_email, send_verification_email
 import os, secrets as _secrets_mod
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
@@ -427,6 +427,107 @@ def refresh(request: Request, response: Response, db: Session = Depends(get_db))
     access_token = security.create_access_token(data={"sub": user.email})
     set_auth_cookie(response, access_token)
     return {"ok": True}
+
+
+@router.post("/forgot-password")
+def forgot_password(payload: schemas.ForgotPasswordRequest, db: db_dep):
+    """
+    Public: send a password reset link if the email belongs to a password-based account.
+    Always returns the same message — the response must not reveal whether the email is registered.
+    """
+    generic_response = {
+        "message": "If that email is registered, a password reset link has been sent."
+    }
+
+    user = db.query(models.User).filter(models.User.email == payload.email).first()
+    if not user or not user.hashed_password:
+        return generic_response
+
+    db.query(models.PasswordResetToken).filter(
+        models.PasswordResetToken.user_id == user.id
+    ).delete()
+
+    token = _secrets_mod.token_urlsafe(32)
+    db.add(models.PasswordResetToken(
+        user_id=user.id,
+        token=token,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
+    ))
+    db.commit()
+
+    try:
+        send_password_reset_email(user.email, token)
+    except Exception as e:
+        print(f"[forgot_password] Failed to send reset email: {e}")
+
+    return generic_response
+
+
+@router.post("/reset-password")
+def reset_password(payload: schemas.ResetPasswordRequest, db: db_dep):
+    """Public: consume a reset token and set a new password. Single-use; revokes all refresh tokens."""
+    record = db.query(models.PasswordResetToken).filter(
+        models.PasswordResetToken.token == payload.token
+    ).first()
+
+    if not record:
+        raise HTTPException(status_code=400, detail="Invalid or already used reset link")
+
+    if record.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        db.delete(record)
+        db.commit()
+        raise HTTPException(status_code=400, detail="Reset link has expired. Please request a new one.")
+
+    user = db.query(models.User).filter(models.User.id == record.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.hashed_password = security.hash_password(payload.new_password[:72])
+    db.delete(record)
+
+    db.query(models.RefreshToken).filter(
+        models.RefreshToken.user_id == user.id,
+        models.RefreshToken.revoked == False,
+    ).update({"revoked": True})
+
+    db.commit()
+    return {"message": "Password reset successfully. Please log in with your new password."}
+
+
+@router.post("/change-password")
+def change_password(
+    payload: schemas.ChangePasswordRequest,
+    response: Response,
+    db: db_dep,
+    current_user: Annotated[models.User, Depends(get_current_user)],
+    current_token: str = Depends(get_token),
+):
+    """
+    Authenticated: verify current password, set the new one. Revokes all OTHER refresh
+    tokens (sessions on other devices) but keeps this session alive by issuing a fresh one.
+    """
+    if not current_user.hashed_password:
+        raise HTTPException(
+            status_code=400,
+            detail="This account uses Google sign-in and has no password to change.",
+        )
+
+    if not security.verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    if payload.current_password == payload.new_password:
+        raise HTTPException(status_code=400, detail="New password must be different from current password")
+
+    current_user.hashed_password = security.hash_password(payload.new_password[:72])
+
+    db.query(models.RefreshToken).filter(
+        models.RefreshToken.user_id == current_user.id,
+        models.RefreshToken.revoked == False,
+    ).update({"revoked": True})
+    db.commit()
+
+    issue_refresh_token(response, current_user.id, db)
+    return {"message": "Password changed successfully"}
 
 
 @router.post("/logout")

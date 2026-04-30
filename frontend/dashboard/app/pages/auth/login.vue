@@ -84,9 +84,14 @@ const handleResend = async () => {
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Password
-        </label>
+        <div class="flex items-center justify-between mb-1">
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            Password
+          </label>
+          <NuxtLink to="/auth/forgot-password" class="text-xs gradient-text font-medium">
+            Forgot password?
+          </NuxtLink>
+        </div>
         <input
           v-model="password"
           type="password"

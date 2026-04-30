@@ -28,6 +28,20 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=8, max_length=72)
 
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=8, max_length=72)
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=8, max_length=72)
+
 class SubscriptionInfo(BaseModel):
     status: str          # trial, active_monthly, active_yearly, expired
     label: Optional[str] = None           # "Pro Monthly", "Trial (5d left)"
@@ -53,6 +67,7 @@ class UserAdminResponse(UserResponse):
     is_admin: Optional[bool] = None
     is_pro: Optional[bool] = None
     is_verified: Optional[bool] = None
+    has_password: Optional[bool] = None
     quizzes_count: int = 0
     sources_count: int = 0
     subscription: Optional[SubscriptionInfo] = None

@@ -119,7 +119,7 @@ async function handleResendFromLogin() {
 
     <template #password-hint>
       <ULink
-        to="/"
+        to="/forgot-password"
         class="text-primary font-medium"
         tabindex="-1"
       >Forgot password?</ULink>
