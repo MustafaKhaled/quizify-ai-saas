@@ -39,24 +39,40 @@ function close() {
 
         <div class="grid grid-cols-2 gap-3 mb-6">
           <button
+            type="button"
             class="p-4 rounded-xl text-left transition-all glass-card"
             :class="selectedPlan === 'monthly'
-              ? 'border-blue-500/50 bg-blue-500/10 shadow-lg shadow-blue-500/10'
-              : 'border-white/20 dark:border-white/10'"
+              ? 'ring-2 ring-blue-500 bg-blue-500/15 shadow-lg shadow-blue-500/20 scale-[1.02]'
+              : 'ring-1 ring-transparent hover:ring-blue-500/30'"
             @click="selectedPlan = 'monthly'"
           >
-            <p class="font-semibold text-slate-900 dark:text-white">Monthly</p>
+            <div class="flex items-center justify-between mb-1">
+              <p class="font-semibold text-slate-900 dark:text-white">Monthly</p>
+              <UIcon
+                v-if="selectedPlan === 'monthly'"
+                name="i-lucide-check-circle-2"
+                class="w-5 h-5 text-blue-500"
+              />
+            </div>
             <p class="text-2xl font-bold gradient-text mt-1">€7.99<span class="text-sm font-normal text-slate-500">/mo</span></p>
           </button>
           <button
+            type="button"
             class="p-4 rounded-xl text-left transition-all glass-card relative"
             :class="selectedPlan === 'yearly'
-              ? 'border-blue-500/50 bg-blue-500/10 shadow-lg shadow-blue-500/10'
-              : 'border-white/20 dark:border-white/10'"
+              ? 'ring-2 ring-blue-500 bg-blue-500/15 shadow-lg shadow-blue-500/20 scale-[1.02]'
+              : 'ring-1 ring-transparent hover:ring-blue-500/30'"
             @click="selectedPlan = 'yearly'"
           >
             <span class="absolute -top-2.5 right-2 bg-gradient-to-r from-green-500 to-teal-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">SAVE 25%</span>
-            <p class="font-semibold text-slate-900 dark:text-white">Yearly</p>
+            <div class="flex items-center justify-between mb-1">
+              <p class="font-semibold text-slate-900 dark:text-white">Yearly</p>
+              <UIcon
+                v-if="selectedPlan === 'yearly'"
+                name="i-lucide-check-circle-2"
+                class="w-5 h-5 text-blue-500"
+              />
+            </div>
             <p class="text-2xl font-bold gradient-text mt-1">€5.99<span class="text-sm font-normal text-slate-500">/mo</span></p>
           </button>
         </div>
