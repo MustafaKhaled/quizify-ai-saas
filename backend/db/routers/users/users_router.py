@@ -6,12 +6,17 @@ from typing import Annotated
 from datetime import datetime
 import stripe, os
 from dateutil.relativedelta import relativedelta
+from fastapi import Response
 from db.models import User, Subscription
 from schemas import UserAdminResponse, UserResponse, UserUpdate
 from db.dependency import get_db, get_current_user
 from db.routers.util import build_user_response
 from security import hash_password
 from pydantic import BaseModel # To define the expected request body
+
+# Cookie config — mirrored from auth_router so logout-on-delete clears the same cookies
+IS_PRODUCTION = os.getenv("ENVIRONMENT") == "production"
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
 
 
 # Define a type alias for cleaner code
@@ -80,8 +85,8 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
 
 @router.patch("/me", response_model=UserResponse)
 def update_my_profile(
-    user_update: UserUpdate, 
-    db: DBSession, 
+    user_update: UserUpdate,
+    db: DBSession,
     current_user: CurrentUser
 ):
     if user_update.password:
@@ -90,6 +95,39 @@ def update_my_profile(
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.delete("/me", status_code=204)
+def delete_my_account(
+    response: Response,
+    db: DBSession,
+    current_user: CurrentUser,
+):
+    """
+    Permanently delete the current user. Cancels any active Stripe subscription
+    immediately, clears auth cookies, and cascades to subjects/sources/quizzes/refresh tokens.
+    """
+    sub_record = db.query(Subscription).filter(Subscription.user_id == current_user.id).first()
+    if sub_record and sub_record.stripe_customer_id:
+        try:
+            stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+            active_subs = stripe.Subscription.list(
+                customer=sub_record.stripe_customer_id, status="active", limit=10
+            )
+            for s in active_subs.data:
+                try:
+                    stripe.Subscription.delete(s.id)
+                except Exception as e:
+                    print(f"[delete_my_account] Failed to cancel Stripe sub {s.id}: {e}")
+        except Exception as e:
+            print(f"[delete_my_account] Stripe lookup failed: {e}")
+
+    db.delete(current_user)
+    db.commit()
+
+    response.delete_cookie(key="auth_token", path="/", domain=COOKIE_DOMAIN)
+    response.delete_cookie(key="refresh_token", path="/auth/refresh", domain=COOKIE_DOMAIN)
+    return Response(status_code=204)
 
 
 

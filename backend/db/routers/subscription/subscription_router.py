@@ -57,6 +57,71 @@ DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3001")
 
 
+@router.post("/cancel")
+async def cancel_subscription(
+    db: db_dep,
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Cancel the user's active Stripe subscription at period end.
+
+    Resolves the Stripe customer in this order:
+      1. Subscription row stripe_customer_id (fast path)
+      2. Stripe customer lookup by email (fallback when DB row is missing —
+         e.g. webhook missed, trial-to-paid skipped recording)
+    """
+    stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+    sub_record = db.query(Subscription).filter(Subscription.user_id == current_user.id).first()
+    customer_id = sub_record.stripe_customer_id if sub_record else None
+
+    if not customer_id:
+        try:
+            customers = stripe.Customer.list(email=current_user.email, limit=1)
+            if customers.data:
+                customer_id = customers.data[0].id
+        except stripe.error.StripeError as e:
+            raise HTTPException(status_code=502, detail=f"Stripe lookup failed: {str(e)}")
+
+    if not customer_id:
+        raise HTTPException(status_code=400, detail="No Stripe customer found for this account.")
+
+    try:
+        active_subs = stripe.Subscription.list(customer=customer_id, status="active", limit=1)
+        if not active_subs.data:
+            raise HTTPException(status_code=400, detail="No active subscription to cancel.")
+
+        stripe_sub = active_subs.data[0]
+        updated = stripe.Subscription.modify(stripe_sub.id, cancel_at_period_end=True)
+
+        period_end = getattr(updated, "current_period_end", None)
+        ends_at = datetime.fromtimestamp(period_end) if period_end else None
+
+        # Backfill the missing Subscription row so future calls hit the fast path.
+        if not sub_record:
+            sub_record = Subscription(
+                user_id=current_user.id,
+                stripe_customer_id=customer_id,
+                status="canceling",
+                ends_at=ends_at,
+                created_at=datetime.utcnow(),
+            )
+            db.add(sub_record)
+        else:
+            sub_record.stripe_customer_id = customer_id
+            sub_record.status = "canceling"
+            if ends_at:
+                sub_record.ends_at = ends_at
+        db.commit()
+
+        return {
+            "message": "Subscription will end at the end of the current billing period.",
+            "ends_at": ends_at,
+        }
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=502, detail=f"Stripe error: {str(e)}")
+
+
 @router.post("/create-checkout-session")
 async def create_checkout(
     payload: CheckoutRequest,

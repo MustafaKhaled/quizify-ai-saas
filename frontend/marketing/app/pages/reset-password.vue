@@ -12,10 +12,18 @@ useSeoMeta({
 })
 
 const config = useRuntimeConfig()
-const route = useRoute()
 const toast = useToast()
 
-const token = computed(() => (route.query.token as string) || '')
+// Read the token client-side. Marketing site is statically generated, so the
+// query string isn't available during SSR/build — only after hydration.
+const token = ref('')
+const ready = ref(false)
+
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search)
+  token.value = params.get('token') || ''
+  ready.value = true
+})
 
 const fields = [{
   name: 'password',
@@ -63,7 +71,13 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <div v-if="!token" class="max-w-md w-full mx-auto text-center py-12">
+  <!-- Wait for hydration before deciding which branch to show, so SSG'd HTML
+       doesn't render the empty-token state on a real reset link. -->
+  <div v-if="!ready" class="max-w-md w-full mx-auto text-center py-12">
+    <div class="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+
+  <div v-else-if="!token" class="max-w-md w-full mx-auto text-center py-12">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Invalid reset link</h1>
     <p class="text-gray-600 dark:text-gray-400 mb-6">
       This reset link is missing a token. Request a new one below.

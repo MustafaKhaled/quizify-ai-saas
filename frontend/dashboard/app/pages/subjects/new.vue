@@ -10,38 +10,6 @@
 
         <div class="glass-card rounded-2xl p-4 sm:p-6">
           <form @submit.prevent="createSubject" class="space-y-6">
-            <!-- Quick Pick -->
-            <div>
-              <label class="block text-sm font-medium text-slate-900 dark:text-white mb-2">Quick pick</label>
-              <div class="flex flex-wrap gap-3">
-                <button
-                  v-for="preset in presets"
-                  :key="preset.name"
-                  type="button"
-                  class="flex items-center gap-2 px-4 py-2 rounded-xl border-2 transition-all hover:scale-[1.02]"
-                  :class="name.trim() === preset.name
-                    ? 'border-transparent text-white shadow-lg'
-                    : 'border-white/30 dark:border-white/10 bg-white/40 dark:bg-white/5 text-slate-900 dark:text-white'"
-                  :style="name.trim() === preset.name ? { backgroundColor: preset.color } : {}"
-                  @click="applyPreset(preset)"
-                >
-                  <span class="text-lg">{{ preset.icon }}</span>
-                  <span class="font-semibold text-sm">{{ preset.name }}</span>
-                </button>
-                <button
-                  type="button"
-                  class="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed transition-all hover:scale-[1.02]"
-                  :class="isCustom
-                    ? 'border-blue-500 bg-blue-500/10 text-blue-700 dark:text-blue-300'
-                    : 'border-white/30 dark:border-white/10 text-slate-600 dark:text-slate-300'"
-                  @click="clearPreset"
-                >
-                  <UIcon name="i-lucide-pencil" class="w-4 h-4" />
-                  <span class="font-semibold text-sm">Custom</span>
-                </button>
-              </div>
-            </div>
-
             <!-- Name -->
             <div>
               <label class="block text-sm font-medium text-slate-900 dark:text-white mb-2">Subject Name *</label>
@@ -107,23 +75,6 @@ const palette = [
   '#F97316', '#EAB308', '#22C55E', '#14B8A6',
   '#06B6D4', '#6366F1',
 ]
-
-const presets = [
-  { name: 'PMP', color: '#F97316', icon: '📋' }
-]
-
-const isCustom = computed(() => !presets.some(p => p.name === name.value.trim()))
-
-function applyPreset(preset: { name: string, color: string }) {
-  name.value = preset.name
-  color.value = preset.color
-}
-
-function clearPreset() {
-  if (presets.some(p => p.name === name.value.trim())) {
-    name.value = ''
-  }
-}
 
 const createSubject = async () => {
   if (!name.value.trim()) return

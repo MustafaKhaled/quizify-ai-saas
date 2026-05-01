@@ -6,7 +6,7 @@ load_dotenv()
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
-EMAIL_FROM = os.getenv("EMAIL_FROM", "Quizify <noreply@quizifyai.app>")
+EMAIL_FROM = os.getenv("EMAIL_FROM", "Quizify <noreply@send.quizifyai.app>")
 DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
 # Marketing site — reset-password lives here since users are signed out when they click the email link.
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3001")

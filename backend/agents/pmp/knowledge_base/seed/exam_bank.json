@@ -478,5 +478,1813 @@
     "explanation": "A Work Authorization System is a formal procedure for sanctioning project work to ensure that work is done at the right time and in the proper sequence.",
     "difficulty": "easy",
     "source": "Projex Academy – PMP Practice Questions"
+  },
+  {
+    "id": "pmp_031",
+    "chapter_slug": "cost_management",
+    "stem": "A company is considering two projects, Alpha and Beta. Project Alpha is expected to result in a $50 million net profit, while project Beta is expected to net $45 million. The financial controller has stated that the company can only invest in one of these projects. If project Alpha is selected, what will be the opportunity cost?",
+    "quiz_type": "single_choice",
+    "options": [
+      "$95 million",
+      "$50 million",
+      "$45 million",
+      "$5 million"
+    ],
+    "correct_index": 2,
+    "explanation": "Opportunity cost is the value of the next best alternative foregone. If Alpha is chosen, the company gives up Beta's $45 million profit.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110002)"
+  },
+  {
+    "id": "pmp_032",
+    "chapter_slug": "project_integration",
+    "stem": "You are managing a project to build five bridges. The project consists of five sequential phases with each phase delivering one bridge. After the first phase of the project is complete, which process group of the second phase should follow?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Initiating",
+      "Planning",
+      "Executing",
+      "Closing"
+    ],
+    "correct_index": 0,
+    "explanation": "Each project phase begins with the Initiating process group to formally authorize the phase and ensure alignment before planning begins.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110003)"
+  },
+  {
+    "id": "pmp_033",
+    "chapter_slug": "stakeholder_management",
+    "stem": "The project aims to investigate the feasibility of constructing a hydroelectric dam from a technical, economic, and social point of view. The project charter has been approved. Which of the following processes should be performed next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Develop Project Management Plan",
+      "Identify Risks",
+      "Identify Stakeholders",
+      "Develop Project Charter"
+    ],
+    "correct_index": 2,
+    "explanation": "After the project charter is approved, the next step is to Identify Stakeholders, as stakeholder identification is an early Initiating process group activity.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110005)"
+  },
+  {
+    "id": "pmp_034",
+    "chapter_slug": "stakeholder_management",
+    "stem": "You are managing a software upgrade project. Your project sponsor has a great deal of authority regarding project decisions, but doesn't have much interest in your project. What stakeholder management strategy should you use with your project sponsor?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Keep the sponsor satisfied",
+      "Manage the sponsor closely",
+      "Monitor the sponsor's actions",
+      "Keep the sponsor informed"
+    ],
+    "correct_index": 0,
+    "explanation": "High power, low interest stakeholders should be kept satisfied. The power/interest grid prescribes 'keep satisfied' for those with high authority but low engagement.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110006)"
+  },
+  {
+    "id": "pmp_035",
+    "chapter_slug": "scope_management",
+    "stem": "The project sponsor asks for a copy of the document that contains the description, owner, source, priority, and status of product requirements. Which project document is the project sponsor requesting?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The requirements management plan",
+      "The requirements traceability matrix",
+      "The scope management plan",
+      "The work breakdown structure (WBS)"
+    ],
+    "correct_index": 1,
+    "explanation": "The requirements traceability matrix links requirements to their source and tracks attributes such as owner, priority, and status throughout the project.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110008)"
+  },
+  {
+    "id": "pmp_036",
+    "chapter_slug": "schedule_management",
+    "stem": "You are facing problems decomposing the testing work package because detailed testing plans cannot be determined until the system is at least 50% developed. What is the best way to resolve this problem?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Use product analysis techniques such as product breakdown and systems analysis to decompose the system testing work package",
+      "Decompose the system development work package now and decompose the system testing work package later",
+      "Break down the project into multiple phases so that the system testing work package goes into the second project phase",
+      "Consult the project management plan to determine what to do in this situation"
+    ],
+    "correct_index": 1,
+    "explanation": "Rolling wave planning allows decomposition of near-term work in detail while future work packages are decomposed as more information becomes available.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110011)"
+  },
+  {
+    "id": "pmp_037",
+    "chapter_slug": "project_integration",
+    "stem": "You are about to start planning for a large and complex project. As a starting point for initial project planning, what is the first thing you should do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Conduct a project kick-off meeting to inform and engage stakeholders and gain commitment",
+      "Review the project charter to understand the high-level information about the project",
+      "Begin the process of identifying stakeholders so they can be engaged as necessary for project planning",
+      "Share the project scope statement with the project team for a common understanding of project deliverables"
+    ],
+    "correct_index": 1,
+    "explanation": "The project charter is the foundational document that authorizes the project and provides high-level information. Reviewing it is the first step before any planning activities.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110014)"
+  },
+  {
+    "id": "pmp_038",
+    "chapter_slug": "resource_management",
+    "stem": "As you are monitoring the cost baseline for your project, you notice that project expenses are higher than expected at this point in the project. What is the most likely cause of the variance?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Overestimated material costs",
+      "Lack of stakeholder support",
+      "An incomplete milestone list",
+      "Excess inventory"
+    ],
+    "correct_index": 3,
+    "explanation": "Excess inventory ties up capital and increases holding costs, making it a common cause of cost overruns related to resource management.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110020)"
+  },
+  {
+    "id": "pmp_039",
+    "chapter_slug": "resource_management",
+    "stem": "Recently, you promoted your star programmer, Sam, to lead the agile development team. Sam was a fantastic software coder, but his performance in his new role is not meeting your expectations. Which empirical rule did you forget while considering the promotion of Sam?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Expectancy theory",
+      "Halo effect",
+      "Pareto concept",
+      "Murphy's law"
+    ],
+    "correct_index": 1,
+    "explanation": "The halo effect is the tendency to assume that a person who excels in one area will excel in another unrelated area, such as assuming a top coder will be a great team leader.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110029)"
+  },
+  {
+    "id": "pmp_040",
+    "chapter_slug": "communications_management",
+    "stem": "You have just taken over a project in execution. Project team members spend a lot of time responding to unexpected stakeholder requests for information, causing the project to fall behind schedule. What should you do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Tell the team members to stop responding to unexpected requests since it is not the responsibility of the team",
+      "Push the team to respond to all the requests faster so that they can perform their assigned project activities on time",
+      "Ask the team to forward all stakeholder inquiries to you so that the team members can focus on their assigned tasks",
+      "Review the communications management plan to understand how stakeholder requests should be handled"
+    ],
+    "correct_index": 3,
+    "explanation": "The communications management plan defines how stakeholder information needs are addressed. Reviewing it first ensures responses align with the approved communication approach.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110032)"
+  },
+  {
+    "id": "pmp_041",
+    "chapter_slug": "scope_management",
+    "stem": "A team member submits a draft requirements management plan. The project manager notices one component does not belong there. Which of the following components did the project manager most likely notice?",
+    "quiz_type": "single_choice",
+    "options": [
+      "A process that describes how the project requirements will be prioritized",
+      "The metrics that will be used and the rationale for using them",
+      "A process that specifies how a project scope statement will be prepared",
+      "How requirement activities will be planned, tracked, and reported"
+    ],
+    "correct_index": 2,
+    "explanation": "The requirements management plan covers how requirements are collected, tracked, and reported. How to prepare the project scope statement belongs in the scope management plan, not the requirements management plan.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110034)"
+  },
+  {
+    "id": "pmp_042",
+    "chapter_slug": "scope_management",
+    "stem": "While reviewing your project's performance, you discover a significant variance. A further review reveals that bringing the project back on track requires only a minor correction to a configuration element. What should you do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Implement the corrective action",
+      "Submit a change request",
+      "Consult the project sponsor",
+      "Delay the customer inspection"
+    ],
+    "correct_index": 1,
+    "explanation": "All corrective actions, even minor ones, should go through the formal change control process by submitting a change request before implementation.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110038)"
+  },
+  {
+    "id": "pmp_043",
+    "chapter_slug": "project_integration",
+    "stem": "A project manager is performing the Monitor and Control Project Work process. Which of the following activities might be carried out during this process?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Comparing actual project performance against the project management plan",
+      "Implementing approved change requests to achieve the project's objectives",
+      "Analyzing change requests and either approving or rejecting them",
+      "Gaining formal acceptance of the deliverables by the customer or sponsor"
+    ],
+    "correct_index": 0,
+    "explanation": "Monitor and Control Project Work involves tracking, reviewing, and reporting on project performance against the project management plan to identify variances.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110039)"
+  },
+  {
+    "id": "pmp_044",
+    "chapter_slug": "project_integration",
+    "stem": "An organization has a policy that a CCB must review all change requests, and project managers and the project team do not serve as CCB members. Which of the following activities might be performed by members of the CCB?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Submitting a change request",
+      "Implementing approved change requests",
+      "Initiating and closing a project",
+      "Monitoring implementation of approved changes"
+    ],
+    "correct_index": 3,
+    "explanation": "The CCB reviews and approves or rejects change requests, and monitors the implementation of approved changes. Submitting and implementing changes are done by other parties.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110040)"
+  },
+  {
+    "id": "pmp_045",
+    "chapter_slug": "project_integration",
+    "stem": "A company has a dedicated CCB to review all change requests. The project sponsor is a member of the CCB. Which of the following best describes who can request a change on a project?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project manager",
+      "Project sponsor",
+      "Project team",
+      "Any stakeholder"
+    ],
+    "correct_index": 3,
+    "explanation": "Any stakeholder can submit a change request. The CCB (of which the sponsor is a member) then reviews and decides on those requests.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110041)"
+  },
+  {
+    "id": "pmp_046",
+    "chapter_slug": "procurement_management",
+    "stem": "One of your contractors is not performing to agreed-upon standards. You want to terminate the contract and determine the specific legal procedure for early termination. What should you do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Check the procurement management plan",
+      "Look at the scope statement",
+      "Review the risk register",
+      "Consult the contract"
+    ],
+    "correct_index": 3,
+    "explanation": "The contract itself contains the terms and conditions for early termination and the legal procedures to follow. It is the authoritative document for this purpose.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110055)"
+  },
+  {
+    "id": "pmp_047",
+    "chapter_slug": "stakeholder_management",
+    "stem": "A project is divided into four sequential phases. The second phase has just been completed and the third phase is about to begin. What should the project manager do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Begin the process of directing and managing the project work",
+      "Perform the process of identifying the project stakeholders",
+      "Start the process of monitoring and controlling the project work",
+      "Begin the process of developing the project management plan"
+    ],
+    "correct_index": 1,
+    "explanation": "At the start of each new project phase, stakeholders should be identified (or re-identified) as part of the Initiating process group activities.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110058)"
+  },
+  {
+    "id": "pmp_048",
+    "chapter_slug": "stakeholder_management",
+    "stem": "A PMO ensures all relevant project documents are created for all projects. What should the project manager review first to identify stakeholders for a newly started project?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The business documents as a source of information about the project's stakeholders",
+      "The communications management plan to learn about the project's stakeholders",
+      "The stakeholder engagement plan to identify the management strategies and actions required to engage stakeholders effectively",
+      "The requirements documentation for information on potential stakeholders"
+    ],
+    "correct_index": 0,
+    "explanation": "Business documents (business case and benefits management plan) are primary inputs to Identify Stakeholders and provide early information about potential stakeholders.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110061)"
+  },
+  {
+    "id": "pmp_049",
+    "chapter_slug": "stakeholder_management",
+    "stem": "A project manager is developing a stakeholder register using brain writing as a data gathering technique. What is the first thing to do when using that technique?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Convene a data gathering meeting with the participants",
+      "Develop your own template for a stakeholder register",
+      "Send a list of questions to participants before the creativity session",
+      "Consult the stakeholder engagement plan to understand how the stakeholders are to be identified"
+    ],
+    "correct_index": 2,
+    "explanation": "Brain writing involves sending questions to participants before the session so they can independently generate ideas, which are then shared and discussed during the session.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110065)"
+  },
+  {
+    "id": "pmp_050",
+    "chapter_slug": "communications_management",
+    "stem": "A project manager uses specific techniques when composing emails to reduce misunderstandings. Which of the following is NOT considered one of these techniques?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Concise expression",
+      "Clear purpose directed to the needs of the reader",
+      "Controlled flow of words and ideas",
+      "Communications register"
+    ],
+    "correct_index": 3,
+    "explanation": "Effective written communication techniques include concise expression, clear purpose, and controlled flow. A communications register is a project document, not a writing technique.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110066)"
+  },
+  {
+    "id": "pmp_051",
+    "chapter_slug": "risk_management",
+    "stem": "You are leading a brainstorming session to identify project risks and immediately proceed to assign risk owners and ask them to develop risk response plans. Have you properly conducted risk management planning?",
+    "quiz_type": "single_choice",
+    "options": [
+      "No, you should be the one developing the risk response plans as you are ultimately responsible for the outcomes of the project.",
+      "Yes, the risk response plans are an output of the Identify Risks process and should be developed right after the risks have been identified.",
+      "No, before assigning risk responsibility to team members, you need to assess each risk's probability of occurrence and its impact.",
+      "Yes, the team members should be assigned responsibility for a risk as soon as possible and tasked with creating a risk response plan."
+    ],
+    "correct_index": 2,
+    "explanation": "After identifying risks, qualitative and/or quantitative risk analysis must be performed to assess probability and impact before developing risk responses.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110070)"
+  },
+  {
+    "id": "pmp_052",
+    "chapter_slug": "scope_management",
+    "stem": "You are managing a database project. The team is using brainstorming, focus groups, interviews, questionnaires, and benchmarking to understand and document the stakeholders' needs. These methods are representative of which tool and technique?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Data gathering",
+      "Data analysis",
+      "Decision making",
+      "Data representation"
+    ],
+    "correct_index": 0,
+    "explanation": "Brainstorming, focus groups, interviews, questionnaires, and benchmarking are all data gathering techniques used in the Collect Requirements process.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110072)"
+  },
+  {
+    "id": "pmp_053",
+    "chapter_slug": "scope_management",
+    "stem": "The project is in execution but your team cannot stop arguing about project milestones and the specific risks associated with them. What would likely have helped avoid this conflict had it been properly created first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "A project charter",
+      "Physical resource assignments",
+      "Quality metrics",
+      "A work breakdown structure"
+    ],
+    "correct_index": 3,
+    "explanation": "A properly developed WBS defines the scope of work and provides a common understanding of deliverables and milestones, reducing ambiguity and team conflict.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110074)"
+  },
+  {
+    "id": "pmp_054",
+    "chapter_slug": "scope_management",
+    "stem": "During project execution, the team discovers some buttons on a remote control do not work according to specifications. A change request is submitted and approved to replace the buttons. Which of the following best describes this change request?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Corrective action",
+      "Preventive action",
+      "Defect repair",
+      "Gold plating"
+    ],
+    "correct_index": 2,
+    "explanation": "Defect repair is a type of change request used to modify a nonconforming product or product component. Replacing defective buttons addresses a known defect.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110075)"
+  },
+  {
+    "id": "pmp_055",
+    "chapter_slug": "schedule_management",
+    "stem": "A project manager provides an estimate of 8-10 months based on her experience with three similar projects when a customer asks for a rough estimate. What estimation technique does the project manager use?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Expert judgment",
+      "Three-point estimating",
+      "Analogous estimating",
+      "Bottom-up estimating"
+    ],
+    "correct_index": 2,
+    "explanation": "Analogous estimating uses historical data from similar projects to estimate the duration or cost of the current project. It is a top-down technique used when limited detail is available.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110076)"
+  },
+  {
+    "id": "pmp_056",
+    "chapter_slug": "quality_management",
+    "stem": "A project manager uses a set of technical guidelines applied during the design phase to optimize quality. What tool or technique is the project manager using?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Design for X (DfX) where the X in DfX represents the quality aspect of the product",
+      "Design of experiments (DOE) as a quality improvement methodology",
+      "The Manage Quality process to ensure compliance with project quality requirements",
+      "Process analysis to identify opportunities for process improvements"
+    ],
+    "correct_index": 0,
+    "explanation": "Design for X (DfX) refers to a set of technical guidelines used during design to optimize specific aspects of the product such as quality, reliability, or manufacturability.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110079)"
+  },
+  {
+    "id": "pmp_057",
+    "chapter_slug": "stakeholder_management",
+    "stem": "You are classifying stakeholders with regard to the direction of their influence. You have come to the project sponsor. How should this stakeholder be classified?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Downward",
+      "Sideward",
+      "Outward",
+      "Upward"
+    ],
+    "correct_index": 3,
+    "explanation": "The project sponsor sits above the project manager in organizational hierarchy. The sponsor's influence flows downward to the project, meaning the project manager interacts upward toward the sponsor.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110081)"
+  },
+  {
+    "id": "pmp_058",
+    "chapter_slug": "scope_management",
+    "stem": "During project execution, a senior engineer suggests a simpler and more efficient design that could benefit the project. What should the project manager do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Nothing, no changes are needed since the project scope was rigorously defined",
+      "Discuss the change with the project sponsor",
+      "Evaluate the impact of the proposed change on the project constraints",
+      "Ask that the engineer submit a change request"
+    ],
+    "correct_index": 3,
+    "explanation": "All changes, even beneficial ones, must go through the formal change control process. The first step is to have the initiator submit a change request.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110083)"
+  },
+  {
+    "id": "pmp_059",
+    "chapter_slug": "schedule_management",
+    "stem": "You are estimating activity durations using a document containing information on categories of labor, material, and equipment, as well as skill levels, required certifications, and grade levels for supplies. Which document would you primarily refer to?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Resource breakdown structure",
+      "Organizational breakdown structure",
+      "Work breakdown structure",
+      "Risk breakdown structure"
+    ],
+    "correct_index": 0,
+    "explanation": "The resource breakdown structure (RBS) is a hierarchical representation of resources by category and type, including labor, material, equipment, and their required attributes.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110087)"
+  },
+  {
+    "id": "pmp_060",
+    "chapter_slug": "risk_management",
+    "stem": "While performing project work, a team member notices a potential new risk that could impact the project's critical path. What should the team member do immediately?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Recommend the project be placed on hold for a day to avoid the risk",
+      "Document the risk in the risk register",
+      "Draft an emergency fallback plan since the critical path is in jeopardy",
+      "Generate a risk report using quantitative and qualitative analysis of the identified risk to alert the team of the schedule impacts"
+    ],
+    "correct_index": 1,
+    "explanation": "Newly identified risks should be immediately documented in the risk register so they can be assessed and managed through the risk management process.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6110090)"
+  },
+  {
+    "id": "pmp_061",
+    "chapter_slug": "procurement_management",
+    "stem": "You are nearing the end of a project and cannot reach a satisfactory resolution with a vendor through direct conversation. What should you do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Pay the vendor as some products were delivered",
+      "Take the vendor to court",
+      "Discontinue further meetings with the vendor and hold back payment",
+      "Identify some form of alternative dispute resolution"
+    ],
+    "correct_index": 3,
+    "explanation": "When direct negotiation fails, the PMBOK Guide recommends alternative dispute resolution (ADR) methods such as mediation or arbitration before pursuing litigation.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112005)"
+  },
+  {
+    "id": "pmp_062",
+    "chapter_slug": "risk_management",
+    "stem": "Your company was awarded a contract with a 10% bonus payment if the project is completed two months early. What is the best course of action to increase the chances of receiving the bonus?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Reduce project scope",
+      "Level resources",
+      "Crash the schedule",
+      "Purchase insurance"
+    ],
+    "correct_index": 2,
+    "explanation": "Crashing the schedule involves adding resources to shorten the project duration, which is the most direct way to complete the project ahead of schedule and earn the bonus.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112009)"
+  },
+  {
+    "id": "pmp_063",
+    "chapter_slug": "quality_management",
+    "stem": "The quality management plan specifies the use of a data representation technique to show the strength of relationships between four factors. Which tool or technique should be used?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Affinity diagram",
+      "Matrix diagram",
+      "Scatter diagram",
+      "Quality diagram"
+    ],
+    "correct_index": 1,
+    "explanation": "A matrix diagram shows the strength of relationships between factors, requirements, or characteristics. It is used to analyze the relationship among multiple factors.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112010)"
+  },
+  {
+    "id": "pmp_064",
+    "chapter_slug": "stakeholder_management",
+    "stem": "You have just taken over a project where some deliverables will be produced by external vendors. Where would you look to find information about those involved from the sellers' side?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Bid documents",
+      "Stakeholder register",
+      "Seller proposals",
+      "Stakeholder engagement plan"
+    ],
+    "correct_index": 1,
+    "explanation": "The stakeholder register is the document that contains information about all identified stakeholders, including external vendors and sellers involved in the project.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112012)"
+  },
+  {
+    "id": "pmp_065",
+    "chapter_slug": "stakeholder_management",
+    "stem": "Your project has been plagued with numerous change requests. What is the most likely reason?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Incomplete stakeholder register",
+      "Lack of a detailed procedure to close the project",
+      "Failure to implement risk responses",
+      "Change management plan did not authorize a change control board"
+    ],
+    "correct_index": 0,
+    "explanation": "An incomplete stakeholder register leads to missing stakeholders and unaddressed needs, which often result in numerous change requests during project execution.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112018)"
+  },
+  {
+    "id": "pmp_066",
+    "chapter_slug": "quality_management",
+    "stem": "During the build phase, the customer found some welding joints on the crane were defective. How could this situation have been avoided?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Outsourcing the welding to an external vendor",
+      "Testing the welding before the customer walkthrough",
+      "Using the requirements traceability matrix",
+      "Defects are part of any project and cannot be avoided."
+    ],
+    "correct_index": 1,
+    "explanation": "Performing quality control inspections (testing the welding) before the customer walkthrough would have identified and allowed repair of defects prior to delivery.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112019)"
+  },
+  {
+    "id": "pmp_067",
+    "chapter_slug": "project_integration",
+    "stem": "A PMO is reviewing a draft benefits management plan and highlights an element to be removed. Which of the following was most likely the element the PMO requested to remove?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Expected tangible and intangible value to be gained by the implementation of the project",
+      "A set of options to be considered for addressing the business opportunity",
+      "A timeframe for realizing the benefits of the project",
+      "Measures to be used to show benefits realized"
+    ],
+    "correct_index": 1,
+    "explanation": "A set of options for addressing the business opportunity belongs in the business case, not the benefits management plan. The benefits management plan focuses on when and how benefits will be realized.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112028)"
+  },
+  {
+    "id": "pmp_068",
+    "chapter_slug": "scope_management",
+    "stem": "To define the product, the project team is using a product analysis technique that helps break down high-level requirements to the level of detail needed to design the product. Which product analysis technique is being used?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Work breakdown structure",
+      "Product planning",
+      "Progressive elaboration",
+      "Product breakdown"
+    ],
+    "correct_index": 3,
+    "explanation": "Product breakdown is a product analysis technique used during Define Scope that decomposes high-level requirements into detailed product components and specifications.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112039)"
+  },
+  {
+    "id": "pmp_069",
+    "chapter_slug": "project_integration",
+    "stem": "A three-phase project to build a prototype is underway. The first phase (design) is now at its end. What should be done with the phase's deliverables?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Verified by the testing team for quality compliance",
+      "Transferred to the production team",
+      "Transitioned to the project management office (PMO)",
+      "Handed over to the manufacturing team"
+    ],
+    "correct_index": 3,
+    "explanation": "The design phase deliverables (design specifications) are inputs to the next phase. They should be handed over to the manufacturing team who will produce parts in phase two.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112054)"
+  },
+  {
+    "id": "pmp_070",
+    "chapter_slug": "project_integration",
+    "stem": "A project nearing its end receives an approved change request to replace a defective unit. What should the project manager do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Capture the problem in the issue log",
+      "Meet with the change control board",
+      "Have the defective unit repaired",
+      "Have the defective unit replaced"
+    ],
+    "correct_index": 3,
+    "explanation": "Since the change request has already been approved, the next step is to implement it — i.e., have the defective unit replaced as directed.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112056)"
+  },
+  {
+    "id": "pmp_071",
+    "chapter_slug": "project_integration",
+    "stem": "A technician found a defect and submitted a change request to repair it, indicating significant rework will be required. What should the project manager do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Approve the change request",
+      "Consult the change management plan",
+      "Instruct the team to repair the defect",
+      "Reject the change request due to significant rework"
+    ],
+    "correct_index": 1,
+    "explanation": "The change management plan defines the process for reviewing and approving change requests. The project manager should consult it to follow the correct procedure.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112060)"
+  },
+  {
+    "id": "pmp_072",
+    "chapter_slug": "project_integration",
+    "stem": "At the end of a design project, a competitor's new technology rendered the project's deliverable obsolete. The sponsor thinks the project should have been terminated much sooner. What might the project manager have done differently?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Used phases and phase gates",
+      "Established a change control board (CCB) to review and render decisions for all submitted change requests",
+      "Terminated the project when the new technology was introduced",
+      "Scheduled more frequent lessons learned meetings with the project team"
+    ],
+    "correct_index": 0,
+    "explanation": "Using phases and phase gates allows the organization to assess viability at each gate and make go/no-go decisions, enabling timely termination when the project no longer makes business sense.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112061)"
+  },
+  {
+    "id": "pmp_073",
+    "chapter_slug": "schedule_management",
+    "stem": "A project to construct a wind farm in an area with no communication infrastructure plans to use project management software for progress monitoring and daily status updates to the sponsor. Which is the most likely challenge the teams will face while controlling the schedule?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Stability of requirements",
+      "Technology support",
+      "Human resource availability",
+      "Project importance"
+    ],
+    "correct_index": 1,
+    "explanation": "Working in an area with no communication infrastructure means technology support for project management software and daily status updates will be the primary challenge.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112064)"
+  },
+  {
+    "id": "pmp_074",
+    "chapter_slug": "resource_management",
+    "stem": "A project is behind schedule because team members were reassigned. After negotiations, you agreed to a temporary solution where a core group of project resources is dedicated until more resources are approved. What conflict resolution technique did you most likely employ?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Compromise or reconcile",
+      "Force or direct",
+      "Collaborate or problem solve",
+      "Smooth or accommodate"
+    ],
+    "correct_index": 0,
+    "explanation": "Compromise/reconcile involves finding a middle-ground solution where both parties give up something. A temporary partial resource allocation is a compromise between competing demands.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112068)"
+  },
+  {
+    "id": "pmp_075",
+    "chapter_slug": "scope_management",
+    "stem": "During a daily stand-up, a programmer mentions she added functionality not in the original design because she had extra time and believes the customer will appreciate it. What is your best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Remove the added functionality and ensure that the project team builds the software as designed going forward",
+      "Thank the programmer for the extra effort and notify the customer of the new functionality that has been added",
+      "Update the cost baseline since the project will run over budget due to the cost of adding new functionality",
+      "Accept the added functionality, but ask the programmer to build only what has been designed going forward"
+    ],
+    "correct_index": 0,
+    "explanation": "Adding unauthorized functionality is gold plating and constitutes scope creep. The unapproved feature should be removed and the team reminded to build only what has been approved.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112072)"
+  },
+  {
+    "id": "pmp_076",
+    "chapter_slug": "quality_management",
+    "stem": "The project manager wants to determine whether the processes currently in use are effective in meeting the quality requirements specified by the customer. What does the project manager need to obtain first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Quality control measurements",
+      "Resource breakdown structure",
+      "Requirements traceability matrix",
+      "Acceptance of deliverables from the customer"
+    ],
+    "correct_index": 0,
+    "explanation": "Quality control measurements are an input to Manage Quality and provide the data needed to evaluate whether processes are producing results that meet quality requirements.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112082)"
+  },
+  {
+    "id": "pmp_077",
+    "chapter_slug": "quality_management",
+    "stem": "During inspection, the team detects the same defect that was identified in a previous inspection. The project manager learns the approved change request to repair the defect was never implemented. What could have helped prevent this situation?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Holding an approved change requests review",
+      "Conducting a retrospective meeting",
+      "Performing a root cause analysis",
+      "Creating a quality report"
+    ],
+    "correct_index": 0,
+    "explanation": "Reviewing approved change requests ensures that all approved changes are tracked and implemented. A regular review of approved change requests would have caught the missing implementation.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112095)"
+  },
+  {
+    "id": "pmp_078",
+    "chapter_slug": "quality_management",
+    "stem": "The team completed the Plan Quality Management process and produced the quality management plan plus necessary updates. What did they forget?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Determine quality metrics",
+      "Define quality roles and responsibilities",
+      "Revise the lessons learned register",
+      "Update the requirements traceability matrix"
+    ],
+    "correct_index": 0,
+    "explanation": "Quality metrics are a key output of the Plan Quality Management process and define how quality will be measured. They are required alongside the quality management plan.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112200)"
+  },
+  {
+    "id": "pmp_079",
+    "chapter_slug": "project_integration",
+    "stem": "A client requests to add an outdoor sauna just before project completion. You determine the change would not impact the completion date. What should you do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Begin construction since the project completion date is not violated",
+      "Review the requested change against all project constraints",
+      "Have the sponsor verify if the change violates construction regulations",
+      "Consult with the change control board on how to handle the change"
+    ],
+    "correct_index": 1,
+    "explanation": "Before proceeding with any change, the project manager should evaluate its impact on all project constraints (scope, schedule, cost, quality, risk), not just the completion date.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112235)"
+  },
+  {
+    "id": "pmp_080",
+    "chapter_slug": "project_integration",
+    "stem": "You are drafting a project charter for an agile product development project and want to bring stakeholders and SMEs together to discuss perceived risk, success criteria, and other topics. What is the best way to accomplish this?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Facilitate an iteration retrospective",
+      "Invite the relevant participants to the daily scrum meetings",
+      "Conduct interviews with the identified individuals",
+      "Schedule a focus group"
+    ],
+    "correct_index": 3,
+    "explanation": "A focus group brings together stakeholders and subject matter experts in a structured facilitated discussion to gather input on a specific topic, making it ideal for discussing risk and success criteria.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112294)"
+  },
+  {
+    "id": "pmp_081",
+    "chapter_slug": "procurement_management",
+    "stem": "A multi-phase project has reached a phase gate where stakeholders want to determine if the phase met its success criteria and if the project should proceed. In addition to the project management plan, which documents will be required?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Risk register and risk report",
+      "Lessons learned register and lessons learned repository",
+      "Business documents and project charter",
+      "Agreements including procurement contracts"
+    ],
+    "correct_index": 2,
+    "explanation": "Business documents (business case and benefits management plan) and the project charter are key inputs to the phase-end review (Close Project or Phase), as they define original intent and success criteria.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112434)"
+  },
+  {
+    "id": "pmp_082",
+    "chapter_slug": "project_integration",
+    "stem": "You are establishing a knowledge management system for your project. Which of the following actions will be the LEAST beneficial in this process?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Reviewing the lesson learned register",
+      "Monitoring stakeholder engagement",
+      "Examining the resource breakdown structure",
+      "Studying the project team assignments"
+    ],
+    "correct_index": 2,
+    "explanation": "The resource breakdown structure categorizes resources but does not contribute meaningfully to knowledge management. The other options directly relate to identifying knowledge sources and knowledge holders.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112456)"
+  },
+  {
+    "id": "pmp_083",
+    "chapter_slug": "stakeholder_management",
+    "stem": "You want to get two new team members up to speed with the overall dynamics of the project and help them engage effectively with stakeholders. What should you do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Ask the team members to record any issues they encounter into the issue log",
+      "Review the stakeholder register with the new team members",
+      "Schedule a meeting with the new team members and all project stakeholders",
+      "Submit a change request to update the stakeholder engagement plan"
+    ],
+    "correct_index": 1,
+    "explanation": "The stakeholder register contains key information about each stakeholder's role, interests, and engagement level. Reviewing it with new team members is the most efficient onboarding action.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112463)"
+  },
+  {
+    "id": "pmp_084",
+    "chapter_slug": "resource_management",
+    "stem": "During a team charter development meeting, a team member argues the exercise is unnecessary since the team has worked together before. How should you respond?",
+    "quiz_type": "single_choice",
+    "options": [
+      "As long as everyone is in agreement, then let's skip the team charter and get ahead of schedule",
+      "Let's use the team charter from our last project as a starting point and then update it as necessary",
+      "The team charter is required by the project management office (PMO) for all projects",
+      "The team charter will eliminate any potential conflicts which will improve our productivity"
+    ],
+    "correct_index": 3,
+    "explanation": "The team charter establishes working agreements and norms that prevent conflicts and improve productivity. Its value is in creating shared expectations, regardless of whether the team has worked together before.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112493)"
+  },
+  {
+    "id": "pmp_085",
+    "chapter_slug": "procurement_management",
+    "stem": "You are preparing a bid package for prospective sellers on an oil pipeline project. Which of the following documents would you leave out of the package?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Request for proposal",
+      "Statement of work",
+      "Independent cost estimates",
+      "Bid documents"
+    ],
+    "correct_index": 2,
+    "explanation": "Independent cost estimates are used internally by the buyer to evaluate seller proposals; they are not shared with prospective sellers in the bid package.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112596)"
+  },
+  {
+    "id": "pmp_086",
+    "chapter_slug": "communications_management",
+    "stem": "You are developing the communications management plan and want to determine information needs of the project stakeholders, focusing on type and format. What is your best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Develop the stakeholder register",
+      "Review the requirements documentation",
+      "Conduct a communication requirements analysis",
+      "Consult the stakeholder engagement plan"
+    ],
+    "correct_index": 2,
+    "explanation": "Communication requirements analysis is the technique used in Plan Communications Management to identify stakeholder information needs, including the type, format, and frequency of communications.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112605)"
+  },
+  {
+    "id": "pmp_087",
+    "chapter_slug": "resource_management",
+    "stem": "A servant leader assigned to a product development project believes Kanban is well-suited, but the team is unfamiliar with it. What is the servant leader's best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Discuss Kanban during a daily standup meeting",
+      "Review Kanban at the iteration retrospective",
+      "Let the team members learn Kanban on their own",
+      "Have the team attend a workshop on Kanban"
+    ],
+    "correct_index": 3,
+    "explanation": "A servant leader supports team growth and capability. Having the team attend a Kanban workshop provides the foundational knowledge needed to effectively adopt the new practice.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112614)"
+  },
+  {
+    "id": "pmp_088",
+    "chapter_slug": "scope_management",
+    "stem": "You are developing the project scope statement. You have specified the deliverables, acceptance criteria, and stated what is out of scope. What else should you include?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project exclusions",
+      "Acceptance criteria",
+      "Project approval requirements",
+      "Product scope description"
+    ],
+    "correct_index": 3,
+    "explanation": "The product scope description is a key component of the project scope statement that describes the characteristics of the product, service, or result the project will create.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112667)"
+  },
+  {
+    "id": "pmp_089",
+    "chapter_slug": "resource_management",
+    "stem": "A project manager wants to understand the availability of team members required to complete project work. What should she do to find this information?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Look at the resource calendars",
+      "Contact the project management office",
+      "Review the resource requirements",
+      "Examine the resource breakdown structure"
+    ],
+    "correct_index": 0,
+    "explanation": "Resource calendars document the working days, shifts, and availability of specific resources. They are the primary reference for determining when team members are available.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112676)"
+  },
+  {
+    "id": "pmp_090",
+    "chapter_slug": "quality_management",
+    "stem": "A project to reduce the defect rate of a manufacturing process is underway. The team is performing quality assurance activities. Which of the following would be most beneficial for this project?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Introducing the use of a kanban board into the manufacturing process",
+      "Consulting with a certified Six Sigma Black Belt expert",
+      "Utilizing rolling wave planning for the project",
+      "Adopting a just-in-time (JIT) manufacturing process"
+    ],
+    "correct_index": 1,
+    "explanation": "Six Sigma is a quality improvement methodology specifically focused on reducing process defects. A certified Black Belt has the expertise to lead the quality improvement effort.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112685)"
+  },
+  {
+    "id": "pmp_091",
+    "chapter_slug": "risk_management",
+    "stem": "During execution, a project experienced several critical risks that were foreseen and previously identified. Despite meticulous planning, the project failed to achieve its objectives due to these realized risks. What may have gone wrong?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The realized risks had not been identified earlier in the project",
+      "The risk responses were poorly devised",
+      "The qualitative risk analysis was inadequate",
+      "There was little or no action taken to manage the known risks"
+    ],
+    "correct_index": 3,
+    "explanation": "Since risks were identified but the project still failed, the most likely cause is that although responses were planned, they were not executed. Implementing risk responses is as critical as planning them.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112687)"
+  },
+  {
+    "id": "pmp_092",
+    "chapter_slug": "communications_management",
+    "stem": "A team member gave a project status presentation that stakeholders found not very engaging. What is the best way for the project manager to address this with the team member?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Discuss the issue with the team member",
+      "Prepare a formal written document",
+      "Utilize formal verbal communication",
+      "Send an email to the team member"
+    ],
+    "correct_index": 0,
+    "explanation": "For sensitive interpersonal feedback, a direct, informal discussion is most appropriate. It allows for two-way communication, empathy, and coaching.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112688)"
+  },
+  {
+    "id": "pmp_093",
+    "chapter_slug": "stakeholder_management",
+    "stem": "A corporate restructuring project has disrupted many key stakeholders' responsibilities, causing engagement challenges. Which of the following actions is the project manager LEAST likely to perform?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Manage stakeholder expectations through negotiation and communication",
+      "Develop approaches to involve stakeholders based on their needs, expectations, interests, and potential impact on the project",
+      "Address any risks or potential concerns related to stakeholder management and anticipate future issues",
+      "Engage stakeholders at appropriate project stages to obtain, confirm, or maintain their continued commitment"
+    ],
+    "correct_index": 1,
+    "explanation": "During execution, the project manager focuses on managing engagement, not re-planning approaches. Developing new stakeholder involvement approaches belongs in the planning process.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112694)"
+  },
+  {
+    "id": "pmp_094",
+    "chapter_slug": "resource_management",
+    "stem": "You captured the problem that your leased office space is no longer available and the team cannot extend. What should you do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Record the issue in the issue log",
+      "Revise the resource management plan",
+      "Update the risk register",
+      "Request additional funds"
+    ],
+    "correct_index": 0,
+    "explanation": "The problem (loss of office space) is now an active issue. It should be recorded in the issue log so it can be tracked, assigned, and resolved.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112702)"
+  },
+  {
+    "id": "pmp_095",
+    "chapter_slug": "procurement_management",
+    "stem": "During a bidder conference, a section is found to be missing from the RFQ. Most prospective suppliers failed to address the missing section in their responses. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Hold the bidder conference again, and explain the importance of the point that was initially missed",
+      "Select from the three vendors that submitted complete proposals",
+      "Send a revised RFQ to all prospective suppliers and allow them the opportunity to resubmit their proposals",
+      "Extend the deadline and allow all of the vendors to resubmit their proposals"
+    ],
+    "correct_index": 2,
+    "explanation": "Fairness in procurement requires that all prospective sellers have the same information. A revised RFQ should be sent to all, giving everyone equal opportunity to respond to the complete requirements.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112760)"
+  },
+  {
+    "id": "pmp_096",
+    "chapter_slug": "schedule_management",
+    "stem": "You are reprioritizing the product backlog, determining velocity for past iterations, adapting work plans accordingly, and facilitating retrospectives every two weeks. Which process describes the work you are performing?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Monitor Risks",
+      "Manage Quality",
+      "Control Schedule",
+      "Develop Schedule"
+    ],
+    "correct_index": 2,
+    "explanation": "Control Schedule involves monitoring project status to update the schedule and manage changes. Reprioritizing backlog, measuring velocity, and adapting plans are agile techniques within this process.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112783)"
+  },
+  {
+    "id": "pmp_097",
+    "chapter_slug": "schedule_management",
+    "stem": "You are tailoring the schedule management plan template for an adaptive approach in an organization traditionally using predictive methods. Which components are you likely to tailor the most?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The rules of performance measurement, the summary milestones, and the key deliverables",
+      "The organizational procedures links, the units of measure, and the project organization charts",
+      "The schedule model development, the release and iteration length, and the reporting formats",
+      "The project schedule model maintenance, the level of accuracy, and the level of precision"
+    ],
+    "correct_index": 2,
+    "explanation": "Switching to an adaptive approach requires significant tailoring of schedule model development (iterative), release/iteration length (sprint cadence), and reporting formats (burndown, velocity).",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112785)"
+  },
+  {
+    "id": "pmp_098",
+    "chapter_slug": "risk_management",
+    "stem": "A project team performs monthly risk audits internally. An executive criticizes this, stating only external resources should conduct risk audits. How should the project manager respond?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Explain that risk audits can be performed either internally or externally as long as they follow the project management plan",
+      "Agree with the executive and submit a change request to update the project management plan to have the audits conducted externally",
+      "Follow the guidance provided by the executive and hire a team of external auditors to conduct the risk audits going forward",
+      "Explain that if the current risk audits are not sufficient, then a comprehensive project audit should be carried out"
+    ],
+    "correct_index": 0,
+    "explanation": "According to the PMBOK Guide, risk audits can be performed internally or externally. The key is that they follow the approach defined in the project management plan.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112817)"
+  },
+  {
+    "id": "pmp_099",
+    "chapter_slug": "risk_management",
+    "stem": "You are developing a risk management plan and need to determine the acceptable level of overall project risk exposure. What should you do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Determine the risk appetites of key project stakeholders",
+      "Consult the risk exposure register within the organizational process assets",
+      "Facilitate a brainstorming meeting to develop a comprehensive list of project risks",
+      "Develop a set of responses to individual project risks to mitigate overall project risk"
+    ],
+    "correct_index": 0,
+    "explanation": "Stakeholder risk appetite defines the acceptable level of risk exposure for the project. Understanding this is a prerequisite to determining acceptable overall project risk.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112819)"
+  },
+  {
+    "id": "pmp_100",
+    "chapter_slug": "project_integration",
+    "stem": "After analyzing various factors, your team selects a hybrid life cycle. With the project life cycle selected, how will the product be delivered?",
+    "quiz_type": "single_choice",
+    "options": [
+      "As subsets of the overall product",
+      "As a single final product at the end of the project",
+      "As work packages of the WBS",
+      "As product increments based on customer's value"
+    ],
+    "correct_index": 3,
+    "explanation": "Hybrid life cycles combine predictive and adaptive elements. Product delivery typically occurs as increments based on customer value, reflecting the adaptive component.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112895)"
+  },
+  {
+    "id": "pmp_101",
+    "chapter_slug": "resource_management",
+    "stem": "Due to the progressive elaboration nature of your project, only a few top levels of the WBS have been identified. What is the best approach to determine the team resource requirements?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Check the organizational process assets for similar projects and use analogous estimating",
+      "Apply bottom-up estimating using the work breakdown structure (WBS) as a guide",
+      "Utilize parametric estimating for the individual work packages within the existing WBS",
+      "Decompose the WBS down to the work package level during initial project planning"
+    ],
+    "correct_index": 0,
+    "explanation": "When only high-level WBS information is available, analogous estimating uses historical data from similar projects to estimate resources, which is appropriate for early-stage planning.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112983)"
+  },
+  {
+    "id": "pmp_102",
+    "chapter_slug": "scope_management",
+    "stem": "You are about to begin work on a work package for the braking system of a vehicle and want to review the acceptance criteria before starting. Where can you find this information?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Project management plan",
+      "Activity attributes",
+      "Requirements documentation",
+      "The WBS dictionary"
+    ],
+    "correct_index": 3,
+    "explanation": "The WBS dictionary contains detailed information about each work package, including acceptance criteria, descriptions, and the responsible party.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112986)"
+  },
+  {
+    "id": "pmp_103",
+    "chapter_slug": "project_integration",
+    "stem": "A project manager closes procurements, shares the final project report, updates the lessons learned repository, and obtains feedback from stakeholders. What should the project manager do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Provide final payment to the suppliers",
+      "Send a summary of how the final product achieved the business needs",
+      "Transfer the completed assembly line to operations",
+      "Send formal written notice to the vendors that the contracts have been completed"
+    ],
+    "correct_index": 2,
+    "explanation": "Transferring the product or deliverable to operations is a final step in the Close Project or Phase process after all administrative closure activities are complete.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6112994)"
+  },
+  {
+    "id": "pmp_104",
+    "chapter_slug": "risk_management",
+    "stem": "A project team is evaluating two risk responses. The first has two criteria and costs $5,000; the second has four criteria and costs $2,000. What action is the project team LEAST likely to take in selecting the best risk response?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Running a Monte Carlo simulation",
+      "Performing an alternatives analysis",
+      "Conducting a cost-benefit analysis",
+      "Using multicriteria decision analysis"
+    ],
+    "correct_index": 0,
+    "explanation": "Monte Carlo simulation is used in quantitative risk analysis to model overall project risk, not to select between individual risk responses. The other options are appropriate decision-making tools for this comparison.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113034)"
+  },
+  {
+    "id": "pmp_105",
+    "chapter_slug": "resource_management",
+    "stem": "The only qualified scrum master in the company is already assigned to another project and her functional manager won't cooperate. How could this situation have been prevented?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The project manager should have checked the project's resource calendars for the availability of the scrum master.",
+      "The project sponsor should have directed the project manager to serve as both the project manager and the scrum master.",
+      "The scrum master should have refused to work on the other project knowing that she is the only qualified resource in the company.",
+      "The availability of the scrum master should have been negotiated between the functional manager and the project manager during project initiation."
+    ],
+    "correct_index": 3,
+    "explanation": "Negotiating critical resource availability early during initiation ensures key resources are secured before planning begins, preventing conflicts during execution.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113042)"
+  },
+  {
+    "id": "pmp_106",
+    "chapter_slug": "quality_management",
+    "stem": "Your project team members are writing software code as a pair and reviewing each other's work to determine if the code conforms to the requirements documentation. Which of the following will be a result of these reviews?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Accepted deliverable",
+      "Acceptance criteria",
+      "Work performance data",
+      "Verified deliverable"
+    ],
+    "correct_index": 3,
+    "explanation": "The output of Control Quality, including code reviews and inspections checking conformance to requirements, is a verified deliverable. Acceptance by the customer produces accepted deliverables.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113060)"
+  },
+  {
+    "id": "pmp_107",
+    "chapter_slug": "resource_management",
+    "stem": "An iteration planning meeting is dominated by the most senior developer who frequently interrupts others. The project manager wants to ensure all voices are heard in the next meeting. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Discuss the issue with the senior developer, and for the next meeting allocate equal amounts of time for each team member to speak",
+      "Inform the senior developer's functional manager about this unacceptable behavior and request disciplinary action",
+      "Post a copy of the team's social contract in the meeting room and review the contents at the start of the next iteration planning meeting",
+      "Invite the sponsor to the next iteration planning meeting to have the senior developer be more thoughtful in the presence of the sponsor"
+    ],
+    "correct_index": 2,
+    "explanation": "The team's social contract (working agreement) defines acceptable behaviors. Reviewing it at the meeting start is a constructive, team-empowering way to address behavioral norms without singling anyone out.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113063)"
+  },
+  {
+    "id": "pmp_108",
+    "chapter_slug": "scope_management",
+    "stem": "A scrum team will handle the software development phase. The organization is familiar with waterfall but will use scrum. What is the best strategy to ensure all scrum roles and responsibilities are served?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Remove the business analyst from the software development phase since that role is only associated with waterfall project management",
+      "Mentor the business analyst to serve in the role of the product owner during the software development phase since those roles are closely aligned",
+      "Request that one of the programmers serve as the voice-of-the-customer for prioritizing items in the product backlog",
+      "Ask the most experienced tester to approve or reject the deliverables during the sprint review"
+    ],
+    "correct_index": 1,
+    "explanation": "Business analysts are skilled in requirements elicitation and stakeholder communication, making them well-suited to transition into the product owner role in a scrum context.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113070)"
+  },
+  {
+    "id": "pmp_109",
+    "chapter_slug": "communications_management",
+    "stem": "A construction project has many people and specialized teams at the worksite daily. Frequent communication between team leads is critical for safety and efficiency. Which agile ceremony can the project incorporate to increase timely cross-functional communication?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Iteration reviews",
+      "Risk-based spikes",
+      "Retrospectives",
+      "Daily standups"
+    ],
+    "correct_index": 3,
+    "explanation": "Daily standups are brief synchronization meetings that facilitate quick cross-functional communication and are directly applicable to non-agile environments like construction sites.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113086)"
+  },
+  {
+    "id": "pmp_110",
+    "chapter_slug": "communications_management",
+    "stem": "Team members are not getting the information needed during agile ceremonies. What is the best option to confirm that information is received and understood?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Validate with the team that the information was captured and facilitate feedback discussions",
+      "Spread out the ceremonies over months between each event to ensure comprehension",
+      "Mandate that all project team members update the information radiators after each ceremony",
+      "Reduce the number of project team members that attend the ceremonies"
+    ],
+    "correct_index": 0,
+    "explanation": "The most effective way to confirm understanding is through feedback — validating that information was captured and inviting discussion ensures two-way communication.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113087)"
+  },
+  {
+    "id": "pmp_111",
+    "chapter_slug": "project_integration",
+    "stem": "A project is transitioning from hardware development (predictive) to software development (agile). How might the project manager's role change with respect to integration management?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Act as a servant leader by determining the relative size of the story points of the items in the product backlog",
+      "Delegate the control of the detailed project work planning and product delivery to the project team members",
+      "Ensure that the project team members each have specific tasks assigned to them and recorded in a Gantt chart",
+      "Strengthen the change management controls to ensure that scope creep is minimized or entirely eliminated"
+    ],
+    "correct_index": 1,
+    "explanation": "In adaptive environments, the project manager's role shifts toward facilitating and delegating detailed planning and delivery decisions to the self-managing development team.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113096)"
+  },
+  {
+    "id": "pmp_112",
+    "chapter_slug": "resource_management",
+    "stem": "During a sprint retrospective, the team wants to try pair programming to reduce rework. You agree to empower the team and implement the practice. What should you do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "During the upcoming sprint, measure velocity and, if it decreases, discontinue pair programming and reprimand the team members",
+      "Invite the project sponsor and other key stakeholders to demonstrate the increased collaboration between the project team members",
+      "Submit a change request to update the communications management plan with the new agile practice of pair programming",
+      "At the end of the upcoming sprint, revise the burndown chart, evaluate the productivity, and update the lessons learned register"
+    ],
+    "correct_index": 3,
+    "explanation": "After adopting a new practice, the team should inspect and adapt — measuring productivity via the burndown chart and capturing findings in the lessons learned register.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113118)"
+  },
+  {
+    "id": "pmp_113",
+    "chapter_slug": "project_integration",
+    "stem": "During a daily standup, a developer raises an impediment with software code that could cause a sprint delay. What is the project manager's best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Write the software code for the developer since it is the project manager's responsibility to remove impediments",
+      "Submit a change request to update the schedule baseline to reflect the delay caused by the impediment",
+      "Move the user authentication feature back into the project backlog and ask the product owner to reprioritize it",
+      "Recommend that the scrum team members use swarming as a technique to clear the impediment"
+    ],
+    "correct_index": 3,
+    "explanation": "Swarming involves team members collectively focusing on a single impediment to resolve it quickly, which is an effective agile technique for addressing blockers during a sprint.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113123)"
+  },
+  {
+    "id": "pmp_114",
+    "chapter_slug": "scope_management",
+    "stem": "Stakeholders' needs are vague and expressed only in general terms, causing concern about excessive changes and rework. What is the project manager's best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Develop a project scope statement and decompose it down to the work package level as part of initial project planning",
+      "Request that the project team use an iterative and incremental approach to product development with short feedback loops",
+      "Implement a robust change control system to only allow for the most important changes to be incorporated into the product",
+      "Generate an activity list from what is currently known and use the Kanban board to break the activities down to their tasks"
+    ],
+    "correct_index": 1,
+    "explanation": "When requirements are vague and uncertain, an iterative/incremental approach with short feedback loops allows for progressive refinement and reduces the risk of costly rework.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113125)"
+  },
+  {
+    "id": "pmp_115",
+    "chapter_slug": "scope_management",
+    "stem": "A project manager needs to quickly define cross-functional requirements and reconcile stakeholder differences to build consensus. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Create a questionnaire and send it out to all of the stakeholders to determine the project requirements",
+      "Conduct an in-person interview with each of the relevant stakeholders to determine their needs",
+      "Facilitate a requirements workshop with all of the relevant stakeholders to develop user stories",
+      "Perform a job shadowing exercise with the intended end-users of the existing software"
+    ],
+    "correct_index": 2,
+    "explanation": "Requirements workshops bring stakeholders together to collaboratively define requirements and reconcile differences in a single session, making them ideal when speed and consensus are priorities.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113126)"
+  },
+  {
+    "id": "pmp_116",
+    "chapter_slug": "project_integration",
+    "stem": "The organization's leadership wants projects to include more agile methodologies. Before mandating any agile methods to be used in a project, what should be done first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Pause current projects to align them to the new agile cadence",
+      "Ask employees to vote on who wants to take part in agile projects",
+      "Assess organizational culture and readiness for the transformation",
+      "Provide agile training to those who will be part of the pilot project team"
+    ],
+    "correct_index": 2,
+    "explanation": "Organizational agility requires cultural readiness. Assessing culture and readiness first identifies gaps and informs an appropriate change management strategy before any mandate is issued.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113130)"
+  },
+  {
+    "id": "pmp_117",
+    "chapter_slug": "risk_management",
+    "stem": "You are establishing the relative priorities of individual risks. Which of the following tasks is LEAST likely to impact this prioritization?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Reviewing the assumption log",
+      "Examining the risk register",
+      "Researching the stakeholder register",
+      "Creating the risk report"
+    ],
+    "correct_index": 3,
+    "explanation": "The risk report is an output of qualitative risk analysis, not an input. Creating it comes after prioritization, so it does not impact the prioritization process itself.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113133)"
+  },
+  {
+    "id": "pmp_118",
+    "chapter_slug": "project_integration",
+    "stem": "Team members are frequently changing during a long multi-phase project. The project manager is questioning whether to include agile practices. What should the project manager do prior to moving to a hybrid approach?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Ensure project finances are secured for the next project phase",
+      "Reduce the team size to nine people, plus or minus two",
+      "Target a smaller project as a proof of concept to test the feasibility",
+      "Evaluate the benefits of incorporating agile practices"
+    ],
+    "correct_index": 3,
+    "explanation": "Before adopting hybrid practices, the project manager should evaluate what specific benefits agile elements would bring to the project and whether they address the current challenges.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113135)"
+  },
+  {
+    "id": "pmp_119",
+    "chapter_slug": "schedule_management",
+    "stem": "Midway into execution, new cybersecurity laws require audits that may come at any time. What is the best way for the project manager and team to address the risk of audits disrupting the project plans?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Handle the audits as an unplanned spike",
+      "Reschedule the audits to the end of the project",
+      "Request that the sponsor removes the audits",
+      "Inform stakeholders that the project will miss its objectives"
+    ],
+    "correct_index": 0,
+    "explanation": "In agile/hybrid environments, spikes are used to address uncertainty and unplanned work. Treating compliance audits as unplanned spikes allows the team to accommodate them within the iteration framework.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113136)"
+  },
+  {
+    "id": "pmp_120",
+    "chapter_slug": "project_integration",
+    "stem": "A plan-driven project has many deliverables to be released at the end of the phase. The project manager wants to ensure deliverables are completed as expected. Which agile practices can the project manager recommend?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Definition of ready and iteration reviews",
+      "User stories and confidence votes",
+      "Definition of done and demonstrations",
+      "Backlog refinement and retrospectives"
+    ],
+    "correct_index": 2,
+    "explanation": "Definition of Done ensures deliverables meet a clear set of completion criteria, while demonstrations allow stakeholders to validate that deliverables meet expectations.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113138)"
+  },
+  {
+    "id": "pmp_121",
+    "chapter_slug": "resource_management",
+    "stem": "A project manager is considering incorporating daily standups into a plan-driven project. Team members are unsure what is expected of them. What can the project manager suggest they do PRIOR to the daily standup?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Make sure their work progress is reflected in the burndown chart",
+      "Submit the necessary progress reports to the product owner",
+      "Estimate work items that will be developed after the daily standup",
+      "Resolve any defects that have been found in the previous day"
+    ],
+    "correct_index": 0,
+    "explanation": "Before a daily standup, team members should update their task status (e.g., in the burndown chart or task board) so they can accurately report what they completed, what they plan to do, and any impediments.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113139)"
+  },
+  {
+    "id": "pmp_122",
+    "chapter_slug": "risk_management",
+    "stem": "The team identifies that information in two tools (original and new agile) is out of sync. This risk was identified earlier in planning. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Accept the risk since agile values individuals and interactions over processes and tools",
+      "Recognize that the risk has now become an issue and implement the planned response",
+      "Conduct a probability and impact assessment to determine a risk score",
+      "Communicate to the project sponsor that work may be delayed due to clerical errors"
+    ],
+    "correct_index": 1,
+    "explanation": "When a previously identified risk has materialized, it becomes an issue. The project manager should implement the risk response that was planned for this scenario.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113142)"
+  },
+  {
+    "id": "pmp_123",
+    "chapter_slug": "project_integration",
+    "stem": "Projects in a program use various approaches (plan-driven, agile, hybrid). Teams complain about entering the same data in multiple tools, reducing productivity. What is the best course of action for the program manager?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Direct the teams to continue entering the data in the various systems",
+      "Determine what tools and data provide the appropriate oversight",
+      "Switch all projects in the program to the agile project management approach",
+      "Pause all data entry until a valuable solution can be determined"
+    ],
+    "correct_index": 1,
+    "explanation": "The program manager should identify which tools and data are necessary for governance and oversight, eliminating redundancy while maintaining required visibility.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113143)"
+  },
+  {
+    "id": "pmp_124",
+    "chapter_slug": "project_integration",
+    "stem": "The sponsor wants to pursue project objectives as planned but also accommodate and adjust to new information and changes as the project progresses. Which project management approach should the project manager select?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Waterfall",
+      "Agile",
+      "Hybrid",
+      "Phased"
+    ],
+    "correct_index": 2,
+    "explanation": "A hybrid approach combines the structure of predictive planning with the adaptability of agile methods, accommodating both stability and flexibility as the sponsor desires.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113144)"
+  },
+  {
+    "id": "pmp_125",
+    "chapter_slug": "project_integration",
+    "stem": "Senior leadership mandates retrospectives for all projects, even though the organization uses plan-driven methods. How should the outputs from the retrospectives be stored and managed?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Senior leadership determines the location of the outputs and who may access the contents",
+      "The project team stores the outputs in a location that the project manager can control and limit changes",
+      "The project team determines a location that is accessible for relevant stakeholders to view and track",
+      "The project manager establishes the location and allows the customer to view and make recommendations"
+    ],
+    "correct_index": 2,
+    "explanation": "Retrospective outputs should be stored in a transparent, accessible location for relevant stakeholders, supporting a culture of openness and continuous improvement.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113147)"
+  },
+  {
+    "id": "pmp_126",
+    "chapter_slug": "resource_management",
+    "stem": "An approved change request transitions a colocated scrum team to a virtual remote environment starting in sprint 6. What will be the best method to understand the impact of this change on the team's productivity?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Check the product burndown chart to look for any changes to the trendline",
+      "Calculate the CPI at the end of each sprint to determine the change in the team's productivity",
+      "Review the product burnup chart to compare velocity before and after the change",
+      "Update the project schedule network diagram to reflect the changes in the team's environment"
+    ],
+    "correct_index": 2,
+    "explanation": "The product burnup chart tracks completed work over time and reflects velocity. Comparing velocity before and after the environment change directly shows the productivity impact.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113155)"
+  },
+  {
+    "id": "pmp_127",
+    "chapter_slug": "resource_management",
+    "stem": "During a team chartering brainstorming session, the team identifies 37 working agreements. What should the project manager do next?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Submit a change request to revise the resource management plan to incorporate the team's working agreements",
+      "Verify that all of the project team members support the working agreements and document the agreements in the project charter",
+      "Review the team's working agreements at the start of every daily standup and during the sprint review meetings",
+      "Ask the project team members for their top five to ten agreements and document the information in the team charter"
+    ],
+    "correct_index": 3,
+    "explanation": "A team charter should capture a focused, practical set of working agreements. Narrowing 37 items to the top 5-10 ensures the charter is actionable and memorable.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113157)"
+  },
+  {
+    "id": "pmp_128",
+    "chapter_slug": "resource_management",
+    "stem": "A project manager is struggling to lead the team effectively, with unhealthy tension and outbursts during sprint retrospectives. What should the project manager do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Submit a change request to revise the project management plan to eliminate the requirement for retrospectives",
+      "Take a proactive step in improving his own emotional intelligence (EI) to become a more effective leader",
+      "Reduce the story size by splitting user stories and use relative estimation with the entire team to estimate",
+      "Lead a training session with the project team members to help them become emotionally competent"
+    ],
+    "correct_index": 1,
+    "explanation": "The project manager's outbursts are the root cause of the team dysfunction. Improving emotional intelligence is the first and most impactful action the project manager should take.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113159)"
+  },
+  {
+    "id": "pmp_129",
+    "chapter_slug": "stakeholder_management",
+    "stem": "A project is three months behind schedule because key stakeholders were resistant to consequential changes. What might have been done differently during project planning to avoid this situation?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Better execution of the Manage Stakeholder Engagement process",
+      "Development of a stakeholder engagement assessment matrix",
+      "Creation of a comprehensive stakeholder register",
+      "Establishment of a more robust communications management plan"
+    ],
+    "correct_index": 1,
+    "explanation": "A stakeholder engagement assessment matrix maps current vs. desired engagement levels, enabling proactive planning to move resistant stakeholders toward supportive engagement.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113216)"
+  },
+  {
+    "id": "pmp_130",
+    "chapter_slug": "schedule_management",
+    "stem": "Two team members are arguing about whether work packages in the WBS should be arranged in the order the work is carried out. What is the project manager's best response?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Work is decomposed and sequenced in the Define Activities process.",
+      "Any approach is good as long as the team members avoid the conflict.",
+      "The chronological order of tasks is defined in the Sequence Activities process.",
+      "The approach should be defined by the project management office (PMO)."
+    ],
+    "correct_index": 2,
+    "explanation": "The WBS is not sequenced. Sequencing of work (defining logical relationships between activities) is done in the Sequence Activities process, not in the WBS creation.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113623)"
+  },
+  {
+    "id": "pmp_131",
+    "chapter_slug": "resource_management",
+    "stem": "You ordered custom-built manufacturing equipment, secured permission to install a solar array for testing, and reserved a conference room for daily stand-ups. What is the result of your efforts?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Resource histogram",
+      "Resource management plan",
+      "Resource assignment matrix",
+      "Physical resource assignments"
+    ],
+    "correct_index": 3,
+    "explanation": "Physical resource assignments document the physical resources (equipment, facilities, materials) that have been acquired and assigned to the project.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113718)"
+  },
+  {
+    "id": "pmp_132",
+    "chapter_slug": "cost_management",
+    "stem": "During project execution, several unexpected issues are threatening the project schedule and budget. What is the best course of action for the project manager?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Use contingency reserves",
+      "Review project funding requirements",
+      "Use management reserves",
+      "Review organizational process assets"
+    ],
+    "correct_index": 0,
+    "explanation": "Contingency reserves are allocated to handle identified risks and known unknowns that may arise during execution. Unexpected issues that were part of identified risk scenarios are managed with contingency reserves.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113733)"
+  },
+  {
+    "id": "pmp_133",
+    "chapter_slug": "risk_management",
+    "stem": "The project will procure goods and services from outside the organization. The project manager instructs the team to develop a comprehensive list of individual project risks related to those procurements. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Consult the project charter",
+      "Review procurement documentation",
+      "Develop a procurement register",
+      "Check the probability and impact matrix"
+    ],
+    "correct_index": 1,
+    "explanation": "Procurement documentation is a key input to Identify Risks and contains information about contracts and supplier arrangements that may introduce specific risks to the project.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113755)"
+  },
+  {
+    "id": "pmp_134",
+    "chapter_slug": "cost_management",
+    "stem": "You are managing a house renovation with a budget of $100,000. You have completed 40% of the work and spent $60,000. How much more will it cost to complete the project if the cost performance remains unchanged?",
+    "quiz_type": "single_choice",
+    "options": [
+      "$160,000",
+      "$149,254",
+      "$120,000",
+      "$89,254"
+    ],
+    "correct_index": 3,
+    "explanation": "EV = 40% × $100,000 = $40,000. CPI = EV/AC = $40,000/$60,000 = 0.667. ETC = (BAC − EV)/CPI = ($100,000 − $40,000)/0.667 = $89,955 ≈ $89,254.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6113796)"
+  },
+  {
+    "id": "pmp_135",
+    "chapter_slug": "procurement_management",
+    "stem": "A major dispute arises with a vendor. The project manager claims the vendor failed contractual obligations; the vendor complains about late payments. What is the best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Refer this issue to a third party for mediation or arbitration",
+      "File a contract claim and then work directly with the vendor to resolve the issue",
+      "Terminate the contract, document lessons learned, and find another vendor",
+      "Conduct a procurement audit"
+    ],
+    "correct_index": 1,
+    "explanation": "When disputes arise, the preferred approach is to file a formal claim and attempt to resolve it directly with the vendor before escalating to third-party arbitration.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6125212)"
+  },
+  {
+    "id": "pmp_136",
+    "chapter_slug": "resource_management",
+    "stem": "You want to recognize the contributions of high-performing team members. Which of the following do you need to guide you through this process?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Organizational process assets",
+      "Stakeholder register",
+      "Project team assignments",
+      "Quality metrics"
+    ],
+    "correct_index": 0,
+    "explanation": "Organizational process assets include reward and recognition systems and policies that guide how team members are formally recognized and rewarded for their contributions.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6125216)"
+  },
+  {
+    "id": "pmp_137",
+    "chapter_slug": "schedule_management",
+    "stem": "You are managing a highly regulated bridge construction project and developing a plan to establish criteria and activities for developing, monitoring, and controlling the schedule. Which of the following should you gather to complete this process?",
+    "quiz_type": "single_choice",
+    "options": [
+      "The charter, project management plan, estimation databases, and PMO templates",
+      "Government standards, the assumption log, schedule management plan, and milestone list",
+      "The resource breakdown structure, lessons learned register, and scheduling methodology",
+      "The project scope statement, risk register, and project team assignments"
+    ],
+    "correct_index": 0,
+    "explanation": "The Plan Schedule Management process uses the project charter, project management plan, enterprise environmental factors (including estimation databases), and organizational process assets (including PMO templates) as inputs.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6150715)"
+  },
+  {
+    "id": "pmp_138",
+    "chapter_slug": "resource_management",
+    "stem": "One project activity requires searching a large area to find debris from a failed prototype explosion. There is debate about what type and quantity of resources are needed. What should the project manager do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Select any resource and quantity to complete the task by the due date",
+      "Request the team to vote and make a decision based on majority",
+      "Research various levels of resource capability and skills, types, and sizes",
+      "Utilize a PMIS to manage resource pools and allocate resources"
+    ],
+    "correct_index": 2,
+    "explanation": "Before making resource decisions, the project manager should research the different types, capabilities, and quantities of resources available to make an informed estimate.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151376)"
+  },
+  {
+    "id": "pmp_139",
+    "chapter_slug": "cost_management",
+    "stem": "A project manager is developing a cost management plan. The cost of capital is 9.7% (equity), 6.7% (debt), and 5.1% (self-funding). The NPV is $500,000 and the opportunity cost is $750,000. What is the project manager's best course of action?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Fund the project with equity since there are no dividend obligations",
+      "Select the self-funding option since it provides the lowest cost of capital",
+      "Perform an alternatives analysis since there are multiple factors to consider",
+      "Recommend the termination of the project since another project has a higher NPV"
+    ],
+    "correct_index": 2,
+    "explanation": "With multiple factors at play (cost of capital, NPV, opportunity cost, legal mandate), the project manager should conduct an alternatives analysis to evaluate the best funding option comprehensively.",
+    "difficulty": "hard",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151382)"
+  },
+  {
+    "id": "pmp_140",
+    "chapter_slug": "cost_management",
+    "stem": "You are estimating monetary resources for a large-scale multinational project lasting at least seven years. Your previous projects were all domestic with short timeframes. What might you need to do differently compared to past projects?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Create a stakeholder engagement assessment matrix",
+      "Develop a more robust risk management plan",
+      "Consider additional enterprise environmental factors",
+      "Include additional organizational process assets"
+    ],
+    "correct_index": 2,
+    "explanation": "A multinational, long-duration project introduces unique enterprise environmental factors such as currency exchange rates, inflation, international regulations, and cultural differences that must be factored into cost estimation.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151383)"
+  },
+  {
+    "id": "pmp_141",
+    "chapter_slug": "scope_management",
+    "stem": "During a product review, a client detects a defect and rejects one of the deliverables, even though the deliverables were previously verified. What should you do?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Submit a change request to fix the deliverable",
+      "Refund the customer for the value of the deliverable",
+      "Ask the project team to repair the defect",
+      "Begin the claims administration process"
+    ],
+    "correct_index": 0,
+    "explanation": "When a deliverable is rejected during Validate Scope, the appropriate response is to submit a change request (defect repair) through the formal change control process.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151389)"
+  },
+  {
+    "id": "pmp_142",
+    "chapter_slug": "project_integration",
+    "stem": "Not all team members are properly checking out resources used in the project. What is the best option for the project manager?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Wait until there is a need or the team is impacted",
+      "Escalate the issue to the functional managers",
+      "Discuss the checkout rationale with the team",
+      "Remove the process of checking out resources"
+    ],
+    "correct_index": 2,
+    "explanation": "Discussing the rationale with the team addresses the root cause of non-compliance by helping team members understand why the process matters, which is more constructive than escalation or elimination of the process.",
+    "difficulty": "easy",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151393)"
+  },
+  {
+    "id": "pmp_143",
+    "chapter_slug": "scope_management",
+    "stem": "In a pharmaceutical project, the CEO announces that the patient pool should double and that results should be tracked in a new system launching this week. What should the project manager do first?",
+    "quiz_type": "single_choice",
+    "options": [
+      "Ramp up production to match the demand of the CEO",
+      "Consider what might be included in a change request",
+      "Adjust the scope baseline to reflect the increased trial size",
+      "Communicate the change in the scope to the project stakeholders"
+    ],
+    "correct_index": 1,
+    "explanation": "The CEO's announcement is a proposed scope change. The project manager must first consider what should be included in a formal change request before any action can be taken.",
+    "difficulty": "medium",
+    "source": "PM PrepCast – Free PMP Practice Exam (Qid 6151395)"
   }
 ]
