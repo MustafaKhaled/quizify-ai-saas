@@ -16,6 +16,7 @@ Generation strategy:
 import asyncio
 import json
 import os
+import random
 import re
 import uuid
 from datetime import datetime
@@ -142,6 +143,37 @@ def _build_style_block(exemplars) -> str:
         "complexity, and distractor pattern.\n\n"
         f"{format_exemplars(exemplars)}\n\n---\n\n"
     )
+
+
+def _shuffle_quiz_options(quiz_content: dict, quiz_type: str) -> dict:
+    """Permute each question's options and remap correct indices to match.
+
+    Why: LLMs (especially without exemplars) have a strong positional bias
+    toward index 0, producing quizzes where every answer is "A". Shuffling
+    after generation makes the user-visible answer position uniform regardless
+    of model bias. Skipped for true_or_false where positions carry meaning.
+    """
+    if quiz_type == "true_or_false":
+        return quiz_content
+    for q in quiz_content.get("questions", []):
+        options = q.get("options")
+        if not isinstance(options, list) or len(options) < 2:
+            continue
+        perm = list(range(len(options)))
+        random.shuffle(perm)
+        old_to_new = {old: new for new, old in enumerate(perm)}
+        q["options"] = [options[i] for i in perm]
+        if quiz_type == "multiple_select":
+            old = q.get("correct_option_indices") or []
+            if isinstance(old, list):
+                q["correct_option_indices"] = sorted(
+                    old_to_new[i] for i in old if i in old_to_new
+                )
+        else:
+            old = q.get("correct_option_index")
+            if isinstance(old, int) and old in old_to_new:
+                q["correct_option_index"] = old_to_new[old]
+    return quiz_content
 
 
 async def _call_gemini(prompt: str) -> dict:
@@ -368,6 +400,8 @@ async def create_quiz(
             )
         else:
             quiz_content = await _generate_chunked(db, agent, quiz_type, num_questions)
+
+        quiz_content = _shuffle_quiz_options(quiz_content, quiz_type)
 
         default_title = (
             f"{agent['name']} — {', '.join(focus_names[:2])}"
