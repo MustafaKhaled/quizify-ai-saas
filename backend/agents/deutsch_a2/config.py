@@ -1,0 +1,3 @@
+DEUTSCH_A2_SUBJECT_NAME = "German Grammar A2"
+DEUTSCH_A2_SUBJECT_COLOR = "#991B1B"  # deeper red — distinct from A1's #DC2626
+DEUTSCH_A2_SUBJECT_ICON = "🇩🇪"
