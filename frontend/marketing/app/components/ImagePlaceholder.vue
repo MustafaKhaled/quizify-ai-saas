@@ -1,7 +1,16 @@
+<script setup lang="ts">
+defineProps<{
+  // Optional path to a real screenshot. When set, the image renders on top of
+  // the dashed placeholder so a missing file degrades gracefully to the pattern.
+  src?: string
+  // Optional caption shown inside the placeholder when no image is set.
+  caption?: string
+  alt?: string
+}>()
+</script>
+
 <template>
-  <UPageCard
-    variant="subtle"
-  >
+  <UPageCard variant="subtle">
     <div class="relative overflow-hidden rounded-sm border border-dashed border-accented opacity-75 px-4 flex items-center justify-center aspect-video">
       <svg
         class="absolute inset-0 h-full w-full stroke-inverted/10"
@@ -26,6 +35,18 @@
           height="100%"
         />
       </svg>
+
+      <NuxtImg
+        v-if="src"
+        :src="src"
+        :alt="alt || caption || 'Product screenshot'"
+        class="relative z-10 max-h-full max-w-full object-contain rounded-sm"
+        loading="lazy"
+      />
+      <span
+        v-else-if="caption"
+        class="relative z-10 text-xs text-muted text-center px-2"
+      >{{ caption }}</span>
 
       <slot />
     </div>

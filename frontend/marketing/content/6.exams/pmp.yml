@@ -1,0 +1,92 @@
+title: Pass the PMP — practice the way the exam actually thinks
+description: Quizify AI is built for the PMI mindset. Scenario-based questions, calibrated distractors, and per-knowledge-area analytics so you walk into the exam knowing exactly where you stand.
+subject_slug: pmp
+color: '#F97316'
+icon: '📋'
+badge: 'PMI · PMP Certification'
+exam_authority: 'Project Management Institute (PMI)'
+hero:
+  headline: Pass the PMP — practice the way the exam actually thinks.
+  subhead: Scenario-based PMP questions tuned to the PMI mindset, with per-knowledge-area analytics that tell you exactly which People, Process, or Business Environment topics still need work.
+  tagline: Built for PMP candidates, not generic study tools.
+  cta:
+    label: Start your PMP prep
+    to: /signup?subject=pmp
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Sound familiar?
+  description: Most PMP candidates lose weeks chasing the wrong material before they figure out what the exam actually tests.
+  items:
+    - You finished a 35-hour course and still can't tell whether a question wants the agile or predictive answer.
+    - You've taken three full-length practice tests and your score barely moved — you don't know what to study next.
+    - Free practice questions are either too easy, outdated to PMBOK 6, or worded nothing like the real exam.
+    - You're spending more on coffee shops studying than the exam fee, and the test date keeps moving.
+promises:
+  title: What you actually need
+  description: A PMP practice tool that mirrors how PMI writes questions and shows you exactly where to focus next.
+  items:
+    - title: PMI-mindset question style
+      description: Scenario-based stems with two plausible answers — pick the one that prioritizes stakeholder value, agile mindset, and the project manager's responsibility, just like the real exam.
+      icon: i-lucide-brain
+    - title: Per-domain weak-spot analytics
+      description: Every quiz breaks down by People, Process, and Business Environment. Stop re-reading what you already know — the dashboard tells you which domain is moving your score.
+      icon: i-lucide-line-chart
+    - title: Distractors calibrated to real mistakes
+      description: Wrong answers mirror common PMP-candidate traps — picking the technical fix over the team conversation, the predictive over the agile response, the heroic action over the escalation.
+      icon: i-lucide-target
+    - title: Practice on your phone, on the train
+      description: Squeeze in a 10-question scenario drill between meetings. Mobile-optimized so a five-minute window becomes real prep time.
+      icon: i-lucide-smartphone
+comparison:
+  title: How Quizify compares
+  description: Generic AI tools and traditional study guides each get one part right. Quizify is built for the whole PMP prep loop.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Generic ChatGPT
+    - name: Traditional study guide
+  rows:
+    - feature: Scenario-based stems modeled on PMI style
+      values: ['yes', 'partial', 'partial']
+    - feature: Distractors calibrated to common PMP-candidate mistakes
+      values: ['yes', 'no', 'partial']
+    - feature: Per-knowledge-area weak-spot analytics
+      values: ['yes', 'no', 'no']
+    - feature: Mobile-optimized for 10-minute drill sessions
+      values: ['yes', 'partial', 'no']
+    - feature: Generates fresh questions, not a fixed bank you'll memorize
+      values: ['yes', 'yes', 'no']
+    - feature: Tracks score progress over time
+      values: ['yes', 'no', 'partial']
+    - feature: Exam-day timer simulation
+      values: ['yes', 'no', 'partial']
+faq:
+  title: PMP-specific questions
+  items:
+    - label: Is the question style aligned to the current PMP exam (post-2021 update)?
+      content: Yes. The corpus and prompt are tuned to the People, Process, and Business Environment domain split — including the agile and hybrid mindset questions that dominate the modern exam.
+    - label: How does this differ from PrepCast, Brain Sensei, or Cornelius Fichtner?
+      content: Those are excellent structured courses. Quizify is the practice layer on top — the part where you grind questions, find your weak topics, and drill them. Many candidates use both.
+    - label: Are the questions copied from the official PMI sample exams?
+      content: No. Quizify generates fresh, original questions on every run — you can't memorize a fixed bank, which would defeat the whole point of practice.
+    - label: How many questions can I practice?
+      content: On the Pro tier, unlimited. Run a 60-question full-length quiz, a 10-question domain drill, or a focused 5-question session on a single topic — as often as you want.
+    - label: Can I focus on just the People domain?
+      content: Yes. Pick the chapters or domains you want to drill and Quizify generates a quiz focused only there, with analytics to match.
+testimonials:
+  title: From PMP candidates
+  items:
+    - quote: The scenario questions had the same gut-check feel as the real exam — picking between two answers that are both technically right. After two weeks I knew which one PMI wanted before I read the options.
+      user:
+        name: Carlos Mendez
+        description: PMP Candidate, NYC
+        avatar:
+          src: https://i.pravatar.cc/120?img=7
+    - quote: I'd taken three full-length practice exams and didn't know what to study next. Quizify's per-domain breakdown told me my Business Environment was a 60% — three weeks later I sat for the real exam and passed Above Target on every domain.
+      user:
+        name: Priya Sharma
+        description: PMP Candidate, Melbourne
+        avatar:
+          src: https://i.pravatar.cc/120?img=10

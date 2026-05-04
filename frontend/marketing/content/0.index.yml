@@ -1,71 +1,102 @@
-title: Save time, get ready for your exam with smart [AI quizzes]{class="text-primary"}.
-description: Eliminate exam pressure by turning your PDFs into interactive practice tests in seconds. Master your subjects faster with Quizify AI.
+title: Pass your exam with [AI-powered practice quizzes]{class="text-primary"}.
+description: Pick from a growing library of curated exam tracks — including PMP, AWS Cloud Practitioner, and German A1 / A2, with new ones added regularly — or upload your own PDF. Quizify AI generates exam-style practice questions in seconds.
 seo:
-  title: Nuxt UI SaaS Template
-  description: Create stunning, fast and production-ready SaaS applications with Nuxt UI. 100+ Vue components, authentication, dark mode, and enterprise features built on Tailwind CSS.
+  title: Quizify AI — Exam Prep Quizzes for PMP, AWS, German & More
+  description: A growing library of curated exam-prep tracks (PMP, AWS Cloud Practitioner, German A1/A2, and more) plus AI-generated quizzes from any PDF you upload. Built for serious exam prep.
 navigation: false
 hero:
   links:
-    - label: Get started
+    - label: See pricing
       icon: i-lucide-arrow-right
       trailing: true
       to: /pricing
       size: xl
+    - label: How it works
+      icon: i-lucide-play
+      to: '#features'
+      size: xl
+      color: neutral
+      variant: subtle
 sections:
-  - title: Smarter Study Tools, Powered by AI
-    description: Stop wasting hours on manual preparation. Quizify AI is the ultimate PDF to quiz converter, generating high-quality practice exams that help you master any subject with zero friction.
-    id: features
+  - title: Ready-to-go exam prep, no PDFs required
+    description: Pick a curated subject and start practicing in ten seconds. Each track is built from the official exam syllabus and tuned to mirror the question style of the real test.
+    id: subjects
+    orientation: vertical
+  - title: Or bring your own material
+    description: Upload your lecture notes, textbook chapters, or course slides and Quizify turns them into a focused practice exam. Ideal for university courses, internal training, and any exam without a curated track.
+    id: byo-pdf
     orientation: horizontal
+    image: /screenshots/dashboard.svg
+    imageCaption: Dashboard with subjects and recent activity
     features:
-      - name: Instant PDF Analysis
-        description: Upload your lecture notes or textbooks and get a comprehensive AI-generated practice test in under 30 seconds.
+      - name: Instant PDF analysis
+        description: Upload PDF, DOCX, PPTX, or TXT files and get a complete practice quiz in under 30 seconds.
         icon: i-lucide-file-text
-      - name: Built-in Exam Timer
-        description: Master your pacing with a customizable exam timer. Simulate real-world test pressure to build speed and reduce anxiety.
+      - name: Built-in exam timer
+        description: Match the timing of your real exam — PMP, AWS, Goethe — and build pacing under real conditions.
         icon: i-lucide-timer
-      - name: High-Rigor Accuracy
-        description: Our AI prioritizes academic integrity and factual correctness, ensuring your practice questions are reliable and effective for exam prep.
-        icon: i-lucide-check-circle
-  - title: Premium Exam Prep Without the High Price
-    description: We believe powerful education tools should be accessible to everyone. Quizify AI offers professional-grade study features at a fraction of the cost of traditional tutoring.
+      - name: Source-grounded questions
+        description: Every question cites a chapter or page from your material, so you always know where to review.
+        icon: i-lucide-shield-check
+  - title: Practice the way the exam actually asks
+    description: Quizify generates four question types — single-choice, multiple-select, true/false, and two-blank fill-in for grammar tracks — calibrated to match the difficulty curve of the real exam.
+    id: question-style
     orientation: horizontal
     reverse: true
+    image: /screenshots/quiz-runner.svg
+    imageCaption: Quiz runner mid-question — timer, progress, options
     features:
-      - name: Student-Friendly Pricing
-        description: Affordable plans designed for tight student budgets. Get unlimited quiz generation for less than the price of a coffee.
-        icon: i-lucide-banknote
-      - name: Active Recall Analytics
-        description: Identify your weak spots instantly with personalized score reports. Track your progress and master your curriculum faster.
+      - name: Exam-style stems
+        description: Scenario-based for PMP, "which AWS service for X" for cloud, mini-context fill-in for German grammar — modeled on the real test.
+        icon: i-lucide-target
+      - name: Calibrated distractors
+        description: Wrong answers mirror common student mistakes — wrong gender on -ung nouns, wrong auxiliary in Perfekt, wrong AWS service for the cost-optimized scenario.
+        icon: i-lucide-brain
+      - name: Difficulty mix
+        description: Every batch blends easy, medium, and hard questions so you build confidence without coasting.
+        icon: i-lucide-trending-up
+  - title: See what you're weak on, focus there
+    description: After every quiz, Quizify breaks down your score by topic and tells you which chapters to review next. Stop re-reading what you already know.
+    id: analytics
+    orientation: horizontal
+    image: /screenshots/results.svg
+    imageCaption: Results — score, topic breakdown, focus suggestions
+    features:
+      - name: Per-topic breakdown
+        description: Score bars per chapter so you see at a glance whether your weak spot is Konjunktiv II, IAM, or risk management.
         icon: i-lucide-line-chart
-      - name: Mobile-Optimized Studying
-        description: Take a timed quiz on your phone or tablet. Our fully responsive Nuxt-powered platform lets you study anywhere, anytime.
-        icon: i-lucide-smartphone
+      - name: Focus suggestions
+        description: Quizify surfaces the two or three topics most worth your next study session, ranked by how much your score will move.
+        icon: i-lucide-compass
+      - name: Track progress over time
+        description: Watch your weak topics shrink quiz by quiz. Real exam day is a deadline; your dashboard keeps the countdown honest.
+        icon: i-lucide-history
 features:
-  title: Master Every Subject with Ease
-  description: Stop struggling with scattered notes. Focus on mastering your material while Quizify AI handles the heavy lifting with intelligent PDF analysis and practice tools.
+  title: Built for serious exam prep
+  description: The features that matter when the exam fee, study hours, and certification are on the line.
   items:
-    - title: Instant PDF to Quiz
-      description: Upload any textbook or lecture note PDF and generate a complete, high-quality practice exam in under 30 seconds.
+    - title: Curated exam tracks
+      description: PMP, AWS Cloud Practitioner, German A1, German A2 — chapters and questions modeled on the official exam.
+      icon: i-lucide-graduation-cap
+    - title: Bring-your-own PDF
+      description: Upload any course material and Quizify generates a practice quiz from it in under 30 seconds.
       icon: i-lucide-file-text
-    - title: Real-World Exam Timer
-      description: Master your pacing and eliminate test-day anxiety by practicing under real-world timed conditions with our built-in simulator.
+    - title: Real exam timer
+      description: Customizable timer matches the duration of your real exam so you build pacing the way you'll need it.
       icon: i-lucide-timer
-    - title: Student-First Pricing
-      description: Access professional-grade AI study tools at an affordable price point designed to fit any student's budget.
-      icon: i-lucide-banknote
-    - title: Active Recall Analytics
-      description: Identify your knowledge gaps instantly with detailed score reports that show exactly what you need to review next.
+    - title: Topic-level analytics
+      description: Per-chapter score bars and weak-topic suggestions so you spend study time where it actually moves your score.
       icon: i-lucide-line-chart
-    - title: Proven Academic Accuracy
-      description: Our AI engine is optimized for high-rigor curriculum, ensuring your generated questions are factually correct and reliable.
-      icon: i-lucide-shield-check
-    - title: Study Anywhere, Anytime
-      description: Fully responsive and optimized for mobile devices, so you can squeeze in a quick practice session while on the go.
+    - title: Exam-style question patterns
+      description: Mini-context fill-ins, two-blank chained-rule questions, scenario-based MCQs — calibrated to mirror the real test.
+      icon: i-lucide-target
+    - title: Study anywhere
+      description: Mobile-optimized so you can squeeze in a 10-question drill on the train without losing your place.
       icon: i-lucide-smartphone
 testimonials:
-  headline: Trusted by Students
-  title: Join Thousands preparing their exams with Quizify AI
-  description: See why students across the country are choosing Quizify AI to supercharge their exam prep with intelligent PDF analysis and personalized practice tools.
+  headline: Trusted by students and professionals
+  title: From certification candidates to language learners
+  description: Quizify AI is used across exam types — from PMP and AWS certification candidates to German learners studying for Goethe and telc.
   items:
     - quote: I uploaded my entire semester's worth of lecture notes and had a full practice exam ready in under a minute. I passed my finals with the highest grade in my class.
       user:
@@ -73,22 +104,22 @@ testimonials:
         description: Medical Student, University of Toronto
         avatar:
           src: https://i.pravatar.cc/120?img=1
-    - quote: The timed quiz mode is a game changer. I used to freeze up during exams but after practicing with Quizify's timer I felt completely in control on test day.
+    - quote: The PMP track is the closest thing to a real exam simulator I've found at this price point. The scenario-based questions had the same feel as the actual test.
       user:
         name: Carlos Mendez
-        description: Law Student, NYU
+        description: PMP Candidate, NYC
         avatar:
           src: https://i.pravatar.cc/120?img=7
-    - quote: I tried other AI quiz tools but they kept generating wrong answers. Quizify's questions are spot-on for my engineering curriculum. I trust it completely.
+    - quote: I use Quizify daily for my Goethe A2 prep. The two-blank questions force me to chain grammar rules instead of just pattern-matching. My writing improved noticeably in three weeks.
       user:
         name: Lena Fischer
-        description: Engineering Student, TU Munich
+        description: German Learner, TU Munich
         avatar:
           src: https://i.pravatar.cc/120?img=3
-    - quote: The score reports showed me exactly which chapters I was weak on. I stopped wasting time re-reading everything and focused on what actually mattered.
+    - quote: The score reports showed me exactly which AWS domains I was weak on. I stopped wasting time re-reading the whole study guide and focused on what actually mattered.
       user:
         name: Jordan Williams
-        description: Pre-Med Student, UCLA
+        description: AWS CLF-C02 Candidate, UCLA
         avatar:
           src: https://i.pravatar.cc/120?img=5
     - quote: As someone who studies on the go, being able to take practice quizzes on my phone between classes has been incredibly convenient. My GPA went up a full point.
@@ -97,13 +128,13 @@ testimonials:
         description: Business Student, Waseda University
         avatar:
           src: https://i.pravatar.cc/120?img=8
-    - quote: I was skeptical at first but Quizify generated questions that were almost identical to what appeared on my actual exam. It's like having a crystal ball for studying.
+    - quote: I was skeptical of AI quiz tools but Quizify generated questions that were almost identical to what appeared on my actual exam. It's like having a crystal ball for studying.
       user:
         name: Fatima Al-Hassan
         description: Pharmacy Student, King's College London
         avatar:
           src: https://i.pravatar.cc/120?img=9
-    - quote: My study group all uses Quizify now. We upload the same PDF and race each other on the quizzes. Studying has never been this fun or effective.
+    - quote: My study group all uses Quizify now. We pick the same chapter and race each other on the quizzes. Studying has never been this fun or effective.
       user:
         name: Noah Andersen
         description: Computer Science Student, DTU
@@ -115,9 +146,9 @@ testimonials:
         description: Accounting Student, University of Melbourne
         avatar:
           src: https://i.pravatar.cc/120?img=10
-    - quote: Quizify turned a 400-page textbook into a focused practice set in seconds. I went from dreading study sessions to actually looking forward to them.
+    - quote: The German A1 track took me from zero to passing the Goethe-Zertifikat A1 in nine weeks. Calibrated distractors meant I learned the rule, not just the answer.
       user:
         name: Marcus Okonkwo
-        description: History Student, University of Ghana
+        description: German A1 Learner, University of Ghana
         avatar:
           src: https://i.pravatar.cc/120?img=12

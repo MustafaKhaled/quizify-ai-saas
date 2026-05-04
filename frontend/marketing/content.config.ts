@@ -45,7 +45,12 @@ export const collections = {
           id: z.string().nonempty(),
           orientation: orientationEnum.optional(),
           reverse: z.boolean().optional(),
-          features: z.array(createFeatureItemSchema())
+          // image + caption are optional — sections that render a custom slot
+          // (e.g. SubjectShowcase) don't need them.
+          image: z.string().optional(),
+          imageCaption: z.string().optional(),
+          // features are optional — the SubjectShowcase section omits them.
+          features: z.array(createFeatureItemSchema()).optional()
         })
       ),
       features: createBaseSchema().extend({
@@ -156,4 +161,58 @@ export const collections = {
       )
     })
   }),
+  exams: defineCollection({
+    // Niche exam-specific landing pages. One YAML per exam under content/6.exams/.
+    // Each renders at /exams/<filename> via app/pages/exams/[slug].vue.
+    source: '6.exams/**/*',
+    type: 'page',
+    schema: z.object({
+      subject_slug: z.string().nonempty(),
+      color: z.string().nonempty(),
+      icon: z.string().nonempty(),
+      badge: z.string().nonempty(),
+      exam_authority: z.string().optional(),
+      hero: z.object({
+        headline: z.string().nonempty(),
+        subhead: z.string().nonempty(),
+        tagline: z.string().optional(),
+        cta: createLinkSchema()
+      }),
+      pains: createBaseSchema().extend({
+        items: z.array(z.string().nonempty())
+      }),
+      promises: createBaseSchema().extend({
+        items: z.array(createFeatureItemSchema())
+      }),
+      comparison: createBaseSchema().extend({
+        columns: z.array(z.object({
+          name: z.string().nonempty(),
+          highlight: z.boolean().optional()
+        })),
+        rows: z.array(z.object({
+          feature: z.string().nonempty(),
+          // One status per column, in the same order. Allowed: 'yes', 'no', 'partial'.
+          values: z.array(z.enum(['yes', 'no', 'partial']))
+        }))
+      }),
+      faq: z.object({
+        title: z.string().optional(),
+        items: z.array(z.object({
+          label: z.string().nonempty(),
+          content: z.string().nonempty()
+        }))
+      }),
+      testimonials: z.object({
+        title: z.string().optional(),
+        items: z.array(z.object({
+          quote: z.string().nonempty(),
+          user: z.object({
+            name: z.string().nonempty(),
+            description: z.string().nonempty(),
+            avatar: createImageSchema().optional()
+          })
+        }))
+      }).optional()
+    })
+  })
 }

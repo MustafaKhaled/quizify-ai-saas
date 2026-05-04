@@ -1,3 +1,12 @@
+<script setup lang="ts">
+// Demo video lives in /public/videos/. Until you record a real demo, the
+// component falls back to the dashboard placeholder image so the hero never
+// renders broken. See public/videos/DEMO_TODO.md for the swap workflow.
+const POSTER = '/screenshots/dashboard.svg'
+const VIDEO_MP4 = '/videos/quizify-demo.mp4'
+const VIDEO_WEBM = '/videos/quizify-demo.webm'
+</script>
+
 <template>
   <div class="relative">
     <UPageCard
@@ -5,24 +14,20 @@
       class="rounded-2xl"
     >
       <video
-        class="rounded-xl"
-        data-v-baf90ddd=""
+        class="rounded-xl w-full"
         preload="none"
-        poster="https://res.cloudinary.com/nuxt/video/upload/so_3.3/v1708511800/ui-pro/video-nuxt-ui-pro_kwfbdh.jpg"
-        :controls="true"
-      ><source
-        data-v-baf90ddd=""
-        src="https://res.cloudinary.com/nuxt/video/upload/v1708511800/ui-pro/video-nuxt-ui-pro_kwfbdh.webm"
-        type="video/webm"
-      ><source
-        data-v-baf90ddd=""
-        src="https://res.cloudinary.com/nuxt/video/upload/v1708511800/ui-pro/video-nuxt-ui-pro_kwfbdh.mp4"
-        type="video/mp4"
-      ><source
-        data-v-baf90ddd=""
-        src="https://res.cloudinary.com/nuxt/video/upload/v1708511800/ui-pro/video-nuxt-ui-pro_kwfbdh.ogg"
-        type="video/ogg"
+        :poster="POSTER"
+        controls
+        playsinline
       >
+        <source
+          :src="VIDEO_WEBM"
+          type="video/webm"
+        >
+        <source
+          :src="VIDEO_MP4"
+          type="video/mp4"
+        >
       </video>
     </UPageCard>
   </div>

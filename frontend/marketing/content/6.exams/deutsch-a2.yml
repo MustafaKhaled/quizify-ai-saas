@@ -1,0 +1,92 @@
+title: Goethe-Zertifikat A2 — drill the grammar that actually moves your score
+description: Quizify AI is calibrated for German A2. Dativ, Wechselpräpositionen, Konjunktiv II, Nebensätze, Reflexivverben — exam-style practice on every A2 Grammatik-Regel.
+subject_slug: deutsch_a2
+color: '#991B1B'
+icon: '🇩🇪'
+badge: 'CEFR · A2'
+exam_authority: 'Goethe-Institut, telc, ÖSD'
+hero:
+  headline: Bestehe das Goethe-Zertifikat A2.
+  subhead: Calibrated A2 grammar drills modeled on Goethe-Zertifikat A2, telc, and ÖSD style. Mini-context fill-ins and two-blank chained-rule questions on every A2 Regel — Dativ, Wechselpräpositionen, Konjunktiv II, Nebensätze, Reflexivverben.
+  tagline: Eine Regel pro Tag, 10 Minuten zur Prüfung.
+  cta:
+    label: Beginne deine A2-Vorbereitung
+    to: /signup?subject=deutsch_a2
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Klingt das vertraut?
+  description: Sound familiar? A2 is where most German learners stall — A1 felt manageable, but Dativ and Konjunktiv break the pattern.
+  items:
+    - You passed A1 fine but Dativ feels arbitrary — `dem` vs `den` is still a coin flip.
+    - Wechselpräpositionen confuse you — when does `auf` take Akkusativ and when Dativ?
+    - You can recognize Konjunktiv II forms but you can't produce them under exam pressure.
+    - Subordinate clauses with `weil`, `dass`, `wenn` make you forget where the verb goes.
+promises:
+  title: What you actually need
+  description: A2-specific practice that builds on A1 instead of retesting it — and analytics that pinpoint exactly which Regel to drill next.
+  items:
+    - title: Echte A2-Aufgaben — keine A1-Wiederholung
+      description: Quizify never wastes questions retesting present-tense conjugation. Every quiz focuses on real A2 grammar — Dativ, Wechselpräpositionen, Konjunktiv II, Nebensätze, Reflexivverben.
+      icon: i-lucide-target
+    - title: Two-blank chained-rule questions
+      description: Pair Wechselpräpositionen with case endings, conjunctions with subordinate-clause word order. The exam tests rules in combination — you should practice them that way.
+      icon: i-lucide-brain
+    - title: Pro Grammatik-Regel-Analyse
+      description: Per-rule weak-spot dashboard. Reflexivverben at 90%, Konjunktiv II at 45%? You'll know exactly which Regel deserves your next study session.
+      icon: i-lucide-line-chart
+    - title: Erklärungen auf Englisch
+      description: A2 explanations remain in English so you understand the rule itself, not just the answer. Quoted German forms stay German — everything else is unambiguous English.
+      icon: i-lucide-book-open
+comparison:
+  title: How Quizify compares
+  description: A2 is the level where generic language apps fall down — they teach more vocabulary instead of drilling the grammar that actually appears on the exam.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Duolingo / Babbel
+    - name: Generic ChatGPT
+  rows:
+    - feature: Question style modeled on Goethe-Zertifikat A2
+      values: ['yes', 'no', 'partial']
+    - feature: Skips A1 retesting — focuses on A2 additions
+      values: ['yes', 'no', 'no']
+    - feature: Two-blank chained-rule questions
+      values: ['yes', 'no', 'no']
+    - feature: Per-Grammatik-Regel weak-spot analytics
+      values: ['yes', 'partial', 'no']
+    - feature: All A2 grammar — Dativ → Indirekte Fragen
+      values: ['yes', 'partial', 'partial']
+    - feature: Distractors calibrated to common A2 mistakes
+      values: ['yes', 'no', 'no']
+    - feature: Won't drift into B1+ vocabulary you don't need yet
+      values: ['yes', 'no', 'no']
+faq:
+  title: A2-spezifische Fragen
+  items:
+    - label: Is this aligned to Goethe-Zertifikat A2, telc, or ÖSD?
+      content: All three. The 15 grammar chapters cover the union of A2 syllabi — the question style is modeled on the way all three exams write items.
+    - label: Will it retest A1 grammar?
+      content: No. The instructions explicitly tell the AI not to waste questions retesting A1 mechanics. Every question either tests new A2 grammar or chains A2 with A1.
+    - label: Which A2 grammar is covered?
+      content: 15 chapters — Dativ, Wechselpräpositionen, Präteritum, Komparativ & Superlativ, Konjunktiv II (Höflichkeit), Nebensatz mit weil & dass, Nebensatz mit wenn & obwohl, Reflexivverben, Adjektivdeklination, Relativsätze, Passiv Präsens, Verben mit festen Präpositionen, Genitiv-Grundlagen, Temporalpräpositionen, Indirekte Fragen.
+    - label: I haven't taken A1 yet — should I start with A2?
+      content: No. A2 builds on A1. If you can't reliably conjugate regular verbs in present tense and form Akkusativ, drill the A1 track first — it's much faster than re-learning at the wrong level.
+    - label: Are explanations in German?
+      content: No — explanations are in English so the underlying rule is unambiguous. The only German inside an explanation is the quoted form being discussed (e.g., the article 'dem', the verb 'helfen').
+testimonials:
+  title: From A2 learners
+  items:
+    - quote: A2 is where I'd plateaued for six months on Babbel. Quizify's two-blank questions forced me to combine Wechselpräpositionen with case endings, which is exactly what the Goethe exam does. I passed on the first try.
+      user:
+        name: Aisha Patel
+        description: A2 Learner, University of Toronto
+        avatar:
+          src: https://i.pravatar.cc/120?img=1
+    - quote: The per-rule analytics were the breakthrough. I thought I was weak on Dativ — turned out I was at 85% on Dativ and 45% on Konjunktiv II. I shifted my study time and watched my score climb.
+      user:
+        name: Yuki Tanaka
+        description: A2 Learner, Waseda University
+        avatar:
+          src: https://i.pravatar.cc/120?img=8

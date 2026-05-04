@@ -36,6 +36,7 @@ useSeoMeta({
 
     <UPageSection
       v-for="(section, index) in page.sections"
+      :id="section.id"
       :key="index"
       :title="section.title"
       :description="section.description"
@@ -43,10 +44,16 @@ useSeoMeta({
       :reverse="section.reverse"
       :features="section.features"
     >
-      <ImagePlaceholder />
+      <SubjectShowcase v-if="section.id === 'subjects'" />
+      <ImagePlaceholder
+        v-else
+        :src="section.image"
+        :caption="section.imageCaption"
+      />
     </UPageSection>
 
     <UPageSection
+      id="features"
       :title="page.features.title"
       :description="page.features.description"
     >

@@ -1,0 +1,92 @@
+title: AWS Cloud Practitioner — drill the way the CLF-C02 actually asks
+description: Quizify AI is tuned to AWS exam style. "Which AWS service for X" scenarios across all four CLF-C02 domains, with per-domain analytics so you know where your score is leaking.
+subject_slug: clf_c02
+color: '#FF9900'
+icon: '☁️'
+badge: 'AWS · CLF-C02'
+exam_authority: 'Amazon Web Services'
+hero:
+  headline: Pass the AWS Cloud Practitioner with practice that matches the real exam.
+  subhead: Scenario-style questions across all four CLF-C02 domains — Cloud Concepts, Security & Compliance, Cloud Technology & Services, Billing & Pricing — with per-domain analytics that tell you which one is dragging your score down.
+  tagline: Built for the CLF-C02 candidate.
+  cta:
+    label: Start your AWS prep
+    to: /signup?subject=clf_c02
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Sound familiar?
+  description: AWS prep is drowning in free content — most of it generic, contradictory, or written for the previous exam version.
+  items:
+    - You've watched a 12-hour video course and the actual exam asks scenarios none of it prepared you for.
+    - Free question banks are either outdated to CLF-C01 or focus on services that aren't even on the real exam.
+    - You can't tell which of S3, EBS, EFS, and FSx the question wants — every option looks plausible.
+    - You don't know whether to study more security or more billing, and you've already paid the $100 exam fee twice.
+promises:
+  title: What you actually need
+  description: A practice tool built for the CLF-C02 specifically — not generic AWS knowledge, not certified-architect material.
+  items:
+    - title: '"Which AWS service for X" scenarios'
+      description: Practice the question pattern that dominates the real exam — pick the right service for cost optimization, the right pillar for a Well-Architected principle, the right side of the Shared Responsibility Model.
+      icon: i-lucide-target
+    - title: Per-domain weak-spot breakdown
+      description: Cloud Concepts (24%), Security & Compliance (30%), Services (34%), Billing (12%) — analytics tell you which domain is losing you points and how to weight your remaining study time.
+      icon: i-lucide-line-chart
+    - title: Distractors that match real AWS confusion
+      description: S3 vs EBS vs EFS, Reserved Instances vs Savings Plans, Shield Standard vs Advanced — wrong answers are calibrated to the services candidates actually mix up.
+      icon: i-lucide-brain
+    - title: Aligned to current CLF-C02 syllabus
+      description: Built specifically for the post-2023 exam version. No CLF-C01 leftovers, no certified-architect material, no out-of-scope services.
+      icon: i-lucide-shield-check
+comparison:
+  title: How Quizify compares
+  description: Free AWS content covers the basics, ChatGPT hallucinates services, and full courses are overkill for the CLF-C02. Here's where each option falls short.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Generic ChatGPT
+    - name: Free YouTube/exam dumps
+  rows:
+    - feature: Scoped to current CLF-C02 syllabus only
+      values: ['yes', 'partial', 'no']
+    - feature: '"Which AWS service for X" scenario style'
+      values: ['yes', 'partial', 'partial']
+    - feature: Distractors calibrated to common AWS-candidate confusion
+      values: ['yes', 'no', 'partial']
+    - feature: Per-domain weak-spot analytics
+      values: ['yes', 'no', 'no']
+    - feature: Generates fresh questions every run (no memorization trap)
+      values: ['yes', 'yes', 'no']
+    - feature: Won't hallucinate AWS services that don't exist
+      values: ['yes', 'no', 'yes']
+    - feature: Built-in exam timer and pacing simulation
+      values: ['yes', 'no', 'no']
+faq:
+  title: CLF-C02 questions
+  items:
+    - label: Is this the current CLF-C02 exam, or the older CLF-C01?
+      content: CLF-C02 — the current version that AWS launched in late 2023. The corpus and chapters are aligned to the four official domains in the latest exam guide.
+    - label: How is this different from Tutorials Dojo or Stéphane Maarek?
+      content: Those are excellent for learning AWS. Quizify is the practice layer — the part where you drill questions, find weak domains, and grind until your score is stable. Most candidates use both.
+    - label: Are these questions copied from real AWS exam dumps?
+      content: No. Dumps violate the AWS Candidate Agreement and we don't go near them. Quizify generates fresh, original questions on every run — grounded in the same syllabus AWS publishes.
+    - label: Can I focus on just one domain?
+      content: Yes. Pick a chapter (e.g., Security, Billing) and Quizify generates a focused quiz with analytics scoped to that domain.
+    - label: How many questions can I practice?
+      content: Unlimited on Pro. Run a 60-question full-length CLF-C02 quiz, or a 10-question domain drill, as often as you want.
+testimonials:
+  title: From AWS candidates
+  items:
+    - quote: I'd watched two full courses and was still scoring 65% on practice tests. Quizify's per-domain breakdown told me my Billing was at 40%. Two weeks of focused practice later I sat the exam and passed.
+      user:
+        name: Jordan Williams
+        description: AWS CLF-C02 Candidate, UCLA
+        avatar:
+          src: https://i.pravatar.cc/120?img=5
+    - quote: The "which AWS service for X" scenarios were the closest thing to the real exam I'd practiced. Wrong answers were never the obvious wrong service — always the one I was about to pick.
+      user:
+        name: Noah Andersen
+        description: AWS Candidate, DTU
+        avatar:
+          src: https://i.pravatar.cc/120?img=11

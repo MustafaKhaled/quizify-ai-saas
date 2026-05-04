@@ -1,0 +1,92 @@
+title: Goethe-Zertifikat A1 — practice that mirrors the real exam
+description: Quizify AI is built for German A1 candidates. Mini-context fill-ins, two-blank chained-rule questions, and calibrated distractors modeled on Goethe-Zertifikat A1, telc, and ÖSD style.
+subject_slug: deutsch_a1
+color: '#DC2626'
+icon: '🇩🇪'
+badge: 'CEFR · A1'
+exam_authority: 'Goethe-Institut, telc, ÖSD'
+hero:
+  headline: Bestehe das Goethe-Zertifikat A1.
+  subhead: Daily 10-minute grammar drills modeled on Goethe-Zertifikat A1, telc, and ÖSD style. Mini-context fill-ins, two-blank chained-rule questions, and calibrated distractors that teach the rule — not just the answer.
+  tagline: Mit 10 Minuten am Tag zur A1-Prüfung.
+  cta:
+    label: Beginne deine A1-Vorbereitung
+    to: /signup?subject=deutsch_a1
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Klingt das vertraut?
+  description: Sound familiar? German A1 prep apps teach you words, not the rules the Goethe-Zertifikat actually tests.
+  items:
+    - You've finished a Duolingo German tree but you still can't tell whether `'Ich helfe ___ Mann'` takes `der`, `den`, or `dem`.
+    - You can't read a real Goethe-Zertifikat A1 mock exam without a dictionary — the question style is nothing like a vocabulary app.
+    - You have three weeks until the exam date and no idea which Grammatik-Regel is your weakest.
+    - The €130 exam fee is the smallest part of the cost — it's the months of half-prep you can't get back.
+promises:
+  title: What you actually need
+  description: A practice tool calibrated to the real Goethe-Zertifikat A1 question style — not a generic language-learning app.
+  items:
+    - title: Echte Prüfungs-Aufgabenstellungen
+      description: Mini-Kontext fill-in-the-blanks and two-blank chained-rule questions, modeled on the way Goethe, telc, and ÖSD actually write A1 grammar items.
+      icon: i-lucide-target
+    - title: Distraktoren, die echte Anfängerfehler abbilden
+      description: Wrong answers mirror real A1-learner mistakes — wrong gender on -ung nouns, V3 word order after a fronted adverb, `nicht` where `kein` belongs. You learn the rule by ruling out the trap.
+      icon: i-lucide-brain
+    - title: Pro Grammatik-Regel-Analyse
+      description: Per-rule weak-spot dashboard. Akkusativ at 90%, Negation at 50%? You'll know exactly which Regel to drill next.
+      icon: i-lucide-line-chart
+    - title: 10 Minuten am Tag, mobil
+      description: Squeeze in a 10-question drill on the train to work. Mobile-optimized so a five-minute window becomes real exam prep.
+      icon: i-lucide-smartphone
+comparison:
+  title: How Quizify compares
+  description: Most German learning apps teach vocabulary and pronunciation. Almost none calibrate question style to the actual A1 exams.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Duolingo / Babbel
+    - name: Generic ChatGPT
+  rows:
+    - feature: Question style modeled on Goethe-Zertifikat A1
+      values: ['yes', 'no', 'partial']
+    - feature: Two-blank chained-rule questions (Goethe Pattern)
+      values: ['yes', 'no', 'no']
+    - feature: Distractors calibrated to real A1-learner mistakes
+      values: ['yes', 'partial', 'no']
+    - feature: Per-Grammatik-Regel weak-spot analytics
+      values: ['yes', 'partial', 'no']
+    - feature: All A1 grammar areas covered (Personalpronomen → Perfekt)
+      values: ['yes', 'yes', 'partial']
+    - feature: Explanations in English (so beginners understand the rule)
+      values: ['yes', 'partial', 'partial']
+    - feature: Won't invent grammar that doesn't exist
+      values: ['yes', 'yes', 'no']
+faq:
+  title: A1-spezifische Fragen
+  items:
+    - label: Is this aligned to Goethe-Zertifikat A1, telc, or ÖSD?
+      content: All three. The 15 grammar chapters cover the union of A1 syllabi (Goethe-Zertifikat A1, telc Deutsch A1, ÖSD A1) — the question style is modeled on the way all three exams write items.
+    - label: Are explanations in German or English?
+      content: English — A1 learners can't yet parse a metalinguistic explanation in German, and the goal is for you to understand the rule. The only German inside an explanation is the quoted form being discussed.
+    - label: How is this different from Duolingo, Babbel, or Lingoda?
+      content: Those teach you to use German. Quizify trains you to pass an A1 exam. The question patterns, distractors, and analytics are calibrated to Goethe/telc/ÖSD style — not generic language-learning gamification.
+    - label: Will it cover all A1 grammar?
+      content: Yes — 15 chapters covering Personalpronomen, Verbkonjugation Präsens, sein & haben, Artikel, Nomen Genus & Plural, Nominativ, Akkusativ, Negation (nicht & kein), Possessivartikel, Modalverben, trennbare Verben, Imperativ, W-Fragen, Wortstellung im Hauptsatz, and Perfekt.
+    - label: I'm preparing for A2 — should I start here?
+      content: If you can already conjugate regular verbs in present tense and use Akkusativ correctly, jump straight to the A2 track. If any of those feel shaky, drill A1 first — A2 builds on it.
+testimonials:
+  title: From A1 learners
+  items:
+    - quote: I use Quizify daily for my Goethe A1 prep. The two-blank questions force me to chain grammar rules instead of just pattern-matching. My writing improved noticeably in three weeks.
+      user:
+        name: Lena Fischer
+        description: A1 Learner, TU Munich
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+    - quote: The German A1 track took me from zero to passing the Goethe-Zertifikat A1 in nine weeks. Calibrated distractors meant I learned the rule, not just the answer.
+      user:
+        name: Marcus Okonkwo
+        description: German A1 Learner, University of Ghana
+        avatar:
+          src: https://i.pravatar.cc/120?img=12

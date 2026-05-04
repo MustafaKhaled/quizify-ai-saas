@@ -1,28 +1,28 @@
-title: Pass Your Exam with Confidence
-description: Whether you’re cramming for a midterm or preparing for a professional certification, find the plan that helps you master your subjects faster and without the pressure.
+title: Pass your exam with confidence
+description: Whether you're cramming for a midterm, preparing for a professional certification, or learning German, find the plan that helps you master your material faster.
 seo:
-  title: Pricing
-  description: Choose the plan that's right for you.
+  title: Pricing — Quizify AI
+  description: Free and Pro plans for AI-powered exam practice. Curated tracks for PMP, AWS Cloud Practitioner, and German A1/A2 — plus unlimited PDF uploads on Pro.
 navigation.icon: i-lucide-credit-card
 plans:
   - title: Free
-    description: Perfect for trying out AI-powered study tools.
+    description: Try Quizify with limited usage and no credit card.
     price:
       month: 0€
       year: 0€
     button:
-      label: Get Started
+      label: Get started
       color: neutral
       variant: subtle
       to: /signup
     features:
       - 3 AI-generated quizzes per month
-      - Basic PDF text analysis
+      - Upload your own PDF, DOCX, PPTX, or TXT
       - Standard study mode
       - Save up to 5 quiz results
       - Community support
   - title: Pro
-    description: Complete exam preparation for serious students.
+    description: Full access to every curated track and unlimited generation.
     price:
       month: 7,99€
       year: 5,99€
@@ -34,25 +34,26 @@ plans:
       to: /signup
     features:
       - Unlimited AI quiz generation
-      - Advanced Exam Timer & Simulation
-      - Detailed Active Recall Analytics
+      - Every curated subject — PMP, AWS Cloud Practitioner, German A1, German A2
+      - Exam-style question patterns (mini-context, two-blank, scenario-based)
+      - Real-exam timer & simulation
+      - Per-topic analytics & weak-spot suggestions
       - Priority PDF processing
-      - Mobile-optimized study mode
       - Unlimited history & storage
       - Priority email support
 faq:
   title: Frequently asked questions
-  description: Culpa consectetur dolor pariatur commodo aliqua amet tempor nisi enim deserunt elit cillum.
+  description: The questions we hear most often from candidates and language learners.
   items:
-    - label: Is this a secure service?
-      content: Qui sunt nostrud aliquip reprehenderit enim proident veniam magna aliquip velit occaecat eiusmod nisi deserunt sunt.
-    - label: How can I cancel my subscription?
-      content: Consectetur irure Lorem nostrud adipisicing aliqua mollit Lorem sit officia magna eiusmod cupidatat.
-    - label: How does the free trial work?
-      content: Quis officia commodo magna eu qui aliquip duis.
-    - label: Can I switch plans later?
-      content: Dolore irure ullamco dolore eu occaecat magna eiusmod dolor aliqua culpa labore.
-    - label: Do you offer refunds?
-      content: Duis mollit nostrud voluptate mollit Lorem dolore commodo veniam incididunt eiusmod.
-    - label: Do you offer support?
-      content: Aliqua sit nisi consequat pariatur Lorem minim irure qui.
+    - label: What's the difference between curated subjects and uploading my own PDF?
+      content: Curated subjects (PMP, AWS Cloud Practitioner, German A1, German A2) are pre-built tracks with chapters, syllabi, and question styles modeled on the real exam — you pick a topic and start practicing instantly. PDF upload is for everything else: lecture notes, course slides, internal training material. Both are included in Pro.
+    - label: Which exams do the curated subjects cover?
+      content: PMP (PMI's Project Management Professional), AWS Cloud Practitioner (CLF-C02), German Grammar A1, and German Grammar A2 (CEFR — modeled on Goethe-Zertifikat, telc, and ÖSD). More tracks roll out regularly.
+    - label: How does the free tier work?
+      content: 3 AI-generated quizzes per month against your own uploaded material, plus access to a limited preview of curated subjects. No credit card required to sign up.
+    - label: Can I cancel my Pro subscription at any time?
+      content: Yes — one click from your account settings. You keep Pro access until the end of your current billing cycle, no clawback.
+    - label: Do you offer student discounts?
+      content: The yearly plan is already 25% off the monthly rate. For campus-wide licenses or groups of 10+, contact support for bulk pricing.
+    - label: Is my data secure?
+      content: Your uploaded PDFs are encrypted at rest and used only to generate your own quizzes. We do not train global AI models on your documents.
