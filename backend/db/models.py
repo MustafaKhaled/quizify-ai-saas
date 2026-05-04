@@ -187,11 +187,16 @@ class QuizResult(Base):
 # -----------------------------------
 # 4. Predefined-Subject Exam Banks
 # -----------------------------------
-class PMPExamQuestion(Base):
-    __tablename__ = "pmp_exam_questions"
-
+class PredefinedExamQuestion(Base):
+    """
+    Exam-bank exemplars for predefined subjects (PMP, AWS CLF-C02, ...).
+    The `subject_slug` discriminator + `chapter_slug` together identify which
+    subject/chapter a question belongs to, so one table serves every subject.
+    """
+    __tablename__ = "predefined_exam_questions"
     id = Column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
-    content_hash = Column(String(64), unique=True, nullable=False, index=True)  # sha256 of (stem|source)
+    content_hash = Column(String(64), unique=True, nullable=False, index=True)
+    subject_slug = Column(String(64), nullable=False, index=True)
     chapter_slug = Column(String(64), nullable=False, index=True)
     stem = Column(String, nullable=False)
     quiz_type = Column(String(32), nullable=False, default="single_choice")
@@ -202,3 +207,7 @@ class PMPExamQuestion(Base):
     source = Column(String(255), nullable=False)
     difficulty = Column(String(16), nullable=False, default="medium")
     created_at = Column(TIMESTAMP(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+
+
+# PMPExamQuestion was replaced by PredefinedExamQuestion (subject_slug-discriminated).
+# Migration d4e5f6a7b8c9 moves the data and drops the legacy table.

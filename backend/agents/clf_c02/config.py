@@ -1,0 +1,3 @@
+CLF_C02_SUBJECT_NAME = "AWS Cloud Practitioner"
+CLF_C02_SUBJECT_COLOR = "#FF9900"  # AWS orange
+CLF_C02_SUBJECT_ICON = "☁️"

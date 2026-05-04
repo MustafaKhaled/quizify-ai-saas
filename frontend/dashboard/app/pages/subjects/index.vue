@@ -14,34 +14,40 @@
         </NuxtLink>
       </div>
 
-      <!-- Predefined PMP card (always visible, idempotent) -->
-      <div
-        class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-orange-500/10 transition-all hover:-translate-y-0.5 mb-6 sm:mb-8"
-        @click="launchPMP()"
-      >
-        <div class="h-1.5" style="background: linear-gradient(90deg, #F97316, #FB923C)"></div>
-        <div class="p-5 sm:p-6 flex flex-wrap items-center gap-4 sm:gap-6">
-          <div class="flex items-center gap-4 min-w-0 flex-1">
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style="background: linear-gradient(135deg, #F97316, #FB923C); box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.5)">
-              <span>📋</span>
+      <!-- Predefined subject cards (always visible, idempotent) -->
+      <div v-if="predefinedAgents.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+        <div
+          v-for="agent in predefinedAgents"
+          :key="agent.slug"
+          class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-0.5"
+          :style="{ boxShadow: `0 8px 24px -12px ${agent.color || '#3B82F6'}55` }"
+          @click="launchPredefined(agent.slug)"
+        >
+          <div class="h-1.5" :style="{ background: `linear-gradient(90deg, ${agent.color || '#3B82F6'}, ${agent.color || '#3B82F6'}cc)` }"></div>
+          <div class="p-5 flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0 text-white"
+              :style="{ background: agent.color || '#3B82F6' }"
+            >
+              <span>{{ agent.icon || '📚' }}</span>
             </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 mb-1 flex-wrap">
-                <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">PMP Practice</h3>
-                <span class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-orange-700 dark:text-orange-300 bg-orange-500/10 border border-orange-500/20">Predefined</span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
+                <span class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-slate-700 dark:text-slate-300 bg-slate-500/10 border border-slate-500/20">Predefined</span>
               </div>
-              <p class="text-sm text-slate-500 dark:text-slate-400">10 PMBOK knowledge areas, ready-to-quiz with grounded AI generation.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Ready-to-quiz with grounded AI generation.</p>
             </div>
+            <button
+              type="button"
+              @click.stop="launchPredefined(agent.slug)"
+              :disabled="provisioningSlug === agent.slug"
+              class="px-3 py-1.5 rounded-lg font-semibold text-xs text-white disabled:opacity-50 transition-transform hover:-translate-y-0.5 flex-shrink-0"
+              :style="{ background: agent.color || '#3B82F6' }"
+            >
+              {{ provisioningSlug === agent.slug ? '...' : 'Open →' }}
+            </button>
           </div>
-          <button
-            type="button"
-            @click.stop="launchPMP()"
-            :disabled="pmpProvisioning"
-            class="px-5 py-2 rounded-xl font-semibold text-sm text-white disabled:opacity-50 transition-transform hover:-translate-y-0.5"
-            style="background: linear-gradient(135deg, #F97316, #FB923C); box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.5)"
-          >
-            {{ pmpProvisioning ? 'Loading...' : 'Open PMP →' }}
-          </button>
         </div>
       </div>
 
@@ -102,37 +108,44 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const subjects = ref<any[]>([])
 const isLoading = ref(true)
-const pmpProvisioning = ref(false)
+const provisioningSlug = ref<string | null>(null)
 
-async function launchPMP() {
-  if (pmpProvisioning.value) return
-  pmpProvisioning.value = true
+const { agents: predefinedAgentsRef, load: loadPredefinedAgents } = usePredefinedSubjects()
+const predefinedAgents = computed(() => predefinedAgentsRef.value || [])
+
+async function launchPredefined(slug: string) {
+  if (provisioningSlug.value) return
+  provisioningSlug.value = slug
   try {
-    const res = await fetch(`${config.public.apiBase}/predefined/pmp/provision`, {
+    const res = await fetch(`${config.public.apiBase}/predefined/${slug}/provision`, {
       method: 'POST',
       credentials: 'include',
     })
     if (res.status === 403) {
-      alert('Pro plan required to access PMP practice.')
+      alert('Pro plan required to access this subject.')
       return
     }
     if (!res.ok) {
-      alert('Failed to start PMP. Please try again.')
+      alert('Failed to start. Please try again.')
       return
     }
     const subject = await res.json()
     if (subject?.id) await navigateTo(`/subjects/${subject.id}`)
   } finally {
-    pmpProvisioning.value = false
+    provisioningSlug.value = null
   }
 }
 
 onMounted(async () => {
+  loadPredefinedAgents().catch(() => {})
   try {
     const res = await fetch(`${config.public.apiBase}/subjects`, { credentials: 'include' })
     if (res.ok) {
       const all = await res.json()
-      subjects.value = all.filter((s: any) => s.name !== 'PMP')
+      // Filter out predefined-subject rows from the user-subjects list (they have their own cards above)
+      const agents = await loadPredefinedAgents().catch(() => [])
+      const predefinedNames = new Set(agents.map((a) => a.name))
+      subjects.value = all.filter((s: any) => !predefinedNames.has(s.name))
     }
   } catch (e) {
     console.error('Failed to load subjects:', e)

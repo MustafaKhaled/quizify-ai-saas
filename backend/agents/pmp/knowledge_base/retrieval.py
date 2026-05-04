@@ -1,10 +1,9 @@
 """
 Exam-bank retrieval helpers.
 
-Powers exemplar-mode generation: fetch K real PMP questions matching the
-user's focus chapters (or any chapter when no focus is set) and format them
-as a prompt-injectable style reference. Gemini uses these as style anchors,
-not as content to copy.
+Generic over `subject_slug` so adding new predefined subjects (CFA, AWS, etc.)
+doesn't require a new module — the same get_exemplars/format_exemplars work
+for every subject.
 """
 
 from __future__ import annotations
@@ -12,24 +11,27 @@ from __future__ import annotations
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from db.models import PMPExamQuestion
+from db.models import PredefinedExamQuestion
 
 
 def get_exemplars(
     db: Session,
+    subject_slug: str,
     chapter_slugs: list[str] | None = None,
     k: int = 3,
-) -> list[PMPExamQuestion]:
+) -> list[PredefinedExamQuestion]:
     """Return up to k random exam questions, optionally filtered by chapter_slug."""
     if k <= 0:
         return []
-    query = db.query(PMPExamQuestion)
+    query = db.query(PredefinedExamQuestion).filter(
+        PredefinedExamQuestion.subject_slug == subject_slug
+    )
     if chapter_slugs:
-        query = query.filter(PMPExamQuestion.chapter_slug.in_(chapter_slugs))
+        query = query.filter(PredefinedExamQuestion.chapter_slug.in_(chapter_slugs))
     return query.order_by(func.random()).limit(k).all()
 
 
-def format_exemplars(exemplars: list[PMPExamQuestion]) -> str:
+def format_exemplars(exemplars: list[PredefinedExamQuestion]) -> str:
     """Render exemplars as a prompt-friendly text block. Empty string if none."""
     if not exemplars:
         return ""

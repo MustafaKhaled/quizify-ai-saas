@@ -19,11 +19,11 @@
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
                 <h1 class="text-2xl sm:text-4xl font-bold gradient-text truncate">{{ subject.name }}</h1>
-                <span v-if="isPMP" class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-orange-700 dark:text-orange-300 bg-orange-500/10 border border-orange-500/20">Predefined</span>
+                <span v-if="isPredefined" class="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-slate-700 dark:text-slate-300 bg-slate-500/10 border border-slate-500/20">Predefined</span>
               </div>
               <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
-                <template v-if="isPMP">
-                  {{ pmpChapters.length }} chapters • {{ allSourceQuizzes.length + subjectQuizzes.length }} {{ (allSourceQuizzes.length + subjectQuizzes.length) === 1 ? 'quiz' : 'quizzes' }}
+                <template v-if="isPredefined">
+                  {{ predefinedChapters.length }} chapters • {{ allSourceQuizzes.length + subjectQuizzes.length }} {{ (allSourceQuizzes.length + subjectQuizzes.length) === 1 ? 'quiz' : 'quizzes' }}
                 </template>
                 <template v-else>
                   {{ sources.length }} {{ sources.length === 1 ? 'source' : 'sources' }} •
@@ -40,17 +40,17 @@
               <span class="text-xl sm:text-2xl font-bold" :class="scoreColor(subjectOverall as number)">{{ subjectOverall }}%</span>
             </div>
             <div class="flex gap-2 flex-wrap">
-              <template v-if="isPMP">
+              <template v-if="isPredefined">
                 <button
-                  @click="guardAction(() => openPMPQuizModal())"
+                  @click="guardAction(() => openPredefinedQuizModal())"
                   class="px-4 py-2 rounded-xl text-sm font-medium text-white transition-transform hover:-translate-y-0.5"
-                  style="background: linear-gradient(135deg, #F97316, #FB923C); box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.5)"
+                  :style="{ background: predefinedAccent, boxShadow: `0 8px 24px -8px ${predefinedAccent}80` }"
                 >
-                  <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Generate PMP Quiz
+                  <UIcon name="i-lucide-sparkles" class="w-4 h-4 inline-block mr-1" /> Generate {{ subject.name }} Quiz
                 </button>
                 <button
-                  v-if="pmpWeakChapterSlugs.length > 0"
-                  @click="guardAction(() => openPMPQuizModal(pmpWeakChapterSlugs))"
+                  v-if="predefinedWeakChapterSlugs.length > 0"
+                  @click="guardAction(() => openPredefinedQuizModal(predefinedWeakChapterSlugs))"
                   class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 transition-colors"
                 >
                   🎯 Practice Weak Chapters
@@ -72,7 +72,7 @@
                 </button>
               </template>
               <button
-                v-if="!isPMP"
+                v-if="!isPredefined"
                 @click="confirmDelete"
                 class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors text-sm"
               >
@@ -82,30 +82,30 @@
           </div>
         </div>
 
-        <!-- ── PMP Chapters Grid ──────────────────────────── -->
-        <div v-if="isPMP && pmpChapters.length > 0" class="mb-8">
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">PMBOK Chapters</h2>
+        <!-- ── Predefined Chapters Grid ──────────────────────────── -->
+        <div v-if="isPredefined && predefinedChapters.length > 0" class="mb-8">
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Chapters</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <div
-              v-for="ch in pmpChapters"
+              v-for="ch in predefinedChapters"
               :key="ch.slug"
               class="glass-card rounded-2xl p-4 flex flex-col gap-3"
-              :class="{ 'ring-2 ring-orange-500/40': pmpChapterStats[ch.name] && pmpChapterStats[ch.name].accuracy < 70 }"
+              :class="{ 'ring-2 ring-orange-500/40': predefinedChapterStats[ch.name] && predefinedChapterStats[ch.name].accuracy < 70 }"
             >
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold text-slate-900 dark:text-white text-sm leading-snug">{{ ch.name }}</h3>
                 <span
-                  v-if="pmpChapterStats[ch.name]"
+                  v-if="predefinedChapterStats[ch.name]"
                   class="px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0"
-                  :class="scoreBadge(pmpChapterStats[ch.name].accuracy)"
-                >{{ pmpChapterStats[ch.name].accuracy }}%</span>
+                  :class="scoreBadge(predefinedChapterStats[ch.name].accuracy)"
+                >{{ predefinedChapterStats[ch.name].accuracy }}%</span>
               </div>
               <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 flex-1">{{ ch.summary }}</p>
               <button
                 type="button"
-                @click="guardAction(() => openPMPQuizModal([ch.slug]))"
+                @click="guardAction(() => openPredefinedQuizModal([ch.slug]))"
                 class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white self-start transition-transform hover:-translate-y-0.5"
-                style="background: linear-gradient(135deg, #F97316, #FB923C)"
+                :style="{ background: predefinedAccent }"
               >
                 Quiz this chapter
               </button>
@@ -149,7 +149,7 @@
         </div>
 
         <!-- ── No sources empty state ─────────────────────── -->
-        <div v-if="!isPMP && sources.length === 0" class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow">
+        <div v-if="!isPredefined && sources.length === 0" class="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow">
           <div class="text-5xl mb-3">📄</div>
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No sources yet</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-5">Upload your first PDF to start generating quizzes</p>
@@ -161,7 +161,7 @@
         </div>
 
         <!-- ── Sources ────────────────────────────────────── -->
-        <div v-else-if="!isPMP" class="space-y-6">
+        <div v-else-if="!isPredefined" class="space-y-6">
           <div
             v-for="source in sources"
             :key="source.id"
@@ -267,31 +267,31 @@
         </div>
       </template>
 
-      <!-- ── PMP Quiz Modal ───────────────────────────────── -->
+      <!-- ── Predefined Quiz Modal ───────────────────────────────── -->
       <div
-        v-if="showPMPQuizModal"
+        v-if="showPredefinedQuizModal"
         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-        @click.self="showPMPQuizModal = false"
+        @click.self="showPredefinedQuizModal = false"
       >
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Generate PMP Quiz</h2>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Generate {{ subject?.name }} Quiz</h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-5">
-            <template v-if="pmpQuizForm.focus_chapters.length > 0">
-              Focused on {{ pmpQuizForm.focus_chapters.length }} {{ pmpQuizForm.focus_chapters.length === 1 ? 'chapter' : 'chapters' }}.
+            <template v-if="predefinedQuizForm.focus_chapters.length > 0">
+              Focused on {{ predefinedQuizForm.focus_chapters.length }} {{ predefinedQuizForm.focus_chapters.length === 1 ? 'chapter' : 'chapters' }}.
             </template>
             <template v-else>
-              Covers all {{ pmpChapters.length }} PMBOK knowledge areas (questions distributed evenly).
+              Covers all {{ predefinedChapters.length }} chapters (questions distributed evenly).
             </template>
           </p>
-          <form @submit.prevent="createPMPQuiz" class="space-y-4">
+          <form @submit.prevent="createPredefinedQuiz" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Quiz Title</label>
-              <input v-model="pmpQuizForm.quiz_name" type="text" placeholder="PMP — Practice Quiz"
+              <input v-model="predefinedQuizForm.quiz_name" type="text" :placeholder="`${subject?.name} — Practice Quiz`"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Question Type</label>
-              <select v-model="pmpQuizForm.quiz_type"
+              <select v-model="predefinedQuizForm.quiz_type"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm">
                 <option value="single_choice">Multiple Choice</option>
                 <option value="multiple_select">Multiple Select</option>
@@ -302,37 +302,37 @@
               <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
                 Number of Questions
                 <span class="text-xs text-gray-500 dark:text-gray-400 ml-1 font-normal">
-                  (max {{ pmpMaxQuestions }})
+                  (max {{ predefinedMaxQuestions }})
                 </span>
               </label>
-              <input v-model.number="pmpQuizForm.num_questions" type="number" min="1" :max="pmpMaxQuestions"
+              <input v-model.number="predefinedQuizForm.num_questions" type="number" min="1" :max="predefinedMaxQuestions"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
-              <p v-if="pmpQuizForm.focus_chapters.length === 0" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p v-if="predefinedQuizForm.focus_chapters.length === 0" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Full coverage uses chunked generation across all chapters — slightly slower, no truncation.
               </p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Time Limit (minutes, optional)</label>
-              <input v-model.number="pmpQuizForm.time_limit" type="number" min="1" placeholder="Leave empty for unlimited"
+              <input v-model.number="predefinedQuizForm.time_limit" type="number" min="1" placeholder="Leave empty for unlimited"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"/>
             </div>
-            <div v-if="pmpQuizForm.focus_chapters.length > 0" class="flex flex-wrap gap-2 pt-1">
+            <div v-if="predefinedQuizForm.focus_chapters.length > 0" class="flex flex-wrap gap-2 pt-1">
               <span
-                v-for="slug in pmpQuizForm.focus_chapters"
+                v-for="slug in predefinedQuizForm.focus_chapters"
                 :key="slug"
                 class="px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-xs font-medium"
               >
-                {{ pmpChapters.find(c => c.slug === slug)?.name || slug }}
+                {{ predefinedChapters.find(c => c.slug === slug)?.name || slug }}
               </span>
             </div>
             <div class="flex gap-3 pt-2">
-              <button type="button" @click="showPMPQuizModal = false"
+              <button type="button" @click="showPredefinedQuizModal = false"
                 class="flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm">
                 Cancel
               </button>
               <button type="submit" :disabled="isGenerating"
                 class="flex-1 py-2 rounded-lg text-white font-medium text-sm disabled:opacity-50"
-                style="background: linear-gradient(135deg, #F97316, #FB923C)">
+                :style="{ background: predefinedAccent }">
                 {{ isGenerating ? 'Generating...' : 'Generate Quiz' }}
               </button>
             </div>
@@ -407,19 +407,27 @@ const quizzes = ref<any[]>([])
 const myResults = ref<any[]>([])
 const isLoading = ref(true)
 const showSubjectQuizModal = ref(false)
-const showPMPQuizModal = ref(false)
+const showPredefinedQuizModal = ref(false)
 const showSubscriptionModal = ref(false)
 const isGenerating = ref(false)
 
-type PMPChapter = { slug: string; name: string; summary: string }
-const pmpChapters = ref<PMPChapter[]>([])
+type PredefinedChapter = { slug: string; name: string; summary: string }
+const predefinedChapters = ref<PredefinedChapter[]>([])
 
-const isPMP = computed(() => subject.value?.name === 'PMP')
+const { agents: predefinedAgentsRef, load: loadPredefinedAgents, findByName } = usePredefinedSubjects()
 
-const PMP_MAX_FOCUSED = 30
-const PMP_MAX_FULL = 60
+// Resolve which (if any) predefined agent backs this subject — by display name.
+const predefinedAgent = computed(() => {
+  if (!subject.value || !predefinedAgentsRef.value) return null
+  return findByName(subject.value.name) || null
+})
+const isPredefined = computed(() => predefinedAgent.value !== null)
+const predefinedAccent = computed(() => predefinedAgent.value?.color || '#3B82F6')
 
-const pmpQuizForm = ref({
+const PREDEFINED_MAX_FOCUSED = 30
+const PREDEFINED_MAX_FULL = 60
+
+const predefinedQuizForm = ref({
   quiz_name: '',
   quiz_type: 'single_choice',
   num_questions: 10,
@@ -427,8 +435,8 @@ const pmpQuizForm = ref({
   focus_chapters: [] as string[],
 })
 
-const pmpMaxQuestions = computed(() =>
-  pmpQuizForm.value.focus_chapters.length > 0 ? PMP_MAX_FOCUSED : PMP_MAX_FULL
+const predefinedMaxQuestions = computed(() =>
+  predefinedQuizForm.value.focus_chapters.length > 0 ? PREDEFINED_MAX_FOCUSED : PREDEFINED_MAX_FULL
 )
 
 const { isEligible, fetchUser } = useSubscription()
@@ -481,9 +489,9 @@ const sourceAverage = (sourceId: string): number | null => {
   return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
 }
 
-// Subject overall: average of all source averages (or all subject quizzes for PMP)
+// Subject overall: average of all source averages (or all subject quizzes for predefined)
 const subjectOverall = computed<number | null>(() => {
-  if (isPMP.value) {
+  if (isPredefined.value) {
     const scores = quizzes.value
       .map((q: any) => quizLatestScore(q))
       .filter((s): s is number => s !== null)
@@ -497,9 +505,9 @@ const subjectOverall = computed<number | null>(() => {
   return Math.round(avgs.reduce((a, b) => a + b, 0) / avgs.length)
 })
 
-// Per-chapter accuracy for PMP, derived from all quiz attempts in this subject
-const pmpChapterStats = computed<Record<string, { total: number; correct: number; accuracy: number }>>(() => {
-  if (!isPMP.value) return {}
+// Per-chapter accuracy for predefined subjects, derived from quiz attempts in this subject
+const predefinedChapterStats = computed<Record<string, { total: number; correct: number; accuracy: number }>>(() => {
+  if (!isPredefined.value) return {}
   const subjectQuizIds = new Set(quizzes.value.map((q: any) => q.id))
   const stats: Record<string, { total: number; correct: number }> = {}
   for (const result of myResults.value) {
@@ -518,10 +526,10 @@ const pmpChapterStats = computed<Record<string, { total: number; correct: number
   return out
 })
 
-const pmpWeakChapterSlugs = computed<string[]>(() => {
-  if (!isPMP.value) return []
-  const stats = pmpChapterStats.value
-  return pmpChapters.value
+const predefinedWeakChapterSlugs = computed<string[]>(() => {
+  if (!isPredefined.value) return []
+  const stats = predefinedChapterStats.value
+  return predefinedChapters.value
     .filter(ch => stats[ch.name] && stats[ch.name].total >= 1 && stats[ch.name].accuracy < 70)
     .sort((a, b) => stats[a.name].accuracy - stats[b.name].accuracy)
     .map(ch => ch.slug)
@@ -600,33 +608,34 @@ const confirmDelete = async () => {
   else alert('Failed to delete subject')
 }
 
-const openPMPQuizModal = (focusSlugs: string[] = []) => {
-  pmpQuizForm.value = {
+const openPredefinedQuizModal = (focusSlugs: string[] = []) => {
+  predefinedQuizForm.value = {
     quiz_name: '',
     quiz_type: 'single_choice',
     num_questions: 10,
     time_limit: null,
     focus_chapters: [...focusSlugs],
   }
-  showPMPQuizModal.value = true
+  showPredefinedQuizModal.value = true
 }
 
-const createPMPQuiz = async () => {
-  pmpQuizForm.value.num_questions = Math.min(
-    Math.max(Number(pmpQuizForm.value.num_questions) || 1, 1),
-    pmpMaxQuestions.value,
+const createPredefinedQuiz = async () => {
+  if (!predefinedAgent.value) return
+  predefinedQuizForm.value.num_questions = Math.min(
+    Math.max(Number(predefinedQuizForm.value.num_questions) || 1, 1),
+    predefinedMaxQuestions.value,
   )
   isGenerating.value = true
   try {
     const body: Record<string, any> = {
-      quiz_type: pmpQuizForm.value.quiz_type,
-      num_questions: pmpQuizForm.value.num_questions,
+      quiz_type: predefinedQuizForm.value.quiz_type,
+      num_questions: predefinedQuizForm.value.num_questions,
     }
-    if (pmpQuizForm.value.quiz_name) body.quiz_name = pmpQuizForm.value.quiz_name
-    if (pmpQuizForm.value.time_limit) body.time_limit = pmpQuizForm.value.time_limit
-    if (pmpQuizForm.value.focus_chapters.length > 0) body.focus_chapters = pmpQuizForm.value.focus_chapters
+    if (predefinedQuizForm.value.quiz_name) body.quiz_name = predefinedQuizForm.value.quiz_name
+    if (predefinedQuizForm.value.time_limit) body.time_limit = predefinedQuizForm.value.time_limit
+    if (predefinedQuizForm.value.focus_chapters.length > 0) body.focus_chapters = predefinedQuizForm.value.focus_chapters
 
-    const res = await fetch(`${config.public.apiBase}/predefined/pmp/quiz`, {
+    const res = await fetch(`${config.public.apiBase}/predefined/${predefinedAgent.value.slug}/quiz`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -634,7 +643,7 @@ const createPMPQuiz = async () => {
     })
     if (!res.ok) {
       if (res.status === 403) {
-        showPMPQuizModal.value = false
+        showPredefinedQuizModal.value = false
         showSubscriptionModal.value = true
         return
       }
@@ -642,10 +651,10 @@ const createPMPQuiz = async () => {
       throw new Error(err.detail || `HTTP ${res.status}`)
     }
     const quiz = await res.json()
-    showPMPQuizModal.value = false
+    showPredefinedQuizModal.value = false
     await navigateTo(`/quiz/${quiz.id}`, { replace: true })
   } catch (e: any) {
-    alert(e?.message || 'Failed to generate PMP quiz')
+    alert(e?.message || `Failed to generate ${predefinedAgent.value?.name || ''} quiz`)
   } finally {
     isGenerating.value = false
   }
@@ -686,17 +695,18 @@ const createSubjectQuiz = async () => {
 
 onMounted(async () => {
   fetchUser()
+  await loadPredefinedAgents().catch(() => {})
   await loadData()
-  if (isPMP.value) {
+  if (isPredefined.value && predefinedAgent.value) {
     try {
-      const res = await fetch(`${config.public.apiBase}/predefined/pmp/chapters`, { credentials: 'include' })
-      if (res.ok) pmpChapters.value = await res.json()
+      const res = await fetch(`${config.public.apiBase}/predefined/${predefinedAgent.value.slug}/chapters`, { credentials: 'include' })
+      if (res.ok) predefinedChapters.value = await res.json()
     } catch (e) {
-      console.error('Failed to load PMP chapters:', e)
+      console.error('Failed to load predefined chapters:', e)
     }
     const focus = route.query.focus_chapter
     if (typeof focus === 'string' && focus) {
-      openPMPQuizModal([focus])
+      openPredefinedQuizModal([focus])
     }
   }
 })

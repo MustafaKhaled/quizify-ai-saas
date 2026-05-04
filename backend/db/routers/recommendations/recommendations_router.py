@@ -11,13 +11,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from agents.pmp import (
-    PMP_CHAPTERS,
-    PMP_SUBJECT_NAME,
-    get_chapter_by_name,
-)
+from agents import PREDEFINED_AGENTS
 from db.dependency import get_current_user, get_db
 from db.models import Quiz, QuizResult, QuizSource, Subject, User
+
+
+def _resolve_predefined_origin(topic: str) -> tuple[str | None, str | None]:
+    """If `topic` matches a chapter name in any registered agent, return (slug, chapter_slug)."""
+    for agent in PREDEFINED_AGENTS.values():
+        for ch in agent["chapters"]:
+            if ch["name"] == topic:
+                return agent["slug"], ch["slug"]
+    return None, None
 
 DBSession = Annotated[Session, Depends(get_db)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
@@ -132,9 +137,9 @@ async def get_weak_topics(
                             subject_id = str(subj.id)
                             subject_name = subj.name
 
-        # PMP origin detection — match by chapter name
-        pmp_chapter = get_chapter_by_name(topic)
-        origin = "pmp" if pmp_chapter else "user"
+        # Predefined-subject origin detection — match by chapter name across all agents
+        origin_slug, chapter_slug = _resolve_predefined_origin(topic)
+        origin = origin_slug if origin_slug else "user"
 
         out.append({
             "topic": topic,
@@ -142,7 +147,7 @@ async def get_weak_topics(
             "correct": entry["correct"],
             "accuracy": round(accuracy * 100, 1),
             "origin": origin,
-            "chapter_slug": pmp_chapter["slug"] if pmp_chapter else None,
+            "chapter_slug": chapter_slug,
             "subject_id": subject_id,
             "subject_name": subject_name,
             "source_id": source_id,

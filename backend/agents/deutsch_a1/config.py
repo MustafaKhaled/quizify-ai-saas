@@ -1,0 +1,3 @@
+DEUTSCH_A1_SUBJECT_NAME = "German Grammar A1"
+DEUTSCH_A1_SUBJECT_COLOR = "#DC2626"  # German-flag red
+DEUTSCH_A1_SUBJECT_ICON = "🇩🇪"

@@ -1,12 +1,12 @@
 """
-PMP exam bank ingest script.
+CLF-C02 exam bank ingest script.
 
 Reads `seed/exam_bank.json`, validates each row, and upserts into the
-generic `predefined_exam_questions` table tagged with subject_slug='pmp'.
+`predefined_exam_questions` table tagged with subject_slug='clf_c02'.
 
 Usage:
-    python -m agents.pmp.knowledge_base.ingest
-    python -m agents.pmp.knowledge_base.ingest --dry-run
+    python -m agents.clf_c02.knowledge_base.ingest
+    python -m agents.clf_c02.knowledge_base.ingest --dry-run
 """
 
 from __future__ import annotations
@@ -17,13 +17,13 @@ import sys
 from hashlib import sha256
 from pathlib import Path
 
-from .chapters import PMP_CHAPTERS
+from .chapters import CLF_C02_CHAPTERS
 
-SUBJECT_SLUG = "pmp"
+SUBJECT_SLUG = "clf_c02"
 SEED_PATH = Path(__file__).parent / "seed" / "exam_bank.json"
 VALID_QUIZ_TYPES = {"single_choice", "multiple_select", "true_or_false"}
 VALID_DIFFICULTIES = {"easy", "medium", "hard"}
-CHAPTER_SLUGS = {c["slug"] for c in PMP_CHAPTERS}
+CHAPTER_SLUGS = {c["slug"] for c in CLF_C02_CHAPTERS}
 
 
 class ValidationError(Exception):
@@ -91,11 +91,10 @@ def _content_hash(stem: str, source: str) -> str:
 
 def upsert_to_db(rows: list[dict]) -> int:
     """
-    Upsert each row into predefined_exam_questions tagged subject_slug='pmp',
+    Upsert each row into predefined_exam_questions tagged subject_slug='clf_c02',
     keyed by content_hash(stem, source).
     Returns the number of rows processed (inserted + updated).
     """
-    # Deferred imports so --dry-run works without DATABASE_URL.
     from sqlalchemy.dialects.postgresql import insert as pg_insert
 
     from db.database import SessionLocal
@@ -145,7 +144,7 @@ def upsert_to_db(rows: list[dict]) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Ingest PMP exam bank seed data.")
+    parser = argparse.ArgumentParser(description="Ingest CLF-C02 exam bank seed data.")
     parser.add_argument("--dry-run", action="store_true", help="Validate without writing to DB.")
     args = parser.parse_args()
 
