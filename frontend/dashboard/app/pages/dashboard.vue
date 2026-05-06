@@ -15,28 +15,34 @@
           <span class="gradient-text">Welcome{{ userName ? `, ${userName}` : '' }}</span> 👋
         </h1>
 
-        <UPopover v-if="subscriptionBadgeLabel">
+        <div v-if="subscriptionBadgeLabel" class="flex flex-col items-end gap-1.5">
+          <UPopover>
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border cursor-pointer select-none"
+              :class="subscriptionBadgeColor"
+            >
+              <span class="w-1.5 h-1.5 rounded-full" :class="subscriptionDotColor" />
+              {{ subscriptionBadgeLabel }}
+            </span>
+            <template #content>
+              <div class="px-4 py-3 text-sm text-slate-700 dark:text-slate-300 max-w-56">
+                <p class="font-semibold mb-1">{{ subscriptionBadgeLabel }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ subscriptionBadgeDetail }}</p>
+                <button
+                  v-if="!subUser?.subscription?.is_eligible"
+                  @click="showSubscriptionModal = true"
+                  class="mt-2 w-full px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold"
+                >
+                  Upgrade to Pro
+                </button>
+              </div>
+            </template>
+          </UPopover>
           <span
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border cursor-pointer select-none"
-            :class="subscriptionBadgeColor"
-          >
-            <span class="w-1.5 h-1.5 rounded-full" :class="subscriptionDotColor" />
-            {{ subscriptionBadgeLabel }}
-          </span>
-          <template #content>
-            <div class="px-4 py-3 text-sm text-slate-700 dark:text-slate-300 max-w-56">
-              <p class="font-semibold mb-1">{{ subscriptionBadgeLabel }}</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400">{{ subscriptionBadgeDetail }}</p>
-              <button
-                v-if="!subUser?.subscription?.is_eligible"
-                @click="showSubscriptionModal = true"
-                class="mt-2 w-full px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold"
-              >
-                Upgrade to Pro
-              </button>
-            </div>
-          </template>
-        </UPopover>
+            v-if="quizzesRemainingLabel"
+            class="text-xs text-slate-500 dark:text-slate-400 font-medium"
+          >{{ quizzesRemainingLabel }}</span>
+        </div>
       </div>
 
       <!-- Quick Actions -->
@@ -188,7 +194,7 @@ definePageMeta({ layout: 'default' })
 const config = useRuntimeConfig()
 const route = useRoute()
 
-const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser, isPro } = useSubscription()
+const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser } = useSubscription()
 
 const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
@@ -240,6 +246,15 @@ const subscriptionDotColor = computed(() => {
   if (status.startsWith('active_')) return 'bg-green-500'
   if (status === 'trial_active') return 'bg-blue-500'
   return 'bg-red-500'
+})
+
+const quizzesRemainingLabel = computed(() => {
+  const sub = subUser.value?.subscription
+  if (!sub || sub.status !== 'trial_active') return ''
+  const limit = sub.trial_quiz_limit ?? 3
+  const used = subUser.value?.quizzes_count ?? 0
+  const remaining = Math.max(0, limit - used)
+  return `${remaining} ${remaining === 1 ? 'quiz' : 'quizzes'} remaining`
 })
 const recentSubjects = ref<any[]>([])
 const stats = ref({ totalQuizzes: 0, averageScore: 0 })

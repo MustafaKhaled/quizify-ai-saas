@@ -1,47 +1,10 @@
-<script setup lang="ts">
-const columns = [{
-  label: 'Company',
-  children: [{
-    label: 'FAQ',
-    to: '/faq'
-  }, {
-    label: 'Pricing',
-    to: '/pricing'
-  }, {
-    label: 'Blog',
-    to: '/blog'
-  }]
-}]
-
-const toast = useToast()
-
-const email = ref('')
-const loading = ref(false)
-
-function onSubmit() {
-  loading.value = true
-
-  toast.add({
-    title: 'Subscribed!',
-    description: 'You\'ve been subscribed to our newsletter.'
-  })
-}
-</script>
-
 <template>
   <USeparator
     icon="i-simple-icons-nuxtdotjs"
     class="h-px"
   />
 
-  <UFooter :ui="{ top: 'border-b border-default' }">
-    <template #top>
-      <UContainer>
-        <UFooterColumns :columns="columns">
-        </UFooterColumns>
-      </UContainer>
-    </template>
-
+  <UFooter>
     <template #left>
       <p class="text-muted text-sm">
         Quizify AI • © {{ new Date().getFullYear() }}
@@ -50,26 +13,10 @@ function onSubmit() {
 
     <template #right>
       <UButton
-        to="https://go.nuxt.com/discord"
+        to="https://www.linkedin.com/company/121544041"
         target="_blank"
-        icon="i-simple-icons-discord"
-        aria-label="Nuxt on Discord"
-        color="neutral"
-        variant="ghost"
-      />
-      <UButton
-        to="https://go.nuxt.com/x"
-        target="_blank"
-        icon="i-simple-icons-x"
-        aria-label="Nuxt on X"
-        color="neutral"
-        variant="ghost"
-      />
-      <UButton
-        to="https://github.com/nuxt-ui-templates/saas"
-        target="_blank"
-        icon="i-simple-icons-github"
-        aria-label="Nuxt UI on GitHub"
+        icon="i-simple-icons-linkedin"
+        aria-label="Quizify AI on LinkedIn"
         color="neutral"
         variant="ghost"
       />
