@@ -74,6 +74,28 @@ EDGE_TTS_MAX_ATTEMPTS = 4
 EDGE_TTS_BACKOFF_SECONDS = (1.0, 2.0, 4.0)  # delays between attempts 1→2, 2→3, 3→4
 
 
+def _resolve_ffmpeg() -> str:
+    """Find ffmpeg without depending on the runtime $PATH.
+
+    uvicorn is often launched from an IDE / service manager that doesn't
+    inherit the user's shell PATH, so a bare `"ffmpeg"` in subprocess.run
+    raises FileNotFoundError even when `which ffmpeg` works in the terminal.
+    Resolve once at import time, falling back to known Homebrew locations.
+    """
+    found = shutil.which("ffmpeg")
+    if found:
+        return found
+    for candidate in ("/usr/local/bin/ffmpeg", "/opt/homebrew/bin/ffmpeg", "/usr/bin/ffmpeg"):
+        if Path(candidate).exists():
+            return candidate
+    # Fall through — let subprocess raise its own clearer error if/when used,
+    # so importing this module never crashes the process at boot.
+    return "ffmpeg"
+
+
+FFMPEG_BIN = _resolve_ffmpeg()
+
+
 # ── TTS Provider abstraction ──────────────────────────────────────────────────
 
 
@@ -243,7 +265,7 @@ def _make_silence(seconds: float, out: Path) -> None:
     OpenAI TTS produce — so concat doesn't re-sample."""
     subprocess.run(
         [
-            "ffmpeg", "-y", "-loglevel", "error",
+            FFMPEG_BIN, "-y", "-loglevel", "error",
             "-f", "lavfi", "-i", "anullsrc=channel_layout=mono:sample_rate=24000",
             "-t", str(seconds),
             "-c:a", "libmp3lame", "-q:a", "4",
@@ -270,7 +292,7 @@ def stitch_turns(turn_files: list[Path], out: Path, pause_seconds: float) -> Non
         # Re-encode to keep MP3 timing accurate with mixed-source frames.
         subprocess.run(
             [
-                "ffmpeg", "-y", "-loglevel", "error",
+                FFMPEG_BIN, "-y", "-loglevel", "error",
                 "-f", "concat", "-safe", "0",
                 "-i", str(concat_list),
                 "-c:a", "libmp3lame", "-q:a", "4",
