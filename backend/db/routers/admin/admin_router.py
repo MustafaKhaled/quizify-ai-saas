@@ -1,12 +1,15 @@
+import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
-from requests import Session
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session, joinedload
 from db.routers.util import build_user_response
 from schemas import UserAdminResponse, UserDetailResponse, QuizSourceResponse, QuizResponse
 from db.dependency import get_current_admin, get_db
 from db import models
-from sqlalchemy.orm import joinedload
 from uuid import UUID
+
+logger = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/admin",
     tags=["Adinmistration"]
@@ -35,8 +38,18 @@ async def delete_user_by_email(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    db.delete(user)
-    db.commit()
+    try:
+        db.delete(user)
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        # Surface the underlying DB error in the server log AND in the response
+        # so the admin UI shows something actionable instead of a blind 500.
+        logger.exception("Admin delete failed for user email=%s", email)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not delete user: {type(e).__name__}: {e}",
+        )
 
 
 @router.get("/user/{user_id}", response_model=UserDetailResponse)
@@ -104,9 +117,17 @@ async def delete_quiz_source(
     source = db.query(models.QuizSource).filter(models.QuizSource.id == source_id).first()
     if not source:
         raise HTTPException(status_code=404, detail="Quiz source not found")
-    
-    db.delete(source)
-    db.commit()
+
+    try:
+        db.delete(source)
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.exception("Admin delete failed for quiz_source id=%s", source_id)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not delete quiz source: {type(e).__name__}: {e}",
+        )
 
 
 @router.delete("/quizzes/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -119,6 +140,14 @@ async def delete_quiz(
     quiz = db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()
     if not quiz:
         raise HTTPException(status_code=404, detail="Quiz not found")
-    
-    db.delete(quiz)
-    db.commit()
+
+    try:
+        db.delete(quiz)
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.exception("Admin delete failed for quiz id=%s", quiz_id)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not delete quiz: {type(e).__name__}: {e}",
+        )

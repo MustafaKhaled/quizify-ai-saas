@@ -60,10 +60,18 @@ class User(Base):
     is_pro = Column(Boolean, default=False) # True only after Stripe payment
     is_verified = Column(Boolean, default=False, server_default="false", nullable=False)
     trial_ends_at = Column(DateTime, nullable=True) # The "Manual" gate
-    subscription = relationship("Subscription", back_populates="user", uselist=False)
-    subjects = relationship("Subject", back_populates="owner", cascade="all, delete-orphan")
-    quiz_sources = relationship("QuizSource", back_populates="owner", cascade="all, delete-orphan")
-    quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan")
+    # passive_deletes=True tells SQLAlchemy to trust the database to cascade —
+    # the FK on the child side has ondelete=CASCADE, so we don't need the ORM
+    # to load and delete each child row individually (which can fail when
+    # relationships overlap, e.g. quiz_results referenced via both User and
+    # Quiz cascade paths during a single user delete).
+    subscription = relationship("Subscription", back_populates="user", uselist=False, passive_deletes=True)
+    subjects = relationship("Subject", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
+    quiz_sources = relationship("QuizSource", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
+    quiz_results = relationship("QuizResult", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
+    # Quiz.user_id has ondelete=CASCADE but there's no User.quizzes relationship,
+    # so the DB cascade is the only path. That's intentional — keeps the User
+    # model thin and avoids loading every quiz row at delete time.
 
 
 class BlacklistedToken(Base):
@@ -139,7 +147,7 @@ class QuizSource(Base):
     end_page = Column(Integer, nullable=True)
     owner = relationship("User", back_populates="quiz_sources")
     subject = relationship("Subject", back_populates="sources")
-    quizzes = relationship("Quiz", back_populates="source", cascade="all, delete-orphan", foreign_keys="Quiz.source_id")
+    quizzes = relationship("Quiz", back_populates="source", cascade="all, delete-orphan", foreign_keys="Quiz.source_id", passive_deletes=True)
 
 
 class Quiz(Base):
@@ -160,7 +168,7 @@ class Quiz(Base):
     source = relationship("QuizSource", back_populates="quizzes", foreign_keys=[source_id])
     subject = relationship("Subject", back_populates="quizzes", foreign_keys=[subject_id])
     owner = relationship("User")
-    quiz_results = relationship("QuizResult", back_populates="quiz", cascade="all, delete-orphan")
+    quiz_results = relationship("QuizResult", back_populates="quiz", cascade="all, delete-orphan", passive_deletes=True)
 
 # -------------------------------
 # 3. Assessment / Results Models
