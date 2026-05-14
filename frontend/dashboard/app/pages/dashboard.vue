@@ -75,7 +75,7 @@
             :key="agent.slug"
             class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-0.5"
             :style="{ boxShadow: `0 8px 24px -12px ${agent.color || '#3B82F6'}55` }"
-            @click="launchPredefined(agent.slug)"
+            @click="openPredefined(agent)"
           >
             <div class="h-1.5" :style="{ background: `linear-gradient(90deg, ${agent.color || '#3B82F6'}, ${agent.color || '#3B82F6'}cc)` }"></div>
             <div class="p-5 flex items-center gap-4">
@@ -88,18 +88,27 @@
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 mb-0.5 flex-wrap">
                   <h3 class="text-base font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
-                  <span class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-slate-700 dark:text-slate-300 bg-slate-500/10 border border-slate-500/20">Predefined</span>
+                  <span
+                    v-if="agent.status === 'preview'"
+                    class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30"
+                  >Preview</span>
+                  <span
+                    v-else
+                    class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-slate-700 dark:text-slate-300 bg-slate-500/10 border border-slate-500/20"
+                  >Predefined</span>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Ready-to-quiz with grounded AI generation.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ agent.status === 'preview' ? 'Early access — try the listening practice prototype.' : 'Ready-to-quiz with grounded AI generation.' }}
+                </p>
               </div>
               <button
                 type="button"
-                @click.stop="launchPredefined(agent.slug)"
+                @click.stop="openPredefined(agent)"
                 :disabled="provisioningSlug === agent.slug"
                 class="px-3 py-1.5 rounded-lg font-semibold text-xs text-white disabled:opacity-50 transition-transform hover:-translate-y-0.5 flex-shrink-0"
                 :style="{ background: agent.color || '#3B82F6' }"
               >
-                {{ provisioningSlug === agent.slug ? '...' : 'Start →' }}
+                {{ provisioningSlug === agent.slug ? '...' : (agent.status === 'preview' ? 'Try preview →' : 'Start →') }}
               </button>
             </div>
           </div>
@@ -317,6 +326,18 @@ async function launchPredefined(slug: string) {
   } finally {
     provisioningSlug.value = null
   }
+}
+
+// Routes a predefined card based on its `status`. Live cards go through the
+// standard provision-then-navigate flow; preview cards jump straight to the
+// preview surface (e.g. /horen/<slug> for the B1 Hören prototype).
+function openPredefined(agent: { slug: string; status?: 'live' | 'preview'; preview_path?: string | null }) {
+  if (agent.status === 'preview') {
+    const path = agent.preview_path || `/horen/${agent.slug}`
+    navigateTo(path)
+    return
+  }
+  launchPredefined(agent.slug)
 }
 
 async function practiceWeakTopic(t: WeakTopic) {

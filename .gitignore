@@ -13,3 +13,6 @@ node_modules/
 .nuxt/
 .output/
 dist/
+
+# Generated runtime artifacts (regenerated on demand, per-instance)
+backend/uploads/

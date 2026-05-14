@@ -1,9 +1,11 @@
 #main.py
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import Annotated
 from db.dependency import get_db
@@ -15,6 +17,7 @@ from db.routers.quizzes.quizzes_router import router as quizzes_router
 from db.routers.subjects.subjects_router import router as subjects_router
 from db.routers.subscription.subscription_router import router as subscription_router
 from db.routers.predefined.predefined_router import router as predefined_router
+from db.routers.predefined.horen_router import router as horen_router
 from db.routers.recommendations.recommendations_router import router as recommendations_router
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -32,7 +35,15 @@ app.include_router(quizzes_router)
 app.include_router(subjects_router)
 app.include_router(subscription_router)
 app.include_router(predefined_router)
+app.include_router(horen_router)
 app.include_router(recommendations_router)
+
+# Serve B1 Hören audio files. New on-demand quizzes write here with UUID
+# filenames; the directory is bootstrapped at startup so the StaticFiles
+# mount succeeds even before the first generation.
+HOREN_AUDIO_DIR = Path(__file__).parent / "uploads" / "horen"
+HOREN_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/static/horen", StaticFiles(directory=str(HOREN_AUDIO_DIR)), name="horen_audio")
 
 
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")

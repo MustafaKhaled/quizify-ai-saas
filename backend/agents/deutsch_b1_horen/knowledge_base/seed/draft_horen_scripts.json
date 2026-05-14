@@ -1,0 +1,77 @@
+[
+  {
+    "teil": 1,
+    "format": "monologue",
+    "context": "Verkehrsfunk",
+    "speakers": [
+      {
+        "name": "Sprecher",
+        "voice_role": "male_neutral_formal"
+      }
+    ],
+    "script": "Achtung Autofahrer auf der A7! Zwischen der Anschlussstelle Soltau-Süd und dem Dreieck Walsrode staut sich der Verkehr auf einer Länge von sieben Kilometern. Ein Unfall auf dem rechten Fahrstreifen in Fahrtrichtung Hannover ist die Ursache. Reisende müssen hier mit einer Verzögerung von mindestens 20 Minuten rechnen. Wir empfehlen, wenn möglich, über die Landstraße L345 auszuweichen, um den Stau zu umfahren. Fahren Sie vorsichtig und passen Sie Ihre Geschwindigkeit den Gegebenheiten an.",
+    "estimated_duration_seconds": 30,
+    "question": {
+      "stem": "Warum gibt es auf der A7 einen Stau?",
+      "options": [
+        "Wegen einer Baustelle.",
+        "Wegen eines Unfalls.",
+        "Wegen zu vieler Fahrzeuge."
+      ],
+      "correct_index": 1,
+      "explanation": "The script states 'Ein Unfall auf dem rechten Fahrstreifen in Fahrtrichtung Hannover ist die Ursache.' ('An accident on the right lane in the direction of Hanover is the cause.'). Therefore, option B is correct. Options A ('Wegen einer Baustelle.') and C ('Wegen zu vieler Fahrzeuge.') are not mentioned as reasons for this specific traffic jam."
+    },
+    "_generated_at": "2026-05-13",
+    "_review_status": "pending"
+  },
+  {
+    "teil": 1,
+    "format": "monologue",
+    "context": "Bahnhofsansage",
+    "speakers": [
+      {
+        "name": "Ansagerin",
+        "voice_role": "female_neutral_formal"
+      }
+    ],
+    "script": "Achtung, Achtung, eine wichtige Information für alle Reisenden des Intercity-Express 583 nach München über Nürnberg. Der Zug sollte planmäßig um 14:35 Uhr von Gleis 7 abfahren. Aufgrund einer technischen Störung an der Lokomotive verzögert sich die Abfahrt jedoch um voraussichtlich 45 Minuten. Der Zug wird voraussichtlich um 15:20 Uhr von Gleis 7 abfahren. Bitte beachten Sie, dass es keine Gleisänderung gibt. Wir bitten um Ihr Verständnis für diese Unannehmlichkeiten. Weitere Informationen erhalten Sie an den Informationsschaltern.",
+    "estimated_duration_seconds": 26,
+    "question": {
+      "stem": "Wann fährt der ICE 583 voraussichtlich ab?",
+      "options": [
+        "Um 14:35 Uhr.",
+        "Um 15:00 Uhr.",
+        "Um 15:20 Uhr."
+      ],
+      "correct_index": 2,
+      "explanation": "The script states 'Der Zug wird voraussichtlich um 15:20 Uhr von Gleis 7 abfahren.' (The train is expected to depart at 3:20 PM from platform 7). Option A 'Um 14:35 Uhr.' is the original planned departure time ('Der Zug sollte planmäßig um 14:35 Uhr abfahren.'), and option B 'Um 15:00 Uhr.' is not mentioned in the announcement."
+    },
+    "_generated_at": "2026-05-13",
+    "_review_status": "pending"
+  },
+  {
+    "teil": 1,
+    "format": "monologue",
+    "context": "Bahnhofsansage",
+    "speakers": [
+      {
+        "name": "Ansagerin",
+        "voice_role": "female_neutral_formal"
+      }
+    ],
+    "script": "Achtung, Reisende! Eine wichtige Durchsage für den ICE 123 nach Hamburg Hauptbahnhof. Der Zug fährt heute nicht wie geplant um 14:30 Uhr von Gleis 7 ab, sondern hat eine Verspätung von etwa 30 Minuten. Er wird voraussichtlich um 15:00 Uhr von Gleis 9 abfahren. Grund hierfür ist eine technische Störung am Zug. Wir bitten um Ihr Verständnis und wünschen Ihnen trotzdem eine angenehme Reise.",
+    "estimated_duration_seconds": 26,
+    "question": {
+      "stem": "Von welchem Gleis fährt der ICE 123 nach Hamburg Hauptbahnhof ab?",
+      "options": [
+        "Gleis 7",
+        "Gleis 9",
+        "Gleis 10"
+      ],
+      "correct_index": 1,
+      "explanation": "The script states: 'Er wird voraussichtlich um 15:00 Uhr von Gleis 9 abfahren.' This indicates the new departure platform is 9. Option A ('Gleis 7') is incorrect because the announcement explicitly says the train 'fährt heute nicht wie geplant um 14:30 Uhr von Gleis 7 ab', meaning Gleis 7 was the original, now changed, platform. Option C ('Gleis 10') is not mentioned in the announcement."
+    },
+    "_generated_at": "2026-05-13",
+    "_review_status": "pending"
+  }
+]

@@ -18,9 +18,15 @@ from typing import Optional
 from agents import clf_c02 as _clf_c02
 from agents import deutsch_a1 as _deutsch_a1
 from agents import deutsch_a2 as _deutsch_a2
+from agents import deutsch_b1_horen as _deutsch_b1_horen
 from agents import pmp as _pmp
 
 
+# `status` controls how the frontend renders the subject card:
+#   "live"    — fully integrated, click-to-launch the standard quiz flow (default).
+#   "preview" — visible but routed to a dedicated preview surface
+#               (e.g. /horen/<slug> for the B1 Hören prototype). The standard
+#               quiz endpoints can't yet handle these subjects.
 PREDEFINED_AGENTS: dict[str, dict] = {
     "pmp": {
         "slug": "pmp",
@@ -62,6 +68,18 @@ PREDEFINED_AGENTS: dict[str, dict] = {
         "get_chapter_by_slug": _deutsch_a2.get_chapter_by_slug,
         "build_corpus_text": _deutsch_a2.build_corpus_text,
     },
+    "deutsch_b1_horen": {
+        "slug": "deutsch_b1_horen",
+        "name": _deutsch_b1_horen.DEUTSCH_B1_HOREN_SUBJECT_NAME,
+        "color": _deutsch_b1_horen.DEUTSCH_B1_HOREN_SUBJECT_COLOR,
+        "icon": _deutsch_b1_horen.DEUTSCH_B1_HOREN_SUBJECT_ICON,
+        "instructions": _deutsch_b1_horen.INSTRUCTIONS,
+        "chapters": _deutsch_b1_horen.DEUTSCH_B1_HOREN_CHAPTERS,
+        "get_chapter_by_slug": _deutsch_b1_horen.get_chapter_by_slug,
+        "build_corpus_text": _deutsch_b1_horen.build_corpus_text,
+        "status": "preview",
+        "preview_path": "/horen/deutsch_b1_horen",
+    },
 }
 
 
@@ -73,6 +91,13 @@ def get_agent(slug: str) -> Optional[dict]:
 def list_agents() -> list[dict]:
     """Public-safe metadata for every registered agent (no callables)."""
     return [
-        {"slug": a["slug"], "name": a["name"], "color": a["color"], "icon": a["icon"]}
+        {
+            "slug": a["slug"],
+            "name": a["name"],
+            "color": a["color"],
+            "icon": a["icon"],
+            "status": a.get("status", "live"),
+            "preview_path": a.get("preview_path"),
+        }
         for a in PREDEFINED_AGENTS.values()
     ]

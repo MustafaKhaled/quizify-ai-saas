@@ -10,6 +10,10 @@ export type PredefinedAgent = {
   name: string
   color: string | null
   icon: string | null
+  /** "live" = standard quiz flow; "preview" = routed to preview_path. Default "live". */
+  status?: 'live' | 'preview'
+  /** Frontend route to navigate to when status === 'preview'. */
+  preview_path?: string | null
 }
 
 const _cache = ref<PredefinedAgent[] | null>(null)
