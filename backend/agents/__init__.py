@@ -18,6 +18,7 @@ from typing import Optional
 from agents import clf_c02 as _clf_c02
 from agents import deutsch_a1 as _deutsch_a1
 from agents import deutsch_a2 as _deutsch_a2
+from agents import deutsch_b1 as _deutsch_b1
 from agents import deutsch_b1_horen as _deutsch_b1_horen
 from agents import pmp as _pmp
 
@@ -67,6 +68,16 @@ PREDEFINED_AGENTS: dict[str, dict] = {
         "chapters": _deutsch_a2.DEUTSCH_A2_CHAPTERS,
         "get_chapter_by_slug": _deutsch_a2.get_chapter_by_slug,
         "build_corpus_text": _deutsch_a2.build_corpus_text,
+    },
+    "deutsch_b1": {
+        "slug": "deutsch_b1",
+        "name": _deutsch_b1.DEUTSCH_B1_SUBJECT_NAME,
+        "color": _deutsch_b1.DEUTSCH_B1_SUBJECT_COLOR,
+        "icon": _deutsch_b1.DEUTSCH_B1_SUBJECT_ICON,
+        "instructions": _deutsch_b1.INSTRUCTIONS,
+        "chapters": _deutsch_b1.DEUTSCH_B1_CHAPTERS,
+        "get_chapter_by_slug": _deutsch_b1.get_chapter_by_slug,
+        "build_corpus_text": _deutsch_b1.build_corpus_text,
     },
     "deutsch_b1_horen": {
         "slug": "deutsch_b1_horen",
