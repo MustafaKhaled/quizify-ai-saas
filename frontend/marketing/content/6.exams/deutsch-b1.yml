@@ -1,0 +1,95 @@
+title: Goethe-Zertifikat B1 — drill the grammar that decides your pass
+description: Quizify AI is calibrated for German B1. Konjunktiv II irreal, Plusquamperfekt, Passiv mit Modalverben, indirekte Rede, advanced Nebensätze — exam-style practice on every B1 Grammatik-Regel.
+subject_slug: deutsch_b1
+color: '#7F1D1D'
+icon: '🇩🇪'
+badge: 'CEFR · B1'
+exam_authority: 'Goethe-Institut, telc, ÖSD'
+hero:
+  headline: Bestehe das Goethe-Zertifikat B1.
+  subhead: Calibrated B1 grammar drills modeled on Goethe-Zertifikat B1, telc, and ÖSD style. Mini-context fill-ins and chained-rule questions on every B1 Regel — Konjunktiv II irreal, Plusquamperfekt, Passiv mit Modalverben, indirekte Rede (Konjunktiv I), advanced Nebensätze, and N-Deklination.
+  tagline: Eine Regel pro Tag, 10 Minuten zur B1-Prüfung.
+  cta:
+    label: Beginne deine B1-Vorbereitung
+    to: /signup?subject=deutsch_b1
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Klingt das vertraut?
+  description: Sound familiar? B1 is where rules stop being patterns and start being judgement calls — and the exam tests you on the judgement, not the pattern.
+  items:
+    - You can recognize Konjunktiv II forms but freeze on irreal past — `hätte gewusst` versus `wüsste` versus `würde wissen`.
+    - You hit Passiv mit Modalverb and the word order falls apart — `muss gelöst werden` or `gelöst werden muss`?
+    - Indirekte Rede in Konjunktiv I feels like a different language — when does `er sei` flip to `er wäre`?
+    - N-Deklination still trips you up — `den Studenten` or `den Student`? You guess and lose a point.
+    - You learned `obwohl` and `trotzdem` mean the same thing, but the word order rules are different and you keep mixing them up.
+promises:
+  title: What you actually need
+  description: B1-specific practice that builds on A1 and A2 instead of retesting them — and analytics that pinpoint exactly which Regel still owes you a study session.
+  items:
+    - title: Echte B1-Aufgaben — keine A1/A2-Wiederholung
+      description: Quizify never wastes questions retesting A1 conjugation or A2 Dativ. Every quiz focuses on real B1 grammar — Konjunktiv II komplett, Plusquamperfekt, Passiv komplett, indirekte Rede, advanced Nebensätze.
+      icon: i-lucide-target
+    - title: Chained-rule questions
+      description: Pair Plusquamperfekt with `nachdem`, Passiv with Modalverben, Konjunktiv II irreal across present and past clauses. The B1 exam tests rules in combination — you should practice them that way.
+      icon: i-lucide-brain
+    - title: Pro Grammatik-Regel-Analyse
+      description: Per-rule weak-spot dashboard. Konjunktiv II at 85%, indirekte Rede at 50%? You'll know exactly which Regel deserves your next study session — not "B1 grammar in general".
+      icon: i-lucide-line-chart
+    - title: Erklärungen auf Englisch
+      description: B1 explanations remain in English so the rule itself is unambiguous, even when the form is subtle. Quoted German forms stay German — everything else is clear English.
+      icon: i-lucide-book-open
+comparison:
+  title: How Quizify compares
+  description: At B1 the rules are too subtle for generic language apps and too specific for ChatGPT. You need a tool that's been built for the level.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Duolingo / Babbel
+    - name: Generic ChatGPT
+  rows:
+    - feature: Question style modeled on Goethe-Zertifikat B1
+      values: ['yes', 'no', 'partial']
+    - feature: Skips A1/A2 retesting — focuses on B1 additions
+      values: ['yes', 'no', 'no']
+    - feature: Chained-rule questions across multiple B1 Regeln
+      values: ['yes', 'no', 'no']
+    - feature: Per-Grammatik-Regel weak-spot analytics
+      values: ['yes', 'partial', 'no']
+    - feature: All B1 grammar — Konjunktiv II → Konjunktionaladverbien
+      values: ['yes', 'partial', 'partial']
+    - feature: Distractors calibrated to common B1 mistakes
+      values: ['yes', 'no', 'no']
+    - feature: Won't drift into B2+ constructions you don't need yet
+      values: ['yes', 'no', 'no']
+faq:
+  title: B1-spezifische Fragen
+  items:
+    - label: Is this aligned to Goethe-Zertifikat B1, telc, or ÖSD?
+      content: All three. The 17 grammar chapters cover the union of B1 syllabi — the question style is modeled on the way all three exams phrase B1-level items.
+    - label: Will it retest A1 or A2 grammar?
+      content: No. The instructions explicitly tell the AI not to waste questions retesting A1 or A2 mechanics. Every question either tests new B1 grammar or chains B1 with A1/A2 in a meaningful way.
+    - label: Which B1 grammar is covered?
+      content: 17 chapters — Konjunktiv II (komplett), Plusquamperfekt, Passiv (komplett), indirekte Rede (Konjunktiv I), Temporale / Finale / Konzessive Nebensätze, Konditionalsätze (real & irreal), advanced Relativsätze, Adjektivdeklination (komplett), N-Deklination, Verben + Präposition mit da-/wo-Komposita, Genitiv (komplett), Partizipien als Adjektive, subjektive Modalverben, Futur I & II, and Konjunktionaladverbien.
+    - label: I haven't taken A2 yet — should I start with B1?
+      content: Almost certainly not. B1 builds heavily on A2 Dativ, Wechselpräpositionen, and basic Konjunktiv II. If those aren't reflexes yet, drill the A2 track first — it's much faster than re-learning at the wrong level.
+    - label: Is this enough for the Hören (listening) part of the exam?
+      content: This track covers Grammatik. For Hören, see the dedicated Goethe-B1 Hören module — full audio mocks with all four Teile, generated on demand, included in your Pro plan.
+    - label: Are explanations in German?
+      content: No — explanations are in English so the underlying rule is unambiguous, even when the form is subtle. The only German inside an explanation is the quoted form being discussed (e.g., the article `dessen`, the verb `hätte gewusst`).
+testimonials:
+  title: From B1 candidates
+  items:
+    - quote: I'd been stuck on Konjunktiv II forever — I knew the forms but never picked the right one under exam pressure. Quizify's chained-rule questions made me practice irreal past in real sentences. Bestanden, B1.
+      user:
+        name: Marcus Okonkwo
+        description: B1 Candidate, University of Ghana
+        avatar:
+          src: https://i.pravatar.cc/120?img=12
+    - quote: The per-rule analytics told me my weak spot was indirekte Rede, not Passiv like I'd assumed. I shifted my study time and watched my mock scores climb week over week.
+      user:
+        name: Lena Fischer
+        description: B1 Candidate, TU Munich
+        avatar:
+          src: https://i.pravatar.cc/120?img=3

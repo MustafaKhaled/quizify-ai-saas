@@ -15,7 +15,7 @@ badge:
 
 ## The Revolution of AI-Powered Learning
 
-The modern student is overwhelmed. Between 100-page PDFs, complex lecture slides, and endless research papers, the sheer volume of information can feel like a tidal wave. Traditional methods like re-reading and highlighting have been scientifically proven to be the least effective ways to learn. Enter **Quizify AI**, a tool designed to bridge the gap between passive reading and active mastery.
+The modern certification candidate is overwhelmed. Between sprawling official syllabi, hundreds of practice questions of dubious quality, and endless study guides, the sheer volume of "what to study" can feel like a tidal wave. Traditional methods like re-reading and highlighting have been scientifically proven to be the least effective ways to learn. Enter **Quizify AI**, a platform designed to bridge the gap between passive reading and active mastery — and to tell you exactly which topics are blocking your pass.
 
 By leveraging advanced AI, Quizify transforms your static documents into dynamic, timed practice exams. This isn't just about convenience; it's about shifting your brain into "Active Recall" mode—the process of pulling information *out* of your mind, which strengthens neural pathways and ensures long-term retention.
 
@@ -72,5 +72,10 @@ When you practice with a timer, you develop "Exam Stamina." You learn how to man
 ![laptop workflow](https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=400&fit=crop){.rounded-lg height="400" width="1200"}
 
 ::tabs
-  :::div{icon="i-lucide-upload" label="Preparation"}
-  - **Select Your Source:** Find the PDF, lecture slides, or notes you
+  :::div{icon="i-lucide-graduation-cap" label="Pick a track"}
+  - **Choose your certification:** Browse the curated tracks — PMP, AWS Cloud Practitioner, Goethe German A1 / A2 / B1, Goethe-B1 Hören — and add the one you're preparing for.
+  - **Generate your first quiz:** Pick a topic from the chapter list and Quizify generates a fresh practice quiz in seconds, calibrated to the real exam's question style.
+  - **Run the timer:** Match the duration of your real exam and build pacing under pressure.
+  - **Read your weakness map:** Every quiz scores you per topic and ranks the chapters most worth your next study session.
+  :::
+::

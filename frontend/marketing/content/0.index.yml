@@ -1,45 +1,29 @@
-title: Pass your exam with [AI-powered practice quizzes]{class="text-primary"}.
-description: Pick from a growing library of curated exam tracks — including PMP, AWS Cloud Practitioner, and German A1 / A2, with new ones added regularly — or upload your own PDF. Quizify AI generates exam-style practice questions in seconds.
+title: Pass it. Or [master it]{class="text-primary"}.
+description: Curated exam tracks for PMP, AWS Cloud Practitioner, Goethe German A1 / A2 / B1 — paired with diagnostic quizzes that show you exactly which topics you haven't actually learned yet. Built for serious certification candidates and skill-building learners.
 seo:
-  title: Quizify AI — Exam Prep Quizzes for PMP, AWS, German & More
-  description: A growing library of curated exam-prep tracks (PMP, AWS Cloud Practitioner, German A1/A2, and more) plus AI-generated quizzes from any PDF you upload. Built for serious exam prep.
+  title: Quizify AI — Pass Your Certification, Find Your Weak Spots
+  description: A practice platform built around real certification outcomes. Curated tracks for PMP, AWS, Goethe German A1/A2/B1 and more, with per-topic analytics that tell you exactly what to study next.
 navigation: false
 hero:
   links:
-    - label: See pricing
+    - label: Browse exam tracks
       icon: i-lucide-arrow-right
       trailing: true
-      to: /pricing
+      to: '#subjects'
       size: xl
-    - label: How it works
-      icon: i-lucide-play
-      to: '#features'
+    - label: See pricing
+      icon: i-lucide-tag
+      to: /pricing
       size: xl
       color: neutral
       variant: subtle
 sections:
-  - title: Ready-to-go exam prep, no PDFs required
-    description: Pick a curated subject and start practicing in ten seconds. Each track is built from the official exam syllabus and tuned to mirror the question style of the real test.
+  - title: Built around real certifications, not generic AI quizzes
+    description: Each curated track is shaped by the official syllabus — chapters, question style, difficulty curve, and pacing modeled on the real exam. Pick a track and start practicing in ten seconds.
     id: subjects
     orientation: vertical
-  - title: Or bring your own material
-    description: Upload your lecture notes, textbook chapters, or course slides and Quizify turns them into a focused practice exam. Ideal for university courses, internal training, and any exam without a curated track.
-    id: byo-pdf
-    orientation: horizontal
-    image: /screenshots/dashboard.svg
-    imageCaption: Dashboard with subjects and recent activity
-    features:
-      - name: Instant PDF analysis
-        description: Upload PDF, DOCX, PPTX, or TXT files and get a complete practice quiz in under 30 seconds.
-        icon: i-lucide-file-text
-      - name: Built-in exam timer
-        description: Match the timing of your real exam — PMP, AWS, Goethe — and build pacing under real conditions.
-        icon: i-lucide-timer
-      - name: Source-grounded questions
-        description: Every question cites a chapter or page from your material, so you always know where to review.
-        icon: i-lucide-shield-check
   - title: Practice the way the exam actually asks
-    description: Quizify generates four question types — single-choice, multiple-select, true/false, and two-blank fill-in for grammar tracks — calibrated to match the difficulty curve of the real exam.
+    description: Quizify generates four exam-grade question types — single-choice, multiple-select, true/false, and chained-rule fill-ins for grammar tracks — calibrated so the right answer requires understanding, not memorization.
     id: question-style
     orientation: horizontal
     reverse: true
@@ -47,61 +31,61 @@ sections:
     imageCaption: Quiz runner mid-question — timer, progress, options
     features:
       - name: Exam-style stems
-        description: Scenario-based for PMP, "which AWS service for X" for cloud, mini-context fill-in for German grammar — modeled on the real test.
+        description: Scenario-based for PMP, "which AWS service for X" for cloud, mini-context fill-ins for German grammar — written the way the real test writes them.
         icon: i-lucide-target
       - name: Calibrated distractors
-        description: Wrong answers mirror common student mistakes — wrong gender on -ung nouns, wrong auxiliary in Perfekt, wrong AWS service for the cost-optimized scenario.
+        description: Wrong answers mirror the mistakes real candidates make on exam day — wrong gender on -ung nouns, wrong AWS service for the cost-optimized scenario, the heroic-action trap on PMP.
         icon: i-lucide-brain
-      - name: Difficulty mix
-        description: Every batch blends easy, medium, and hard questions so you build confidence without coasting.
-        icon: i-lucide-trending-up
-  - title: See what you're weak on, focus there
-    description: After every quiz, Quizify breaks down your score by topic and tells you which chapters to review next. Stop re-reading what you already know.
+      - name: Real-exam pacing
+        description: Built-in timers match the duration of PMP, AWS Cloud Practitioner, and Goethe so you build pacing under pressure, not just under ideal conditions.
+        icon: i-lucide-timer
+  - title: Know exactly what you don't know
+    description: Every quiz scores you by topic and tells you the two or three chapters most worth your next study session. Stop re-reading what you already know.
     id: analytics
     orientation: horizontal
     image: /screenshots/results.svg
     imageCaption: Results — score, topic breakdown, focus suggestions
     features:
-      - name: Per-topic breakdown
-        description: Score bars per chapter so you see at a glance whether your weak spot is Konjunktiv II, IAM, or risk management.
+      - name: Per-topic weakness map
+        description: Score bars per chapter so you see at a glance whether your weak spot is Konjunktiv II, IAM, or risk management — not "the AWS exam" or "the PMP exam".
         icon: i-lucide-line-chart
-      - name: Focus suggestions
-        description: Quizify surfaces the two or three topics most worth your next study session, ranked by how much your score will move.
+      - name: Focus suggestions, ranked
+        description: Quizify ranks topics by how much your score will move if you fix them. The dashboard tells you what to study next; you don't have to guess.
         icon: i-lucide-compass
-      - name: Track progress over time
-        description: Watch your weak topics shrink quiz by quiz. Real exam day is a deadline; your dashboard keeps the countdown honest.
+      - name: Watch the weak topics shrink
+        description: Track every quiz, every attempt. Real exam day is a deadline; the dashboard keeps the countdown honest by showing your weak topics turn into your strong ones.
         icon: i-lucide-history
 features:
   title: Built for serious exam prep
-  description: The features that matter when the exam fee, study hours, and certification are on the line.
+  description: The features that matter when the exam fee, your study hours, and the certification on your CV are all on the line.
   items:
-    - title: Curated exam tracks
-      description: PMP, AWS Cloud Practitioner, German A1, German A2 — chapters and questions modeled on the official exam.
+    - title: Curated certification tracks
+      description: PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1, Goethe-B1 Hören — chapters and questions modeled on the official exam.
       icon: i-lucide-graduation-cap
-    - title: Bring-your-own PDF
-      description: Upload any course material and Quizify generates a practice quiz from it in under 30 seconds.
-      icon: i-lucide-file-text
-    - title: Real exam timer
-      description: Customizable timer matches the duration of your real exam so you build pacing the way you'll need it.
+    - title: Real exam pacing
+      description: Customizable timer matches the duration of your real exam so you train pacing the way you'll need it on test day.
       icon: i-lucide-timer
-    - title: Topic-level analytics
-      description: Per-chapter score bars and weak-topic suggestions so you spend study time where it actually moves your score.
+    - title: Per-topic weakness analytics
+      description: Per-chapter score bars and ranked focus suggestions so you spend study time where it actually moves your pass-readiness.
       icon: i-lucide-line-chart
+    - title: Track progress over time
+      description: Watch each weak topic shrink quiz by quiz. Your dashboard turns the abstract feeling of "I need to study more" into a concrete checklist.
+      icon: i-lucide-trending-up
     - title: Exam-style question patterns
-      description: Mini-context fill-ins, two-blank chained-rule questions, scenario-based MCQs — calibrated to mirror the real test.
+      description: Mini-context fill-ins, two-blank chained-rule items, scenario-based MCQs — calibrated to mirror how the real test phrases its traps.
       icon: i-lucide-target
     - title: Study anywhere
-      description: Mobile-optimized so you can squeeze in a 10-question drill on the train without losing your place.
+      description: Mobile-optimized so a five-minute window between meetings becomes real prep — without losing your place.
       icon: i-lucide-smartphone
 testimonials:
-  headline: Trusted by students and professionals
-  title: From certification candidates to language learners
-  description: Quizify AI is used across exam types — from PMP and AWS certification candidates to German learners studying for Goethe and telc.
+  headline: Trusted by certification candidates and language learners
+  title: From PMP and AWS prep to Goethe-Zertifikat candidates
+  description: Quizify AI is used across exam types — from PMP and AWS Cloud Practitioner candidates to German learners studying for Goethe and telc.
   items:
-    - quote: I uploaded my entire semester's worth of lecture notes and had a full practice exam ready in under a minute. I passed my finals with the highest grade in my class.
+    - quote: I cleared the PMP on my first attempt and the topic breakdown was the difference. Three weeks before the exam I knew Process was carrying me and Business Environment would sink me — so that's where the time went.
       user:
         name: Aisha Patel
-        description: Medical Student, University of Toronto
+        description: PMP-Certified, Project Manager, Toronto
         avatar:
           src: https://i.pravatar.cc/120?img=1
     - quote: The PMP track is the closest thing to a real exam simulator I've found at this price point. The scenario-based questions had the same feel as the actual test.
