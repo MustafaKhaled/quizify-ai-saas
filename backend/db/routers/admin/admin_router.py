@@ -86,10 +86,28 @@ async def get_user_details(
         for qs in quiz_sources
     ]
     
-    # Add quizzes
+    # Add quizzes — with score aggregates so the admin UI can show
+    # latest_score / attempt_count badges without a per-quiz round trip.
     quizzes = db.query(models.Quiz).filter(
         models.Quiz.user_id == user_id
     ).all()
+    quiz_ids = [q.id for q in quizzes]
+
+    latest_by_quiz: dict = {}
+    counts_by_quiz: dict = {}
+    if quiz_ids:
+        all_results = (
+            db.query(models.QuizResult)
+            .filter(models.QuizResult.quiz_id.in_(quiz_ids))
+            .order_by(models.QuizResult.attempt_date.desc())
+            .all()
+        )
+        for r in all_results:
+            counts_by_quiz[r.quiz_id] = counts_by_quiz.get(r.quiz_id, 0) + 1
+            # First seen wins because results are ordered desc by attempt_date.
+            if r.quiz_id not in latest_by_quiz:
+                latest_by_quiz[r.quiz_id] = r
+
     user_data["quizzes"] = [
         {
             "id": q.id,
@@ -99,12 +117,62 @@ async def get_user_details(
             "num_questions": q.num_questions,
             "time_limit": q.time_limit,
             "content": q.content,
-            "generation_date": q.generation_date
+            "generation_date": q.generation_date,
+            "attempt_count": counts_by_quiz.get(q.id, 0),
+            "latest_score": (
+                float(latest_by_quiz[q.id].score_percentage)
+                if q.id in latest_by_quiz else None
+            ),
+            "latest_attempt_at": (
+                latest_by_quiz[q.id].attempt_date.isoformat()
+                if q.id in latest_by_quiz and latest_by_quiz[q.id].attempt_date
+                else None
+            ),
         }
         for q in quizzes
     ]
-    
+
     return user_data
+
+
+@router.get("/quizzes/{quiz_id}/results")
+async def get_quiz_results(
+    quiz_id: UUID,
+    db: db_dep,
+    _: CurrentAdmin
+):
+    """Full attempt history for a quiz — every QuizResult row, newest first.
+    Used by the customer-details modal when an admin clicks 'View attempts'."""
+    quiz = db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz not found")
+
+    results = (
+        db.query(models.QuizResult)
+        .filter(models.QuizResult.quiz_id == quiz_id)
+        .order_by(models.QuizResult.attempt_date.desc())
+        .all()
+    )
+
+    return {
+        "quiz_id": str(quiz.id),
+        "quiz_title": quiz.title,
+        "num_questions": quiz.num_questions,
+        "attempts": [
+            {
+                "id": str(r.id),
+                "score_percentage": float(r.score_percentage),
+                "is_passed": r.is_passed,
+                "time_taken_seconds": r.time_taken_seconds,
+                "time_remaining_seconds": r.time_remaining_seconds,
+                "started_at": r.started_at.isoformat() if r.started_at else None,
+                "ended_at": r.ended_at.isoformat() if r.ended_at else None,
+                "attempt_date": r.attempt_date.isoformat() if r.attempt_date else None,
+                "user_answers": r.user_answers,
+            }
+            for r in results
+        ],
+    }
 
 
 @router.delete("/quiz-sources/{source_id}", status_code=status.HTTP_204_NO_CONTENT)

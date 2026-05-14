@@ -21,7 +21,31 @@ interface Quiz {
   id: string
   title: string
   created_at?: string
+  generation_date?: string
   is_published?: boolean
+  attempt_count?: number
+  latest_score?: number | null
+  latest_attempt_at?: string | null
+  num_questions?: number
+}
+
+interface QuizAttempt {
+  id: string
+  score_percentage: number
+  is_passed: boolean
+  time_taken_seconds: number | null
+  time_remaining_seconds: number | null
+  started_at: string | null
+  ended_at: string | null
+  attempt_date: string | null
+  user_answers: any
+}
+
+interface QuizResultsResponse {
+  quiz_id: string
+  quiz_title: string
+  num_questions: number
+  attempts: QuizAttempt[]
 }
 
 interface UserDetail {
@@ -59,6 +83,60 @@ const { data: user, pending, error, execute } = useFetch<UserDetail>(
 
 const deletingSourceId = ref<string | null>(null)
 const deletingQuizId = ref<string | null>(null)
+
+// Inline lazy-loaded attempt history: expandedQuizId tracks which quiz row's
+// "View attempts" panel is open; attemptsByQuiz caches loaded results so
+// re-opening is instant.
+const expandedQuizId = ref<string | null>(null)
+const loadingAttemptsId = ref<string | null>(null)
+const attemptsByQuiz = ref<Record<string, QuizAttempt[]>>({})
+
+async function toggleAttempts(quizId: string) {
+  if (expandedQuizId.value === quizId) {
+    expandedQuizId.value = null
+    return
+  }
+  expandedQuizId.value = quizId
+  if (attemptsByQuiz.value[quizId]) return
+  try {
+    loadingAttemptsId.value = quizId
+    const res = await $fetch<QuizResultsResponse>(`/api/admin/quizzes/${quizId}/results`)
+    attemptsByQuiz.value[quizId] = res.attempts
+  } catch (e: any) {
+    console.error('Failed to load attempts', e)
+    alert(e?.data?.detail || e?.message || 'Failed to load attempts')
+    expandedQuizId.value = null
+  } finally {
+    loadingAttemptsId.value = null
+  }
+}
+
+function scoreBadgeColor(score: number | null | undefined): 'success' | 'warning' | 'error' | 'gray' {
+  if (score === null || score === undefined) return 'gray'
+  if (score >= 80) return 'success'
+  if (score >= 60) return 'warning'
+  return 'error'
+}
+
+function formatDuration(seconds: number | null): string {
+  if (seconds === null || seconds === undefined) return '—'
+  if (seconds < 60) return `${seconds}s`
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return s > 0 ? `${m}m ${s}s` : `${m}m`
+}
+
+function formatDateTime(iso: string | null): string {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    })
+  } catch {
+    return '—'
+  }
+}
 
 async function deleteSource(sourceId: string) {
   if (!confirm('Delete this source and all associated quizzes? This cannot be undone.')) return
@@ -229,23 +307,91 @@ function formatDate(dateString: string | null | undefined): string {
             <div
               v-for="quiz in user.quizzes"
               :key="quiz.id"
-              class="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 flex items-start justify-between"
+              class="bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
               @click.stop
             >
-              <div class="flex-1">
-                <p class="font-medium">{{ quiz.title }}</p>
-                <p class="text-xs text-gray-500 mt-1">
-                  Created {{ formatDate(quiz.created_at) }}
-                </p>
+              <div class="p-3 flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <p class="font-medium truncate">{{ quiz.title }}</p>
+                    <UBadge
+                      v-if="quiz.latest_score !== null && quiz.latest_score !== undefined"
+                      :color="scoreBadgeColor(quiz.latest_score)"
+                      variant="subtle"
+                      size="xs"
+                    >
+                      {{ Math.round(quiz.latest_score) }}%
+                    </UBadge>
+                    <UBadge
+                      v-else
+                      color="gray"
+                      variant="subtle"
+                      size="xs"
+                    >
+                      Not attempted
+                    </UBadge>
+                  </div>
+                  <p class="text-xs text-gray-500">
+                    Created {{ formatDate(quiz.created_at || quiz.generation_date) }}
+                    <span v-if="(quiz.attempt_count || 0) > 0">
+                      · {{ quiz.attempt_count }} attempt{{ quiz.attempt_count === 1 ? '' : 's' }}
+                    </span>
+                  </p>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <UButton
+                    v-if="(quiz.attempt_count || 0) > 0"
+                    color="primary"
+                    variant="ghost"
+                    size="sm"
+                    :icon="expandedQuizId === quiz.id ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                    :loading="loadingAttemptsId === quiz.id"
+                    @click.stop="toggleAttempts(quiz.id)"
+                  >
+                    Attempts
+                  </UButton>
+                  <UButton
+                    color="red"
+                    variant="ghost"
+                    size="sm"
+                    icon="i-lucide-trash-2"
+                    :loading="deletingQuizId === quiz.id"
+                    @click.stop="deleteQuiz(quiz.id)"
+                  />
+                </div>
               </div>
-              <UButton
-                color="red"
-                variant="ghost"
-                size="sm"
-                icon="i-lucide-trash-2"
-                :loading="deletingQuizId === quiz.id"
-                @click.stop="deleteQuiz(quiz.id)"
-              />
+
+              <!-- Expandable attempt list -->
+              <div
+                v-if="expandedQuizId === quiz.id"
+                class="border-t border-gray-200 dark:border-gray-700 px-3 py-2 space-y-2 bg-white dark:bg-gray-900"
+              >
+                <div v-if="loadingAttemptsId === quiz.id" class="text-xs text-gray-500 py-2">
+                  Loading attempts…
+                </div>
+                <div v-else-if="!attemptsByQuiz[quiz.id]?.length" class="text-xs text-gray-500 py-2">
+                  No attempts recorded.
+                </div>
+                <div
+                  v-for="(attempt, idx) in attemptsByQuiz[quiz.id]"
+                  :key="attempt.id"
+                  class="flex items-center gap-3 text-xs py-1.5"
+                >
+                  <span class="text-gray-400 w-6">#{{ (attemptsByQuiz[quiz.id]?.length || 0) - idx }}</span>
+                  <UBadge :color="scoreBadgeColor(attempt.score_percentage)" variant="subtle" size="xs">
+                    {{ Math.round(attempt.score_percentage) }}%
+                  </UBadge>
+                  <UBadge :color="attempt.is_passed ? 'success' : 'error'" variant="soft" size="xs">
+                    {{ attempt.is_passed ? 'Passed' : 'Failed' }}
+                  </UBadge>
+                  <span class="text-gray-500">
+                    {{ formatDuration(attempt.time_taken_seconds) }}
+                  </span>
+                  <span class="text-gray-500 ml-auto">
+                    {{ formatDateTime(attempt.attempt_date) }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
           <p v-else class="text-gray-500 text-sm">No quizzes</p>
