@@ -24,7 +24,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -41,6 +41,22 @@ from agents.deutsch_b1_horen.services.generation import (
 )
 from db.dependency import get_current_user, get_db
 from db.models import Quiz, QuizResult, Subject, User
+
+# Hören quota — independent of the generic /quizzes trial counter because
+# full Hören exams are the expensive feature (4 Gemini calls + audio render
+# per exam) and warrant their own per-feature cap.
+#
+# Pro uses a ROLLING 7-day window (not a calendar week) so signup date
+# doesn't disadvantage anyone — every user gets their full allowance
+# regardless of when they joined. Each exam "expires" out of the count
+# 7 days after it was generated.
+#
+#   Pro    → 5 exams per rolling 7 days
+#   Trial  → 1 exam total during the trial window (feature sampling)
+#   Other  → 0 (subscription expired or never paid)
+HOREN_QUOTA_PRO_PER_WEEK = 5
+HOREN_QUOTA_TRIAL_LIFETIME = 1
+HOREN_QUOTA_PRO_WINDOW = timedelta(days=7)
 
 DBSession = Annotated[Session, Depends(get_db)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
@@ -62,6 +78,113 @@ def _resolve_horen_agent(slug: str) -> dict:
     if not agent or slug != "deutsch_b1_horen":
         raise HTTPException(status_code=404, detail=f"unknown horen subject: {slug}")
     return agent
+
+
+def _user_tier(user: User) -> str:
+    """Classify the user for quota purposes. Returns 'pro', 'trial', or 'expired'."""
+    if user.is_pro:
+        return "pro"
+    if user.trial_ends_at is not None:
+        # Normalize to UTC-aware for comparison (column is naive UTC).
+        trial_end = user.trial_ends_at
+        if trial_end.tzinfo is None:
+            trial_end = trial_end.replace(tzinfo=timezone.utc)
+        if datetime.now(timezone.utc) < trial_end:
+            return "trial"
+    return "expired"
+
+
+def _horen_quota_status(user: User, db: Session) -> dict:
+    """Compute Hören usage / limit / remaining for the current user.
+
+    Returns a dict the frontend can render directly:
+      { tier, limit, used, remaining, period, can_generate, reason,
+        next_available_at }
+    Where `period` is "week" for Pro (rolling 7 days) and "trial" for trial users.
+    `next_available_at` is set only when the Pro user is over the cap: it's the
+    timestamp when the oldest exam in the current window falls out, freeing up
+    one slot. The frontend can render this as "next exam available in N hours".
+    """
+    tier = _user_tier(user)
+    now = datetime.now(timezone.utc)
+
+    if tier == "pro":
+        limit = HOREN_QUOTA_PRO_PER_WEEK
+        # Rolling 7-day window — anything generated within the last 7 days counts.
+        window_start = now - HOREN_QUOTA_PRO_WINDOW
+        # The Quiz.generation_date column is naive UTC, so compare against a
+        # naive UTC value to keep SQLAlchemy from complaining.
+        window_start_naive = window_start.replace(tzinfo=None)
+
+        recent = (
+            db.query(Quiz)
+            .filter(
+                Quiz.user_id == user.id,
+                Quiz.quiz_type == "audio_listening",
+                Quiz.generation_date >= window_start_naive,
+            )
+            .order_by(Quiz.generation_date.asc())
+            .all()
+        )
+        used = len(recent)
+        period = "week"
+        reason = None if used < limit else "weekly_limit_reached"
+
+        next_available_at = None
+        if reason is not None and recent:
+            # When the oldest exam in the window falls out (7 days after it was
+            # generated), one slot frees up. That's the next-available moment.
+            oldest = recent[0].generation_date
+            if oldest.tzinfo is None:
+                oldest = oldest.replace(tzinfo=timezone.utc)
+            next_available_at = (oldest + HOREN_QUOTA_PRO_WINDOW).isoformat()
+
+        return {
+            "tier": tier,
+            "limit": limit,
+            "used": used,
+            "remaining": max(limit - used, 0),
+            "period": period,
+            "can_generate": reason is None,
+            "reason": reason,
+            "next_available_at": next_available_at,
+        }
+
+    if tier == "trial":
+        limit = HOREN_QUOTA_TRIAL_LIFETIME
+        # Lifetime-within-trial — count all audio_listening quizzes ever.
+        used = (
+            db.query(Quiz)
+            .filter(
+                Quiz.user_id == user.id,
+                Quiz.quiz_type == "audio_listening",
+            )
+            .count()
+        )
+        period = "trial"
+        reason = None if used < limit else "trial_limit_reached"
+        return {
+            "tier": tier,
+            "limit": limit,
+            "used": used,
+            "remaining": max(limit - used, 0),
+            "period": period,
+            "can_generate": reason is None,
+            "reason": reason,
+            "next_available_at": None,
+        }
+
+    # Expired / no subscription — Hören is fully gated behind Pro.
+    return {
+        "tier": tier,
+        "limit": 0,
+        "used": 0,
+        "remaining": 0,
+        "period": "none",
+        "can_generate": False,
+        "reason": "subscription_required",
+        "next_available_at": None,
+    }
 
 
 def _get_or_create_subject(user: User, db: Session, agent: dict) -> Subject:
@@ -100,6 +223,28 @@ async def create_horen_quiz(
     listening material on demand.
     """
     agent = _resolve_horen_agent(slug)
+
+    # Quota check BEFORE generation — don't burn Gemini calls and audio render
+    # time on a request we're going to reject anyway.
+    quota = _horen_quota_status(current_user, db)
+    if not quota["can_generate"]:
+        if quota["reason"] == "weekly_limit_reached":
+            next_at = quota.get("next_available_at")
+            when = f" Your next exam unlocks at {next_at}." if next_at else ""
+            detail = (
+                f"You've used all {quota['limit']} Hören exams in the last 7 days.{when}"
+            )
+            status_code = 429
+        elif quota["reason"] == "trial_limit_reached":
+            detail = (
+                f"Your trial includes {quota['limit']} Hören exam. "
+                f"Upgrade to Pro for {HOREN_QUOTA_PRO_PER_WEEK} Hören exams per week."
+            )
+            status_code = 402
+        else:  # subscription_required
+            detail = "Hören requires an active subscription. Upgrade to Pro to generate listening exams."
+            status_code = 402
+        raise HTTPException(status_code=status_code, detail=detail)
 
     # Run the (slow, blocking) generation pipeline off the event loop so other
     # requests aren't starved while Gemini + TTS + ffmpeg do their work.
@@ -151,6 +296,19 @@ async def create_horen_quiz(
         "num_questions": new_quiz.num_questions,
         "num_teile": len(manifest.get("teile", [])),
     }
+
+
+@router.get("/{slug}/quota")
+async def get_horen_quota(
+    db: DBSession,
+    current_user: CurrentUser,
+    slug: str = PathParam(...),
+):
+    """Current user's Hören usage and remaining quota for this period.
+    The library page hits this on mount to show the 'X of 10 left this month'
+    badge and to know whether to disable the Generate button."""
+    _resolve_horen_agent(slug)
+    return _horen_quota_status(current_user, db)
 
 
 @router.get("/{slug}/sessions")

@@ -29,13 +29,30 @@
               </span>
             </li>
           </ul>
+
+          <div v-if="quota" class="mb-3 flex items-center justify-between gap-2">
+            <span
+              :class="quotaBadgeClass"
+              class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5"
+            >
+              <UIcon name="i-lucide-gauge" class="w-3.5 h-3.5" />
+              {{ quotaLabel }}
+            </span>
+          </div>
+          <p v-if="generateDisabledReason" class="text-xs text-red-700 dark:text-red-300 mb-3">
+            {{ generateDisabledReason }}
+          </p>
+
           <button
             @click="generateExam"
-            :disabled="generating"
+            :disabled="generating || !quota?.can_generate"
             class="w-full px-4 py-3 btn-gradient rounded-xl font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <template v-if="generating">
               Generiert… {{ generationElapsed }}s
+            </template>
+            <template v-else-if="quota && !quota.can_generate">
+              Limit erreicht
             </template>
             <template v-else>
               Vollständige Prüfung generieren (~2 Min.)
@@ -133,13 +150,74 @@ type SessionRow = {
   taken_at: string | null
 }
 
+type HorenQuota = {
+  tier: 'pro' | 'trial' | 'expired'
+  limit: number
+  used: number
+  remaining: number
+  period: 'week' | 'trial' | 'none'
+  can_generate: boolean
+  reason: 'weekly_limit_reached' | 'trial_limit_reached' | 'subscription_required' | null
+  next_available_at: string | null
+}
+
 const sessions = ref<SessionRow[]>([])
 const loadingSessions = ref(false)
 const generating = ref(false)
 const generationStartedAt = ref<number>(0)
 const generationElapsed = ref(0)
 const generationError = ref<string | null>(null)
+const quota = ref<HorenQuota | null>(null)
 let elapsedTimer: ReturnType<typeof setInterval> | null = null
+
+const quotaLabel = computed<string>(() => {
+  const q = quota.value
+  if (!q) return ''
+  if (q.tier === 'expired') return 'Pro-Abo erforderlich'
+  const periodWord = q.period === 'week' ? 'in den letzten 7 Tagen' : 'in der Probezeit'
+  return `${q.remaining} von ${q.limit} ${q.limit === 1 ? 'Prüfung' : 'Prüfungen'} ${periodWord} übrig`
+})
+
+const quotaBadgeClass = computed<string>(() => {
+  const q = quota.value
+  if (!q) return 'bg-slate-500/10 text-slate-700 dark:text-slate-300'
+  if (!q.can_generate) return 'bg-red-500/10 text-red-700 dark:text-red-300'
+  if (q.remaining <= 1) return 'bg-amber-500/10 text-amber-800 dark:text-amber-300'
+  return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+})
+
+function formatNextAvailable(iso: string | null): string {
+  if (!iso) return ''
+  const target = new Date(iso)
+  const diffMs = target.getTime() - Date.now()
+  if (diffMs <= 0) return 'jetzt'
+  const hours = Math.floor(diffMs / 3600_000)
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24)
+    const remainHours = hours % 24
+    return remainHours > 0 ? `in ${days}d ${remainHours}h` : `in ${days} Tag${days === 1 ? '' : 'en'}`
+  }
+  if (hours >= 1) return `in ${hours} Stunde${hours === 1 ? '' : 'n'}`
+  const minutes = Math.max(1, Math.floor(diffMs / 60_000))
+  return `in ${minutes} Minute${minutes === 1 ? '' : 'n'}`
+}
+
+const generateDisabledReason = computed<string | null>(() => {
+  const q = quota.value
+  if (!q || q.can_generate) return null
+  if (q.reason === 'weekly_limit_reached') {
+    const when = formatNextAvailable(q.next_available_at)
+    const suffix = when ? ` Nächste Prüfung wieder verfügbar ${when}.` : ''
+    return `Wochenlimit erreicht (${q.limit} Prüfungen in 7 Tagen).${suffix}`
+  }
+  if (q.reason === 'trial_limit_reached') {
+    return 'Probezeit-Limit erreicht. Upgrade auf Pro für 5 Hören-Prüfungen pro Woche.'
+  }
+  if (q.reason === 'subscription_required') {
+    return 'Hören erfordert ein aktives Abo. Upgrade auf Pro, um Prüfungen zu generieren.'
+  }
+  return null
+})
 
 function scoreBadgeClass(score: number): string {
   if (score >= 80) return 'text-emerald-800 dark:text-emerald-200 bg-emerald-500/15'
@@ -165,6 +243,17 @@ async function loadSessions() {
     sessions.value = []
   } finally {
     loadingSessions.value = false
+  }
+}
+
+async function loadQuota() {
+  try {
+    quota.value = await $fetch<HorenQuota>(
+      `${config.public.apiBase}/horen/${slug}/quota`,
+      { credentials: 'include' }
+    )
+  } catch (e) {
+    quota.value = null
   }
 }
 
@@ -198,6 +287,7 @@ async function generateExam() {
 
 onMounted(() => {
   loadSessions()
+  loadQuota()
 })
 
 onUnmounted(() => {

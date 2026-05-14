@@ -28,6 +28,12 @@
               <div class="px-4 py-3 text-sm text-slate-700 dark:text-slate-300 max-w-56">
                 <p class="font-semibold mb-1">{{ subscriptionBadgeLabel }}</p>
                 <p class="text-xs text-slate-500 dark:text-slate-400">{{ subscriptionBadgeDetail }}</p>
+                <p
+                  v-if="horenQuotaLine"
+                  class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 pt-1.5 border-t border-slate-200/70 dark:border-slate-700/70"
+                >
+                  {{ horenQuotaLine }}
+                </p>
                 <button
                   v-if="!subUser?.subscription?.is_eligible"
                   @click="showSubscriptionModal = true"
@@ -209,6 +215,38 @@ const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
 const showSubscriptionModal = ref(false)
 
+// Hören quota — fetched once on mount and surfaced in the subscription badge
+// popover so users can see their current Hören allowance without leaving the
+// dashboard. Independent of the generic quiz count because Hören is the
+// expensive feature with its own per-feature cap.
+type HorenQuota = {
+  tier: 'pro' | 'trial' | 'expired'
+  limit: number
+  used: number
+  remaining: number
+  period: 'week' | 'trial' | 'none'
+}
+const horenQuota = ref<HorenQuota | null>(null)
+
+async function loadHorenQuota() {
+  try {
+    horenQuota.value = await $fetch<HorenQuota>(
+      `${config.public.apiBase}/horen/deutsch_b1_horen/quota`,
+      { credentials: 'include' }
+    )
+  } catch {
+    horenQuota.value = null
+  }
+}
+
+const horenQuotaLine = computed<string>(() => {
+  const q = horenQuota.value
+  if (!q) return ''
+  if (q.tier === 'expired') return ''  // No Hören access — don't add noise to the popover
+  const periodWord = q.period === 'week' ? 'in 7 Tagen' : 'in der Probezeit'
+  return `Hören: ${q.remaining} von ${q.limit} ${periodWord}`
+})
+
 const subscriptionBadgeLabel = computed(() => {
   const status = subUser.value?.subscription?.status || ''
   if (status === 'trial_active') return 'Trial'
@@ -372,6 +410,7 @@ async function practiceWeakTopic(t: WeakTopic) {
 
 onMounted(async () => {
   loadPredefinedAgents().catch(() => {})
+  loadHorenQuota().catch(() => {})
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true
     await refreshUser(true)
