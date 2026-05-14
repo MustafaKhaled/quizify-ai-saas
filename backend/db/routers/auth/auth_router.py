@@ -33,6 +33,11 @@ oauth.register(
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 BACKEND_URL = os.getenv("BACKEND_URL")
 DASHBOARD_URL = os.getenv("DASHBOARD_URL", FRONTEND_URL)
+
+# How long a brand-new account's free trial lasts. Applied to BOTH the
+# email/password signup and the Google OAuth first-time-login path so the two
+# flows stay symmetrical.
+TRIAL_DURATION_DAYS = 7
 IS_PRODUCTION = os.getenv("ENVIRONMENT") == "production"
 COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", None)
 
@@ -81,7 +86,7 @@ def issue_refresh_token(response: Response, user_id, db: Session):
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.UserCreate, response: Response, db: db_dep):
-    expiration_date = datetime.now(timezone.utc) + timedelta(minutes=3)
+    expiration_date = datetime.now(timezone.utc) + timedelta(days=TRIAL_DURATION_DAYS)
     existing_user = db.query(models.User).filter(models.User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -265,7 +270,13 @@ async def google_callback(request: Request, db: db_dep):
     user = db.query(models.User).filter(models.User.email == email).first()
 
     if not user:
-        user = models.User(email=email, name=name, is_verified=True)
+        trial_ends = datetime.now(timezone.utc) + timedelta(days=TRIAL_DURATION_DAYS)
+        user = models.User(
+            email=email,
+            name=name,
+            is_verified=True,
+            trial_ends_at=trial_ends,
+        )
         db.add(user)
         db.commit()
         db.refresh(user)

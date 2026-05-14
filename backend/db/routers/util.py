@@ -49,10 +49,19 @@ def get_subscription_status(user: User) -> dict:
     if now < trial_limit:
         diff = trial_limit - now
         total_seconds = int(diff.total_seconds())
-        
+        days = total_seconds // 86400
+        hours = (total_seconds % 86400) // 3600
+        minutes = (total_seconds % 3600) // 60
+        if days >= 1:
+            label_remainder = f"{days} day{'s' if days != 1 else ''} left"
+        elif hours >= 1:
+            label_remainder = f"{hours}h left"
+        else:
+            label_remainder = f"{minutes}m left"
+
         return {
             "status": "trial_active",
-            "label": f"Trial ({total_seconds // 60}m {total_seconds % 60}s left)",
+            "label": f"Trial ({label_remainder})",
             "is_eligible": True,
             "ends_at": None,
             "trial_ends": trial_limit,
