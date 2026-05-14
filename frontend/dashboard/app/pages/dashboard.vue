@@ -235,8 +235,9 @@
 
     <SubscriptionModal v-model="showSubscriptionModal" />
 
-    <!-- Browse Library modal — lists predefined agents NOT yet added -->
-    <UModal v-model="showBrowseLibrary" size="xl">
+    <!-- Browse Library modal — lists predefined agents NOT yet added.
+         Nuxt UI v4 uses :open / @update:open instead of v-model on UModal. -->
+    <UModal :open="showBrowseLibrary" @update:open="showBrowseLibrary = $event" size="xl">
       <UCard @click.stop>
         <template #header>
           <div class="flex items-center justify-between">

@@ -7,17 +7,31 @@
           <h1 class="text-2xl sm:text-4xl font-bold gradient-text mb-1">My Subjects</h1>
           <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">Organize your study material by subject</p>
         </div>
-        <NuxtLink to="/subjects/new">
-          <button class="px-4 sm:px-5 py-2 btn-gradient rounded-xl transition-colors font-medium text-sm sm:text-base">
-            + New Subject
+        <div class="flex items-center gap-2">
+          <button
+            v-if="availablePredefinedAgents.length > 0"
+            type="button"
+            @click="showBrowseLibrary = true"
+            class="px-3 py-2 rounded-xl font-semibold text-sm border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5"
+          >
+            <UIcon name="i-lucide-library" class="w-4 h-4" />
+            Browse library
+            <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+              {{ availablePredefinedAgents.length }}
+            </span>
           </button>
-        </NuxtLink>
+          <NuxtLink to="/subjects/new">
+            <button class="px-4 sm:px-5 py-2 btn-gradient rounded-xl transition-colors font-medium text-sm sm:text-base">
+              + New Subject
+            </button>
+          </NuxtLink>
+        </div>
       </div>
 
-      <!-- Predefined subject cards (always visible, idempotent) -->
-      <div v-if="predefinedAgents.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
+      <!-- Predefined subject cards — only ones the user has added -->
+      <div v-if="myPredefinedAgents.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 sm:mb-8">
         <div
-          v-for="agent in predefinedAgents"
+          v-for="agent in myPredefinedAgents"
           :key="agent.slug"
           class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-0.5"
           :style="{ boxShadow: `0 8px 24px -12px ${agent.color || '#3B82F6'}55` }"
@@ -99,6 +113,65 @@
         </div>
       </div>
     </UDashboardPanelContent>
+
+    <!-- Browse Library modal — lists predefined agents NOT yet added.
+         Nuxt UI v4 uses :open / @update:open instead of v-model on UModal. -->
+    <UModal :open="showBrowseLibrary" @update:open="showBrowseLibrary = $event" size="xl">
+      <UCard @click.stop>
+        <template #header>
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold gradient-text">Add to your library</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Pick the exams and tracks you're preparing for. You can add or remove them anytime.
+              </p>
+            </div>
+            <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="showBrowseLibrary = false" />
+          </div>
+        </template>
+
+        <div v-if="availablePredefinedAgents.length === 0" class="py-8 text-center">
+          <UIcon name="i-lucide-check-circle-2" class="w-10 h-10 text-emerald-500 mx-auto mb-3" />
+          <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold">All caught up.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">You've added every available subject.</p>
+        </div>
+
+        <div v-else class="space-y-2 max-h-[60vh] overflow-y-auto">
+          <div
+            v-for="agent in availablePredefinedAgents"
+            :key="agent.slug"
+            class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 text-white"
+              :style="{ background: agent.color || '#3B82F6' }"
+            >
+              {{ agent.icon || '📚' }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
+                <span
+                  v-if="agent.status === 'preview'"
+                  class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30"
+                >Preview</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                {{ agent.status === 'preview' ? 'Early access — listening practice prototype.' : 'AI-generated practice questions, grounded in the official syllabus.' }}
+              </p>
+            </div>
+            <button
+              type="button"
+              :disabled="addingSlug === agent.slug"
+              @click="addToLibrary(agent.slug)"
+              class="px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold whitespace-nowrap disabled:opacity-50"
+            >
+              {{ addingSlug === agent.slug ? 'Adding…' : '+ Add' }}
+            </button>
+          </div>
+        </div>
+      </UCard>
+    </UModal>
   </UDashboardPanel>
 </template>
 
@@ -109,9 +182,51 @@ const config = useRuntimeConfig()
 const subjects = ref<any[]>([])
 const isLoading = ref(true)
 const provisioningSlug = ref<string | null>(null)
+const showBrowseLibrary = ref(false)
 
 const { agents: predefinedAgentsRef, load: loadPredefinedAgents } = usePredefinedSubjects()
 const predefinedAgents = computed(() => predefinedAgentsRef.value || [])
+
+// Same filter pattern as the dashboard: only show predefined cards for agents
+// the user has added to their library. Un-added agents live in the Browse
+// Library modal until added.
+const addedPredefinedSlugs = ref<string[]>([])
+
+async function loadAddedPredefined() {
+  try {
+    const res = await $fetch<{ added_slugs: string[] }>(
+      `${config.public.apiBase}/predefined/added`,
+      { credentials: 'include' }
+    )
+    addedPredefinedSlugs.value = res.added_slugs || []
+  } catch {
+    addedPredefinedSlugs.value = []
+  }
+}
+
+const myPredefinedAgents = computed(() =>
+  predefinedAgents.value.filter((a) => addedPredefinedSlugs.value.includes(a.slug))
+)
+const availablePredefinedAgents = computed(() =>
+  predefinedAgents.value.filter((a) => !addedPredefinedSlugs.value.includes(a.slug))
+)
+
+const addingSlug = ref<string | null>(null)
+async function addToLibrary(slug: string) {
+  if (addingSlug.value) return
+  addingSlug.value = slug
+  try {
+    await $fetch(`${config.public.apiBase}/predefined/${slug}/provision`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+    await loadAddedPredefined()
+  } catch (e: any) {
+    alert(e?.data?.detail || e?.message || 'Failed to add subject.')
+  } finally {
+    addingSlug.value = null
+  }
+}
 
 async function launchPredefined(slug: string) {
   if (provisioningSlug.value) return
@@ -138,6 +253,7 @@ async function launchPredefined(slug: string) {
 
 onMounted(async () => {
   loadPredefinedAgents().catch(() => {})
+  loadAddedPredefined().catch(() => {})
   try {
     const res = await fetch(`${config.public.apiBase}/subjects`, { credentials: 'include' })
     if (res.ok) {
