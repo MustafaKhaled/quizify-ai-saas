@@ -72,12 +72,46 @@
         </div>
       </div>
 
-      <!-- Predefined Subjects -->
-      <div v-if="predefinedAgents.length > 0" class="mb-8 sm:mb-10">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-4">Predefined Subjects</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Predefined Subjects (only the ones the user has added) -->
+      <div class="mb-8 sm:mb-10">
+        <div class="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">My Subjects</h2>
+          <button
+            v-if="availablePredefinedAgents.length > 0"
+            type="button"
+            @click="showBrowseLibrary = true"
+            class="px-3 py-1.5 rounded-lg font-semibold text-xs border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5"
+          >
+            <UIcon name="i-lucide-library" class="w-3.5 h-3.5" />
+            Browse library
+            <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+              {{ availablePredefinedAgents.length }}
+            </span>
+          </button>
+        </div>
+
+        <div
+          v-if="myPredefinedAgents.length === 0"
+          class="glass-card rounded-2xl p-8 text-center"
+        >
+          <UIcon name="i-lucide-bookmark-plus" class="w-10 h-10 text-slate-400 mx-auto mb-3" />
+          <p class="text-sm text-slate-700 dark:text-slate-300 mb-1 font-semibold">No subjects yet in your library.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+            Add the exams or grammar levels you're preparing for and they'll show up here.
+          </p>
+          <button
+            v-if="availablePredefinedAgents.length > 0"
+            type="button"
+            @click="showBrowseLibrary = true"
+            class="px-4 py-2 btn-gradient rounded-xl text-sm font-semibold"
+          >
+            Browse library
+          </button>
+        </div>
+
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div
-            v-for="agent in predefinedAgents"
+            v-for="agent in myPredefinedAgents"
             :key="agent.slug"
             class="glass-card rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all hover:-translate-y-0.5"
             :style="{ boxShadow: `0 8px 24px -12px ${agent.color || '#3B82F6'}55` }"
@@ -200,6 +234,64 @@
     </UDashboardPanelContent>
 
     <SubscriptionModal v-model="showSubscriptionModal" />
+
+    <!-- Browse Library modal — lists predefined agents NOT yet added -->
+    <UModal v-model="showBrowseLibrary" size="xl">
+      <UCard @click.stop>
+        <template #header>
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-bold gradient-text">Add to your library</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Pick the exams and tracks you're preparing for. You can add or remove them anytime.
+              </p>
+            </div>
+            <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="showBrowseLibrary = false" />
+          </div>
+        </template>
+
+        <div v-if="availablePredefinedAgents.length === 0" class="py-8 text-center">
+          <UIcon name="i-lucide-check-circle-2" class="w-10 h-10 text-emerald-500 mx-auto mb-3" />
+          <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold">All caught up.</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">You've added every available subject.</p>
+        </div>
+
+        <div v-else class="space-y-2 max-h-[60vh] overflow-y-auto">
+          <div
+            v-for="agent in availablePredefinedAgents"
+            :key="agent.slug"
+            class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 text-white"
+              :style="{ background: agent.color || '#3B82F6' }"
+            >
+              {{ agent.icon || '📚' }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
+                <span
+                  v-if="agent.status === 'preview'"
+                  class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30"
+                >Preview</span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400">
+                {{ agent.status === 'preview' ? 'Early access — listening practice prototype.' : 'AI-generated practice questions, grounded in the official syllabus.' }}
+              </p>
+            </div>
+            <button
+              type="button"
+              :disabled="addingSlug === agent.slug"
+              @click="addToLibrary(agent.slug)"
+              class="px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold whitespace-nowrap disabled:opacity-50"
+            >
+              {{ addingSlug === agent.slug ? 'Adding…' : '+ Add' }}
+            </button>
+          </div>
+        </div>
+      </UCard>
+    </UModal>
   </UDashboardPanel>
 </template>
 
@@ -214,11 +306,32 @@ const { user: subUser, fetchUser: fetchSubscriptionUser, refreshUser } = useSubs
 const userName = computed(() => subUser.value?.name || '')
 const subscriptionSuccess = ref(false)
 const showSubscriptionModal = ref(false)
+const showBrowseLibrary = ref(false)
 
-// Hören quota — fetched once on mount and surfaced in the subscription badge
-// popover so users can see their current Hören allowance without leaving the
-// dashboard. Independent of the generic quiz count because Hören is the
-// expensive feature with its own per-feature cap.
+// Slugs of predefined agents the user has added to their library.
+// Backed by the GET /predefined/added endpoint. Filters the dashboard's
+// predefined-cards grid AND gates per-feature UI (e.g. Hören quota only
+// surfaces when the user has Hören in their library).
+const addedPredefinedSlugs = ref<string[]>([])
+
+async function loadAddedPredefined() {
+  try {
+    const res = await $fetch<{ added_slugs: string[] }>(
+      `${config.public.apiBase}/predefined/added`,
+      { credentials: 'include' }
+    )
+    addedPredefinedSlugs.value = res.added_slugs || []
+  } catch {
+    addedPredefinedSlugs.value = []
+  }
+}
+
+const hasHorenInLibrary = computed(() => addedPredefinedSlugs.value.includes('deutsch_b1_horen'))
+
+// Hören quota — fetched only when the user has Hören in their library.
+// Surfaced in the subscription badge popover so users can see their current
+// Hören allowance without leaving the dashboard. Independent of the generic
+// quiz count because Hören is the expensive feature with its own per-feature cap.
 type HorenQuota = {
   tier: 'pro' | 'trial' | 'expired'
   limit: number
@@ -229,6 +342,10 @@ type HorenQuota = {
 const horenQuota = ref<HorenQuota | null>(null)
 
 async function loadHorenQuota() {
+  if (!hasHorenInLibrary.value) {
+    horenQuota.value = null
+    return
+  }
   try {
     horenQuota.value = await $fetch<HorenQuota>(
       `${config.public.apiBase}/horen/deutsch_b1_horen/quota`,
@@ -322,6 +439,34 @@ type WeakTopic = {
 const { agents: predefinedAgentsRef, load: loadPredefinedAgents } = usePredefinedSubjects()
 const predefinedAgents = computed(() => predefinedAgentsRef.value || [])
 
+// The dashboard grid only shows agents the user has explicitly added.
+// Un-added agents live in the Browse Library modal until added.
+const myPredefinedAgents = computed(() =>
+  predefinedAgents.value.filter((a) => addedPredefinedSlugs.value.includes(a.slug))
+)
+const availablePredefinedAgents = computed(() =>
+  predefinedAgents.value.filter((a) => !addedPredefinedSlugs.value.includes(a.slug))
+)
+
+const addingSlug = ref<string | null>(null)
+async function addToLibrary(slug: string) {
+  if (addingSlug.value) return
+  addingSlug.value = slug
+  try {
+    await $fetch(
+      `${config.public.apiBase}/predefined/${slug}/provision`,
+      { method: 'POST', credentials: 'include' }
+    )
+    await loadAddedPredefined()
+    // Hören quota becomes relevant once Hören is added — refresh now.
+    if (slug === 'deutsch_b1_horen') await loadHorenQuota()
+  } catch (e: any) {
+    alert(e?.data?.detail || e?.message || 'Failed to add subject.')
+  } finally {
+    addingSlug.value = null
+  }
+}
+
 const weakTopics = ref<WeakTopic[]>([])
 const provisioningSlug = ref<string | null>(null)
 const practicingTopicKey = ref<string | null>(null)
@@ -410,7 +555,21 @@ async function practiceWeakTopic(t: WeakTopic) {
 
 onMounted(async () => {
   loadPredefinedAgents().catch(() => {})
+  // Load the user's added predefined subjects FIRST so we know whether to
+  // fetch Hören quota and whether to redirect to onboarding.
+  await loadAddedPredefined()
+
+  // First-time experience: a user who hasn't added any predefined subjects
+  // (and likely hasn't created custom ones either) gets sent to /onboarding
+  // for the multi-select welcome screen. This only runs for accounts that
+  // truly have nothing — anyone with prior activity stays on the dashboard.
+  if (addedPredefinedSlugs.value.length === 0) {
+    await navigateTo('/onboarding')
+    return
+  }
+
   loadHorenQuota().catch(() => {})
+
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true
     await refreshUser(true)

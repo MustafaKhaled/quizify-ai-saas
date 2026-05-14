@@ -28,7 +28,7 @@ from google import genai
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from agents import get_agent, list_agents
+from agents import PREDEFINED_AGENTS, get_agent, list_agents
 from agents.pmp.knowledge_base.retrieval import format_exemplars, get_exemplars
 from db.dependency import get_current_user, get_db
 from db.models import Quiz, Subject, User
@@ -329,6 +329,34 @@ Return this JSON — the "questions" array MUST have EXACTLY {chunk_n} objects:
 async def get_registry():
     """Public: list every registered predefined subject (slug, name, color, icon)."""
     return list_agents()
+
+
+@router.get("/added")
+async def list_added_predefined_slugs(
+    db: DBSession,
+    current_user: CurrentUser,
+):
+    """Slugs of predefined subjects the current user has 'added' to their library.
+
+    A predefined subject is considered added when the user has a `Subject` row
+    whose name matches the agent's name. We join in Python (rather than via the
+    DB) because the agent registry lives in code, not in the DB — Subject.name
+    is the only link.
+
+    The dashboard uses this to filter the predefined-agents grid (showing only
+    what the user has chosen) and to gate per-feature UI like the Hören quota
+    badge (don't surface it if the user hasn't added Hören).
+    """
+    user_subject_names = {
+        name for (name,) in db.query(Subject.name).filter(Subject.user_id == current_user.id).all()
+    }
+    return {
+        "added_slugs": [
+            slug
+            for slug, agent in PREDEFINED_AGENTS.items()
+            if agent["name"] in user_subject_names
+        ]
+    }
 
 
 @router.get("/{slug}/chapters")
