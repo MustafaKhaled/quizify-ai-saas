@@ -115,11 +115,11 @@
     </UDashboardPanelContent>
 
     <!-- Browse Library modal — lists predefined agents NOT yet added.
-         Nuxt UI v4 uses :open / @update:open instead of v-model on UModal. -->
+         Nuxt UI v4: open via :open + @update:open, content goes in #content slot. -->
     <UModal :open="showBrowseLibrary" @update:open="showBrowseLibrary = $event" size="xl">
-      <UCard @click.stop>
-        <template #header>
-          <div class="flex items-center justify-between">
+      <template #content>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-4 gap-3">
             <div>
               <h2 class="text-lg font-bold gradient-text">Add to your library</h2>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -128,49 +128,49 @@
             </div>
             <UButton color="neutral" variant="ghost" icon="i-lucide-x" @click="showBrowseLibrary = false" />
           </div>
-        </template>
 
-        <div v-if="availablePredefinedAgents.length === 0" class="py-8 text-center">
-          <UIcon name="i-lucide-check-circle-2" class="w-10 h-10 text-emerald-500 mx-auto mb-3" />
-          <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold">All caught up.</p>
-          <p class="text-xs text-slate-500 dark:text-slate-400">You've added every available subject.</p>
-        </div>
+          <div v-if="availablePredefinedAgents.length === 0" class="py-8 text-center">
+            <UIcon name="i-lucide-check-circle-2" class="w-10 h-10 text-emerald-500 mx-auto mb-3" />
+            <p class="text-sm text-slate-700 dark:text-slate-300 font-semibold">All caught up.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">You've added every available subject.</p>
+          </div>
 
-        <div v-else class="space-y-2 max-h-[60vh] overflow-y-auto">
-          <div
-            v-for="agent in availablePredefinedAgents"
-            :key="agent.slug"
-            class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition"
-          >
+          <div v-else class="space-y-2 max-h-[60vh] overflow-y-auto">
             <div
-              class="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 text-white"
-              :style="{ background: agent.color || '#3B82F6' }"
+              v-for="agent in availablePredefinedAgents"
+              :key="agent.slug"
+              class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition"
             >
-              {{ agent.icon || '📚' }}
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
-                <span
-                  v-if="agent.status === 'preview'"
-                  class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30"
-                >Preview</span>
+              <div
+                class="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0 text-white"
+                :style="{ background: agent.color || '#3B82F6' }"
+              >
+                {{ agent.icon || '📚' }}
               </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400">
-                {{ agent.status === 'preview' ? 'Early access — listening practice prototype.' : 'AI-generated practice questions, grounded in the official syllabus.' }}
-              </p>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ agent.name }}</h3>
+                  <span
+                    v-if="agent.status === 'preview'"
+                    class="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-full text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30"
+                  >Preview</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  {{ agent.status === 'preview' ? 'Early access — listening practice prototype.' : 'AI-generated practice questions, grounded in the official syllabus.' }}
+                </p>
+              </div>
+              <button
+                type="button"
+                :disabled="addingSlug === agent.slug"
+                @click="addToLibrary(agent.slug)"
+                class="px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold whitespace-nowrap disabled:opacity-50"
+              >
+                {{ addingSlug === agent.slug ? 'Adding…' : '+ Add' }}
+              </button>
             </div>
-            <button
-              type="button"
-              :disabled="addingSlug === agent.slug"
-              @click="addToLibrary(agent.slug)"
-              class="px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold whitespace-nowrap disabled:opacity-50"
-            >
-              {{ addingSlug === agent.slug ? 'Adding…' : '+ Add' }}
-            </button>
           </div>
         </div>
-      </UCard>
+      </template>
     </UModal>
   </UDashboardPanel>
 </template>
