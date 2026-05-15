@@ -18,6 +18,7 @@ from db.routers.subjects.subjects_router import router as subjects_router
 from db.routers.subscription.subscription_router import router as subscription_router
 from db.routers.predefined.predefined_router import router as predefined_router
 from db.routers.predefined.horen_router import router as horen_router
+from db.routers.predefined.lesen_router import router as lesen_router
 from db.routers.recommendations.recommendations_router import router as recommendations_router
 from db.routers.unsubscribe_router import router as unsubscribe_router
 from starlette.middleware.sessions import SessionMiddleware
@@ -37,6 +38,7 @@ app.include_router(subjects_router)
 app.include_router(subscription_router)
 app.include_router(predefined_router)
 app.include_router(horen_router)
+app.include_router(lesen_router)
 app.include_router(recommendations_router)
 app.include_router(unsubscribe_router)
 

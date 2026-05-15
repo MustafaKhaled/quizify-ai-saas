@@ -18,8 +18,11 @@ from typing import Optional
 from agents import clf_c02 as _clf_c02
 from agents import deutsch_a1 as _deutsch_a1
 from agents import deutsch_a2 as _deutsch_a2
+from agents import deutsch_a2_horen as _deutsch_a2_horen
+from agents import deutsch_a2_lesen as _deutsch_a2_lesen
 from agents import deutsch_b1 as _deutsch_b1
 from agents import deutsch_b1_horen as _deutsch_b1_horen
+from agents import deutsch_b1_lesen as _deutsch_b1_lesen
 from agents import pmp as _pmp
 
 
@@ -90,6 +93,42 @@ PREDEFINED_AGENTS: dict[str, dict] = {
         "build_corpus_text": _deutsch_b1_horen.build_corpus_text,
         "status": "preview",
         "preview_path": "/horen/deutsch_b1_horen",
+    },
+    "deutsch_a2_horen": {
+        "slug": "deutsch_a2_horen",
+        "name": _deutsch_a2_horen.DEUTSCH_A2_HOREN_SUBJECT_NAME,
+        "color": _deutsch_a2_horen.DEUTSCH_A2_HOREN_SUBJECT_COLOR,
+        "icon": _deutsch_a2_horen.DEUTSCH_A2_HOREN_SUBJECT_ICON,
+        "instructions": _deutsch_a2_horen.INSTRUCTIONS,
+        "chapters": _deutsch_a2_horen.DEUTSCH_A2_HOREN_CHAPTERS,
+        "get_chapter_by_slug": _deutsch_a2_horen.get_chapter_by_slug,
+        "build_corpus_text": _deutsch_a2_horen.build_corpus_text,
+        "status": "preview",
+        "preview_path": "/horen/deutsch_a2_horen",
+    },
+    "deutsch_b1_lesen": {
+        "slug": "deutsch_b1_lesen",
+        "name": _deutsch_b1_lesen.DEUTSCH_B1_LESEN_SUBJECT_NAME,
+        "color": _deutsch_b1_lesen.DEUTSCH_B1_LESEN_SUBJECT_COLOR,
+        "icon": _deutsch_b1_lesen.DEUTSCH_B1_LESEN_SUBJECT_ICON,
+        "instructions": _deutsch_b1_lesen.INSTRUCTIONS,
+        "chapters": _deutsch_b1_lesen.DEUTSCH_B1_LESEN_CHAPTERS,
+        "get_chapter_by_slug": _deutsch_b1_lesen.get_chapter_by_slug,
+        "build_corpus_text": _deutsch_b1_lesen.build_corpus_text,
+        "status": "preview",
+        "preview_path": "/lesen/deutsch_b1_lesen",
+    },
+    "deutsch_a2_lesen": {
+        "slug": "deutsch_a2_lesen",
+        "name": _deutsch_a2_lesen.DEUTSCH_A2_LESEN_SUBJECT_NAME,
+        "color": _deutsch_a2_lesen.DEUTSCH_A2_LESEN_SUBJECT_COLOR,
+        "icon": _deutsch_a2_lesen.DEUTSCH_A2_LESEN_SUBJECT_ICON,
+        "instructions": _deutsch_a2_lesen.INSTRUCTIONS,
+        "chapters": _deutsch_a2_lesen.DEUTSCH_A2_LESEN_CHAPTERS,
+        "get_chapter_by_slug": _deutsch_a2_lesen.get_chapter_by_slug,
+        "build_corpus_text": _deutsch_a2_lesen.build_corpus_text,
+        "status": "preview",
+        "preview_path": "/lesen/deutsch_a2_lesen",
     },
 }
 

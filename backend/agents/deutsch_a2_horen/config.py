@@ -1,0 +1,3 @@
+DEUTSCH_A2_HOREN_SUBJECT_NAME = "German A2 — Hören"
+DEUTSCH_A2_HOREN_SUBJECT_COLOR = "#0E7490"  # cyan-700, distinct from B1 Hören's green
+DEUTSCH_A2_HOREN_SUBJECT_ICON = "🎧"

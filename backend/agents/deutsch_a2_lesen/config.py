@@ -1,0 +1,3 @@
+DEUTSCH_A2_LESEN_SUBJECT_NAME = "German A2 — Lesen"
+DEUTSCH_A2_LESEN_SUBJECT_COLOR = "#A21CAF"  # fuchsia-700 — distinct from B1 Lesen's violet
+DEUTSCH_A2_LESEN_SUBJECT_ICON = "📖"

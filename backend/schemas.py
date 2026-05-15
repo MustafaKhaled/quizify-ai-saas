@@ -125,8 +125,10 @@ class QuizResponse(BaseModel):
 
 class AnswerSubmission(BaseModel):
     question_index: int
-    # Can be an int for single_choice or a list of ints for multiple_select
-    selected_options: Optional[Union[int, List[int]]] = []
+    # int = single_choice / true_false answer index
+    # List[int] = multiple_select answers
+    # str = letter_matching answer (a–j or "0") used in B1 Lesen Teil 3
+    selected_options: Optional[Union[int, List[int], str]] = []
 
 class QuizSubmission(BaseModel):
     quiz_id: UUID

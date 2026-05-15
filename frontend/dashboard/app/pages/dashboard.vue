@@ -34,6 +34,13 @@
                 >
                   {{ horenQuotaLine }}
                 </p>
+                <p
+                  v-if="lesenQuotaLine"
+                  class="text-xs text-slate-500 dark:text-slate-400 mt-1.5"
+                  :class="{ 'pt-1.5 border-t border-slate-200/70 dark:border-slate-700/70': !horenQuotaLine }"
+                >
+                  {{ lesenQuotaLine }}
+                </p>
                 <button
                   v-if="!subUser?.subscription?.is_eligible"
                   @click="showSubscriptionModal = true"
@@ -327,9 +334,16 @@ async function loadAddedPredefined() {
   }
 }
 
-const hasHorenInLibrary = computed(() => addedPredefinedSlugs.value.includes('deutsch_b1_horen'))
+// Both A2 and B1 Hören count as "Hören in library" for the purpose of
+// surfacing the shared quota in the subscription badge popover. The
+// backend cap counts all audio_listening quizzes regardless of level.
+const HOREN_SLUGS = ['deutsch_a2_horen', 'deutsch_b1_horen'] as const
+const horenSlugInLibrary = computed<string | null>(() =>
+  HOREN_SLUGS.find((s) => addedPredefinedSlugs.value.includes(s)) ?? null
+)
+const hasHorenInLibrary = computed(() => horenSlugInLibrary.value !== null)
 
-// Hören quota — fetched only when the user has Hören in their library.
+// Hören quota — fetched only when the user has any Hören level in their library.
 // Surfaced in the subscription badge popover so users can see their current
 // Hören allowance without leaving the dashboard. Independent of the generic
 // quiz count because Hören is the expensive feature with its own per-feature cap.
@@ -343,13 +357,14 @@ type HorenQuota = {
 const horenQuota = ref<HorenQuota | null>(null)
 
 async function loadHorenQuota() {
-  if (!hasHorenInLibrary.value) {
+  const slugForQuota = horenSlugInLibrary.value
+  if (!slugForQuota) {
     horenQuota.value = null
     return
   }
   try {
     horenQuota.value = await $fetch<HorenQuota>(
-      `${config.public.apiBase}/horen/deutsch_b1_horen/quota`,
+      `${config.public.apiBase}/horen/${slugForQuota}/quota`,
       { credentials: 'include' }
     )
   } catch {
@@ -363,6 +378,40 @@ const horenQuotaLine = computed<string>(() => {
   if (q.tier === 'expired') return ''  // No Hören access — don't add noise to the popover
   const periodWord = q.period === 'week' ? 'in 7 Tagen' : 'in der Probezeit'
   return `Hören: ${q.remaining} von ${q.limit} ${periodWord}`
+})
+
+// Lesen — separate quota from Hören (text-only, ~10× cheaper to generate).
+// Only fetched once the user has B1 Lesen in their library so the popover
+// doesn't show an irrelevant cap to users who haven't opted into Lesen.
+const LESEN_SLUGS = ['deutsch_a2_lesen', 'deutsch_b1_lesen'] as const
+const lesenSlugInLibrary = computed<string | null>(() =>
+  LESEN_SLUGS.find((s) => addedPredefinedSlugs.value.includes(s)) ?? null
+)
+const hasLesenInLibrary = computed(() => lesenSlugInLibrary.value !== null)
+const lesenQuota = ref<HorenQuota | null>(null)
+
+async function loadLesenQuota() {
+  const slugForQuota = lesenSlugInLibrary.value
+  if (!slugForQuota) {
+    lesenQuota.value = null
+    return
+  }
+  try {
+    lesenQuota.value = await $fetch<HorenQuota>(
+      `${config.public.apiBase}/lesen/${slugForQuota}/quota`,
+      { credentials: 'include' }
+    )
+  } catch {
+    lesenQuota.value = null
+  }
+}
+
+const lesenQuotaLine = computed<string>(() => {
+  const q = lesenQuota.value
+  if (!q) return ''
+  if (q.tier === 'expired') return ''
+  const periodWord = q.period === 'week' ? 'in 7 Tagen' : 'in der Probezeit'
+  return `Lesen: ${q.remaining} von ${q.limit} ${periodWord}`
 })
 
 const subscriptionBadgeLabel = computed(() => {
@@ -459,8 +508,10 @@ async function addToLibrary(slug: string) {
       { method: 'POST', credentials: 'include' }
     )
     await loadAddedPredefined()
-    // Hören quota becomes relevant once Hören is added — refresh now.
-    if (slug === 'deutsch_b1_horen') await loadHorenQuota()
+    // Hören / Lesen quotas become relevant once their respective subjects are
+    // added — refresh now so the popover shows the cap without a page reload.
+    if ((HOREN_SLUGS as readonly string[]).includes(slug)) await loadHorenQuota()
+    if ((LESEN_SLUGS as readonly string[]).includes(slug)) await loadLesenQuota()
   } catch (e: any) {
     alert(e?.data?.detail || e?.message || 'Failed to add subject.')
   } finally {
@@ -570,6 +621,7 @@ onMounted(async () => {
   }
 
   loadHorenQuota().catch(() => {})
+  loadLesenQuota().catch(() => {})
 
   if (route.query.subscription === 'success') {
     subscriptionSuccess.value = true

@@ -1,22 +1,33 @@
 """
-Hören (German B1 Listening) endpoints.
+Hören (German Listening) endpoints. Supports both A2 and B1 levels via the
+`slug` path parameter.
 
 POST /horen/{slug}/quiz
-    Generates a complete 4-Teil Goethe-Zertifikat B1 Hören exam (scripts +
-    audio + manifest), provisions or reuses the user's "German B1 — Hören"
-    Subject row, and persists the exam as a `Quiz` row with
-    `quiz_type='audio_listening'`. Audio files are written to
-    backend/uploads/horen/ with UUID names and served via the /static/horen/
-    StaticFiles mount.
+    Generates a complete 4-Teil Goethe-Zertifikat Hören exam (scripts +
+    audio + manifest), provisions or reuses the user's matching Subject row,
+    and persists the exam as a `Quiz` row with `quiz_type='audio_listening'`.
+    Audio files are written to backend/uploads/horen/ with UUID names and
+    served via the /static/horen/ StaticFiles mount.
 
     The Quiz.content shape is `{kind: "full_exam", teile: [...×4],
     questions: [...flat across all Teile]}`. The flat `questions` list (each
     carrying its own `audio_url`) is what `calculate_quiz_score` reads, so
     the existing /quizzes/submit/{quiz_id} endpoint works unchanged.
 
+    Generation is dispatched per-level: `deutsch_a2_horen` and
+    `deutsch_b1_horen` each have their own services/generation.py with
+    level-specific instruction text, play limits, and topic catalogs.
+
 GET /horen/{slug}/sessions
     Returns the user's existing Hören Quiz rows (most recent first), with
     their score if they've taken them. Drives the library page.
+
+GET /horen/{slug}/quota
+    Current user's Hören usage and remaining quota. The quota is shared
+    across BOTH levels — one Pro user gets 5 Hören exams per rolling 7
+    days regardless of which level(s) they generate, because the cost
+    driver (Gemini + TTS) is identical and a level-split would just
+    encourage gaming.
 """
 
 from __future__ import annotations
@@ -26,7 +37,7 @@ import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Callable, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Path as PathParam
 from pydantic import BaseModel
@@ -35,12 +46,29 @@ from sqlalchemy.orm import Session
 logger = logging.getLogger(__name__)
 
 from agents import get_agent
+from agents.deutsch_a2_horen.services.generation import (
+    full_exam_title as a2_full_exam_title,
+    generate_full_exam as a2_generate_full_exam,
+)
 from agents.deutsch_b1_horen.services.generation import (
-    full_exam_title,
-    generate_full_exam,
+    full_exam_title as b1_full_exam_title,
+    generate_full_exam as b1_generate_full_exam,
 )
 from db.dependency import get_current_user, get_db
 from db.models import Quiz, QuizResult, Subject, User
+
+# Per-slug dispatch table for the level-specific generation pipelines. Each
+# entry exposes the same callable shape so the route handler stays generic.
+HOREN_GENERATORS: dict[str, dict[str, Callable]] = {
+    "deutsch_b1_horen": {
+        "generate_full_exam": b1_generate_full_exam,
+        "full_exam_title": b1_full_exam_title,
+    },
+    "deutsch_a2_horen": {
+        "generate_full_exam": a2_generate_full_exam,
+        "full_exam_title": a2_full_exam_title,
+    },
+}
 
 # Hören quota — independent of the generic /quizzes trial counter because
 # full Hören exams are the expensive feature (4 Gemini calls + audio render
@@ -75,7 +103,7 @@ class GenerateHorenRequest(BaseModel):
 
 def _resolve_horen_agent(slug: str) -> dict:
     agent = get_agent(slug)
-    if not agent or slug != "deutsch_b1_horen":
+    if not agent or slug not in HOREN_GENERATORS:
         raise HTTPException(status_code=404, detail=f"unknown horen subject: {slug}")
     return agent
 
@@ -246,6 +274,11 @@ async def create_horen_quiz(
             status_code = 402
         raise HTTPException(status_code=status_code, detail=detail)
 
+    # Dispatch to the level-specific generator (A2 or B1).
+    generators = HOREN_GENERATORS[slug]
+    generate_full_exam = generators["generate_full_exam"]
+    full_exam_title = generators["full_exam_title"]
+
     # Run the (slow, blocking) generation pipeline off the event loop so other
     # requests aren't starved while Gemini + TTS + ffmpeg do their work.
     try:
@@ -259,7 +292,7 @@ async def create_horen_quiz(
         # Log the full traceback so it's visible in the uvicorn terminal —
         # otherwise the exception gets buried in the 502 response body and
         # is invisible unless the caller inspects the network response.
-        logger.exception("Hören full-exam generation failed for user %s", current_user.id)
+        logger.exception("Hören full-exam generation failed for user %s slug=%s", current_user.id, slug)
         raise HTTPException(status_code=502, detail=f"generation failed: {type(e).__name__}: {e}")
 
     if not manifest.get("questions"):

@@ -254,6 +254,13 @@ async def delete_quiz(
 # ── Scoring helper ────────────────────────────────────────────────────────────
 
 def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list):
+    """Score a quiz attempt.
+
+    Dispatches per-question on `question_type` when present (mixed-type quizzes
+    like B1 Lesen, where Teil 3 uses letter_matching but other Teile use
+    single_choice / true_false). Falls back to the legacy `quiz_type` argument
+    for older quizzes that have no per-question type tag.
+    """
     questions = quiz_content.get("questions", [])
     total_questions = len(questions)
     correct_count = 0
@@ -264,16 +271,36 @@ def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list)
     for i, q in enumerate(questions):
         user_choice = user_map.get(i)
         is_correct = False
+        # Per-question type wins over the quiz-level type so a mixed quiz
+        # (Lesen) can score each item with its own logic.
+        per_q_type = q.get("question_type") or quiz_type
+        correct_answer_for_review: object = None
 
-        if quiz_type == "multiple_select":
+        if per_q_type == "multiple_select":
             correct_indices = q.get("correct_option_indices", [])
             if isinstance(user_choice, list):
                 if set(user_choice) == set(correct_indices):
                     is_correct = True
-        else:  # single_choice and true_or_false
+            correct_answer_for_review = correct_indices
+        elif per_q_type == "letter_matching":
+            # User submits a single character ('a'–'j' or '0'). Compare
+            # case-insensitively and trim — the input field is lenient about
+            # whitespace + case.
+            correct_letter = (q.get("correct_letter") or "").lower().strip()
+            user_letter = (user_choice or "")
+            if isinstance(user_letter, str):
+                user_letter = user_letter.lower().strip()
+            else:
+                user_letter = ""
+            if user_letter and user_letter == correct_letter:
+                is_correct = True
+            correct_answer_for_review = correct_letter
+        else:
+            # single_choice, true_false, true_false_ja_nein — index match
             correct_index = q.get("correct_option_index")
             if user_choice == correct_index:
                 is_correct = True
+            correct_answer_for_review = correct_index
 
         if is_correct:
             correct_count += 1
@@ -281,9 +308,10 @@ def calculate_quiz_score(quiz_content: dict, quiz_type: str, user_answers: list)
         detailed_results.append({
             "question_index": i,
             "topic": q.get("topic", "Unknown"),
+            "question_type": per_q_type,
             "is_correct": is_correct,
             "user_choice": user_choice,
-            "correct_answer": q.get("correct_option_indices") if quiz_type == "multiple_select" else q.get("correct_option_index"),
+            "correct_answer": correct_answer_for_review,
             "explanation": q.get("explanation", "")
         })
 

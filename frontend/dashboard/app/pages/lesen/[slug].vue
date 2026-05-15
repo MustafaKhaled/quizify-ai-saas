@@ -1,13 +1,13 @@
 <template>
   <UDashboardPanel grow>
-    <UDashboardNavbar class="lg:hidden" :title="`${levelMeta.shortLabel} Hören`" />
+    <UDashboardNavbar class="lg:hidden" :title="`${levelMeta.shortLabel} Lesen`" />
     <UDashboardPanelContent class="p-4 sm:p-6 overflow-y-auto bg-mesh min-h-full">
 
       <h1 class="text-2xl sm:text-3xl font-bold mb-1">
         <span class="gradient-text">{{ levelMeta.title }}</span>
       </h1>
       <p class="text-sm text-slate-500 dark:text-slate-400 mb-8">
-        Generate a fresh full Goethe-Zertifikat {{ levelMeta.shortLabel }} listening exam (all four Teile),
+        Generate a fresh full Goethe-Zertifikat {{ levelMeta.shortLabel }} reading exam (all five Teile),
         or replay a previous exam.
       </p>
 
@@ -15,14 +15,14 @@
       <div class="mb-10">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-3">Neue Prüfung generieren</h2>
         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-          Ein vollständiger Hörverstehenstest enthält alle vier Teile.
-          Die Generierung dauert etwa zwei Minuten (Gemini-Skripte + Edge-TTS-Audio für jeden Teil).
+          Eine vollständige Leseprüfung enthält alle fünf Teile.
+          Die Generierung dauert etwa 10–20 Sekunden (Gemini-Texte für jeden Teil parallel).
         </p>
 
         <div class="glass-card rounded-2xl p-5 mb-3 max-w-3xl">
           <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 mb-4">
             <li v-for="t in TEILE_META" :key="t.teil" class="flex items-start gap-2">
-              <UIcon name="i-lucide-headphones" class="w-3.5 h-3.5 mt-0.5 text-emerald-600" />
+              <UIcon name="i-lucide-book-open" class="w-3.5 h-3.5 mt-0.5 text-violet-600" />
               <span>
                 <span class="font-semibold text-slate-700 dark:text-slate-300">Teil {{ t.teil }}</span>
                 — {{ t.name }} · {{ t.format_hint }}
@@ -55,7 +55,7 @@
               Limit erreicht
             </template>
             <template v-else>
-              Vollständige Prüfung generieren (~2 Min.)
+              Vollständige Prüfung generieren ({{ levelMeta.durationLabel }})
             </template>
           </button>
         </div>
@@ -82,8 +82,8 @@
           >
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 mb-0.5 flex-wrap">
-                <span class="text-xs uppercase tracking-wide font-semibold text-emerald-700 dark:text-emerald-300">
-                  {{ s.kind === 'full_exam' ? `${s.num_teile} Teile` : (s.teil_label || 'Einzel-Teil') }}
+                <span class="text-xs uppercase tracking-wide font-semibold text-violet-700 dark:text-violet-300">
+                  {{ s.num_teile }} Teile
                 </span>
                 <span v-if="s.latest_score !== null" class="px-2 py-0.5 text-xs font-bold rounded-full" :class="scoreBadgeClass(s.latest_score)">
                   {{ Math.round(s.latest_score) }}%
@@ -99,7 +99,7 @@
               </p>
             </div>
             <NuxtLink
-              :to="`/horen/play/${s.quiz_id}`"
+              :to="`/lesen/play/${s.quiz_id}`"
               class="px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold whitespace-nowrap"
             >
               {{ s.latest_score !== null ? 'Nochmal üben' : 'Starten →' }}
@@ -111,12 +111,12 @@
       <!-- Generation overlay -->
       <div v-if="generating" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="glass-card rounded-2xl p-8 max-w-md text-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
           <h3 class="text-lg font-bold mb-2">Generiere Prüfung…</h3>
           <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">
-            Gemini schreibt vier Hörtexte, dann rendert Edge TTS das Audio für jeden Teil.
+            Gemini schreibt die Texte und Aufgaben für alle fünf Teile.
           </p>
-          <p class="text-xs text-slate-400">~2 Minuten · {{ generationElapsed }}s</p>
+          <p class="text-xs text-slate-400">~15 Sekunden · {{ generationElapsed }}s</p>
         </div>
       </div>
 
@@ -131,50 +131,47 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const slug = route.params.slug as string
 
-// Per-level metadata: title, short label, and Teile breakdown.
-// Item counts mirror the per-level chapter specs in the backend
-// (B1 Teil 3 has 7 R/F items, A2 Teil 3 has 5; B1 Teil 4 has 8 MCQs,
-// A2 Teil 4 has 5).
 const LEVEL_META = {
-  deutsch_b1_horen: {
-    title: 'German B1 — Hören',
+  deutsch_b1_lesen: {
+    title: 'German B1 — Lesen',
     shortLabel: 'B1',
+    durationLabel: '~15 Sek.',
     teile: [
-      { teil: 1, name: 'Kurze Texte', format_hint: '5 kurze Monologe · 5 Aufgaben' },
-      { teil: 2, name: 'Vortrag', format_hint: 'Längerer Vortrag · 5 Aufgaben' },
-      { teil: 3, name: 'Gespräch', format_hint: 'Dialog · 7 Richtig/Falsch-Aufgaben' },
-      { teil: 4, name: 'Diskussion', format_hint: 'Panel-Diskussion · 8 Aufgaben' }
+      { teil: 1, name: 'Blogeintrag', format_hint: 'Blog-Text · 6 Richtig/Falsch-Aufgaben' },
+      { teil: 2, name: 'Zeitungsartikel', format_hint: '2 Artikel · 6 Aufgaben (3+3)' },
+      { teil: 3, name: 'Anzeigen-Zuordnung', format_hint: '10 Anzeigen · 7 Situationen (Buchstabe a–j oder 0)' },
+      { teil: 4, name: 'Leserkommentare', format_hint: '7 Kommentare · 7 Ja/Nein-Aufgaben' },
+      { teil: 5, name: 'Anweisungen', format_hint: 'Hausordnung o.ä. · 4 Aufgaben' }
     ]
   },
-  deutsch_a2_horen: {
-    title: 'German A2 — Hören',
+  deutsch_a2_lesen: {
+    title: 'German A2 — Lesen',
     shortLabel: 'A2',
+    durationLabel: '~10 Sek.',
     teile: [
-      { teil: 1, name: 'Kurze Mitteilungen', format_hint: '5 kurze Mitteilungen · 5 Aufgaben' },
-      { teil: 2, name: 'Kurze Präsentation', format_hint: 'Kurze Präsentation · 5 Aufgaben' },
-      { teil: 3, name: 'Gespräch', format_hint: 'Dialog · 5 Richtig/Falsch-Aufgaben' },
-      { teil: 4, name: 'Diskussion', format_hint: 'Diskussion · 5 Aufgaben' }
+      { teil: 1, name: 'Zeitungstext', format_hint: 'Kurzer Artikel · 5 Aufgaben (a/b/c)' },
+      { teil: 2, name: 'Wegweiser', format_hint: 'Kaufhaus o.ä. · 5 Stockwerk-Aufgaben' },
+      { teil: 3, name: 'E-Mail', format_hint: 'Persönliche E-Mail · 5 Aufgaben (a/b/c)' },
+      { teil: 4, name: 'Anzeigen-Zuordnung', format_hint: '6 Anzeigen · 5 Situationen (Buchstabe a–f oder X)' }
     ]
   }
 } as const
 
 type LevelKey = keyof typeof LEVEL_META
-const levelMeta = computed(() => LEVEL_META[slug as LevelKey] ?? LEVEL_META.deutsch_b1_horen)
+const levelMeta = computed(() => LEVEL_META[slug as LevelKey] ?? LEVEL_META.deutsch_b1_lesen)
 const TEILE_META = computed(() => levelMeta.value.teile)
 
 type SessionRow = {
   quiz_id: string
   title: string
-  kind: 'full_exam' | 'single_teil'
   num_teile: number
-  teil_label: string | null
   num_questions: number
   generated_at: string | null
   latest_score: number | null
   taken_at: string | null
 }
 
-type HorenQuota = {
+type LesenQuota = {
   tier: 'pro' | 'trial' | 'expired'
   limit: number
   used: number
@@ -191,7 +188,7 @@ const generating = ref(false)
 const generationStartedAt = ref<number>(0)
 const generationElapsed = ref(0)
 const generationError = ref<string | null>(null)
-const quota = ref<HorenQuota | null>(null)
+const quota = ref<LesenQuota | null>(null)
 let elapsedTimer: ReturnType<typeof setInterval> | null = null
 
 const quotaLabel = computed<string>(() => {
@@ -206,8 +203,8 @@ const quotaBadgeClass = computed<string>(() => {
   const q = quota.value
   if (!q) return 'bg-slate-500/10 text-slate-700 dark:text-slate-300'
   if (!q.can_generate) return 'bg-red-500/10 text-red-700 dark:text-red-300'
-  if (q.remaining <= 1) return 'bg-amber-500/10 text-amber-800 dark:text-amber-300'
-  return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+  if (q.remaining <= 2) return 'bg-amber-500/10 text-amber-800 dark:text-amber-300'
+  return 'bg-violet-500/10 text-violet-700 dark:text-violet-300'
 })
 
 function formatNextAvailable(iso: string | null): string {
@@ -235,10 +232,10 @@ const generateDisabledReason = computed<string | null>(() => {
     return `Wochenlimit erreicht (${q.limit} Prüfungen in 7 Tagen).${suffix}`
   }
   if (q.reason === 'trial_limit_reached') {
-    return 'Probezeit-Limit erreicht. Upgrade auf Pro für 5 Hören-Prüfungen pro Woche.'
+    return 'Probezeit-Limit erreicht. Upgrade auf Pro für 10 Lese-Prüfungen pro Woche.'
   }
   if (q.reason === 'subscription_required') {
-    return 'Hören erfordert ein aktives Abo. Upgrade auf Pro, um Prüfungen zu generieren.'
+    return 'Lesen erfordert ein aktives Abo. Upgrade auf Pro, um Prüfungen zu generieren.'
   }
   return null
 })
@@ -259,7 +256,7 @@ async function loadSessions() {
   loadingSessions.value = true
   try {
     const data = await $fetch<{ sessions: SessionRow[] }>(
-      `${config.public.apiBase}/horen/${slug}/sessions`,
+      `${config.public.apiBase}/lesen/${slug}/sessions`,
       { credentials: 'include' }
     )
     sessions.value = data.sessions
@@ -272,8 +269,8 @@ async function loadSessions() {
 
 async function loadQuota() {
   try {
-    quota.value = await $fetch<HorenQuota>(
-      `${config.public.apiBase}/horen/${slug}/quota`,
+    quota.value = await $fetch<LesenQuota>(
+      `${config.public.apiBase}/lesen/${slug}/quota`,
       { credentials: 'include' }
     )
   } catch (e) {
@@ -293,7 +290,7 @@ async function generateExam() {
 
   try {
     const created = await $fetch<{ id: string; title: string; num_questions: number; num_teile: number }>(
-      `${config.public.apiBase}/horen/${slug}/quiz`,
+      `${config.public.apiBase}/lesen/${slug}/quiz`,
       {
         method: 'POST',
         credentials: 'include',
@@ -301,7 +298,7 @@ async function generateExam() {
       }
     )
     if (elapsedTimer) clearInterval(elapsedTimer)
-    await navigateTo(`/horen/play/${created.id}`)
+    await navigateTo(`/lesen/play/${created.id}`)
   } catch (e: any) {
     generationError.value = e?.data?.detail || e?.message || 'Generierung fehlgeschlagen. Bitte erneut versuchen.'
     generating.value = false
