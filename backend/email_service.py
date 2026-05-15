@@ -2,6 +2,8 @@ import os
 import resend
 from dotenv import load_dotenv
 
+from security import make_unsubscribe_token
+
 load_dotenv()
 
 resend.api_key = os.getenv("RESEND_API_KEY")
@@ -16,19 +18,35 @@ REPLY_TO = os.getenv("EMAIL_REPLY_TO", "hello@quizifyai.app")
 DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
 # Marketing site — reset-password lives here since users are signed out when they click the email link.
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3001")
+# Backend URL is what the List-Unsubscribe header points at, because mailbox
+# providers expect to POST directly per RFC 8058 (One-Click). The marketing
+# page handles the user-facing confirmation flow.
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 COMPANY_ADDRESS = os.getenv("COMPANY_ADDRESS", "Quizify AI , Vienna, Austria")
-UNSUBSCRIBE_URL = f"{FRONTEND_URL}/unsubscribe"
-
-
 SUPPORT_EMAIL = os.getenv("EMAIL_REPLY_TO", "hello@quizifyai.app")
 HELP_CENTER_URL = f"{FRONTEND_URL}/faq"
 
 
-def _footer_html() -> str:
+def _unsubscribe_url(to_email: str) -> str:
+    """User-facing footer link — points at the marketing page, which renders
+    a confirm UI before calling the backend POST."""
+    token = make_unsubscribe_token(to_email)
+    return f"{FRONTEND_URL}/unsubscribe?token={token}"
+
+
+def _one_click_unsubscribe_url(to_email: str) -> str:
+    """Mailbox-provider-facing URL for One-Click POST. Points directly at the
+    backend so providers don't have to bounce through the marketing site."""
+    token = make_unsubscribe_token(to_email)
+    return f"{BACKEND_URL}/unsubscribe?token={token}"
+
+
+def _footer_html(to_email: str) -> str:
     # The contact line above the address/unsubscribe block matters for
     # deliverability — Gmail/Outlook reduce spam-folder placement when emails
     # show clear, real contact paths. Real human inbox + help-center link
     # also lowers the "Report spam" rate when users have a question.
+    unsubscribe_url = _unsubscribe_url(to_email)
     return f"""
     <p style="color: #64748b; font-size: 12px; margin-top: 32px; text-align: center;">
         Questions? Contact us at
@@ -37,15 +55,18 @@ def _footer_html() -> str:
         <a href="{HELP_CENTER_URL}" style="color: #2563eb;">Help Center</a>.
     </p>
     <p style="color: #94a3b8; font-size: 10px; margin-top: 12px; text-align: center;">
-        {COMPANY_ADDRESS} | <a href="{UNSUBSCRIBE_URL}" style="color: #94a3b8;">Unsubscribe</a>
+        {COMPANY_ADDRESS} | <a href="{unsubscribe_url}" style="color: #94a3b8;">Unsubscribe</a>
     </p>
     """
 
 
-def _list_unsubscribe_headers() -> dict:
-    """Headers spam filters check to identify legitimate transactional/list mail."""
+def _list_unsubscribe_headers(to_email: str) -> dict:
+    """Headers spam filters check to identify legitimate transactional/list mail.
+    Per RFC 8058, the List-Unsubscribe URL should accept POST for One-Click —
+    we point it at the backend endpoint rather than the marketing page."""
+    one_click_url = _one_click_unsubscribe_url(to_email)
     return {
-        "List-Unsubscribe": f"<{UNSUBSCRIBE_URL}>, <mailto:{REPLY_TO}?subject=unsubscribe>",
+        "List-Unsubscribe": f"<{one_click_url}>, <mailto:{REPLY_TO}?subject=unsubscribe>",
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
     }
 
@@ -58,12 +79,12 @@ def send_verification_email(to_email: str, token: str):
         "to": [to_email],
         "reply_to": REPLY_TO,
         "subject": "Verify your email - Quizify",
-        "headers": _list_unsubscribe_headers(),
+        "headers": _list_unsubscribe_headers(to_email),
         "text": (
             f"Welcome to Quizify!\n\n"
             f"Verify your email by visiting:\n{verification_url}\n\n"
             f"This link expires in 24 hours. If you didn't create an account, you can ignore this email.\n\n"
-            f"{COMPANY_ADDRESS}\nUnsubscribe: {UNSUBSCRIBE_URL}"
+            f"{COMPANY_ADDRESS}\nUnsubscribe: {_unsubscribe_url(to_email)}"
         ),
         "html": f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -86,7 +107,7 @@ def send_verification_email(to_email: str, token: str):
             <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">
                 This link expires in 24 hours. If you didn't create an account, you can ignore this email.
             </p>
-            {_footer_html()}
+            {_footer_html(to_email)}
         </div>
         """
     })
@@ -110,7 +131,7 @@ def send_welcome_email(to_email: str, name: str | None = None):
         "to": [to_email],
         "reply_to": REPLY_TO,
         "subject": "Welcome to Quizify — pick your first track",
-        "headers": _list_unsubscribe_headers(),
+        "headers": _list_unsubscribe_headers(to_email),
         "text": (
             f"{greeting}\n\n"
             f"You're in. Quizify is built around two outcomes: passing the certification "
@@ -128,7 +149,7 @@ def send_welcome_email(to_email: str, name: str | None = None):
             f"Goethe-B1 Hören. New tracks roll out regularly.\n\n"
             f"Reply to this email if you get stuck — a real person reads it.\n\n"
             f"— The Quizify team\n\n"
-            f"{COMPANY_ADDRESS}\nUnsubscribe: {UNSUBSCRIBE_URL}"
+            f"{COMPANY_ADDRESS}\nUnsubscribe: {_unsubscribe_url(to_email)}"
         ),
         "html": f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -187,7 +208,7 @@ def send_welcome_email(to_email: str, name: str | None = None):
                 <a href="{library_url}" style="color: #2563eb;">your dashboard</a>.
             </p>
 
-            {_footer_html()}
+            {_footer_html(to_email)}
         </div>
         """
     })
@@ -201,14 +222,14 @@ def send_password_reset_email(to_email: str, token: str):
         "to": [to_email],
         "reply_to": REPLY_TO,
         "subject": "Reset your Quizify password",
-        "headers": _list_unsubscribe_headers(),
+        "headers": _list_unsubscribe_headers(to_email),
         "text": (
             f"Reset your Quizify password\n\n"
             f"We received a request to reset the password for your account. "
             f"Open this link in your browser to choose a new one:\n{reset_url}\n\n"
             f"This link expires in 1 hour. If you didn't request a password reset, "
             f"you can safely ignore this email — your password won't change.\n\n"
-            f"{COMPANY_ADDRESS}\nUnsubscribe: {UNSUBSCRIBE_URL}"
+            f"{COMPANY_ADDRESS}\nUnsubscribe: {_unsubscribe_url(to_email)}"
         ),
         "html": f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -232,7 +253,7 @@ def send_password_reset_email(to_email: str, token: str):
             <p style="color: #94a3b8; font-size: 12px; margin-top: 32px;">
                 This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email — your password won't change.
             </p>
-            {_footer_html()}
+            {_footer_html(to_email)}
         </div>
         """
     })

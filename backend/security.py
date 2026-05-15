@@ -53,3 +53,35 @@ def create_refresh_token() -> str:
 def hash_refresh_token(token: str) -> str:
     import hashlib
     return hashlib.sha256(token.encode()).hexdigest()
+
+
+# ── Unsubscribe tokens ────────────────────────────────────────────────────────
+# Long-lived JWTs that identify a user via their email so an unauthenticated
+# request from a footer link or List-Unsubscribe header can act on the right
+# account. Type-tagged so an access token can't be misused as an unsubscribe
+# token and vice versa.
+
+UNSUBSCRIBE_TOKEN_EXPIRE_DAYS = 365  # Footer links live in old emails forever — generous expiry.
+
+
+def make_unsubscribe_token(email: str) -> str:
+    """Sign a JWT that proves the bearer is allowed to (un)subscribe `email`.
+    Embedded in every email's footer + List-Unsubscribe header."""
+    payload = {
+        "sub": email,
+        "type": "unsubscribe",
+        "exp": datetime.now(timezone.utc) + timedelta(days=UNSUBSCRIBE_TOKEN_EXPIRE_DAYS),
+    }
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def verify_unsubscribe_token(token: str) -> Optional[str]:
+    """Return the email encoded in the token, or None if invalid / expired /
+    wrong type. Never raises — callers treat None as 'reject'."""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.PyJWTError:
+        return None
+    if payload.get("type") != "unsubscribe":
+        return None
+    return payload.get("sub")

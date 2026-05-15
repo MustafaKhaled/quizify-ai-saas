@@ -60,6 +60,10 @@ class User(Base):
     is_pro = Column(Boolean, default=False) # True only after Stripe payment
     is_verified = Column(Boolean, default=False, server_default="false", nullable=False)
     trial_ends_at = Column(DateTime, nullable=True) # The "Manual" gate
+    # NULL = subscribed to non-transactional email; timestamp = unsubscribed at that moment.
+    # Transactional mail (verification, password reset) ignores this flag — only marketing
+    # / announcement emails check it. Resubscribing sets this back to NULL.
+    unsubscribed_at = Column(DateTime, nullable=True)
     # passive_deletes=True tells SQLAlchemy to trust the database to cascade —
     # the FK on the child side has ondelete=CASCADE, so we don't need the ORM
     # to load and delete each child row individually (which can fail when

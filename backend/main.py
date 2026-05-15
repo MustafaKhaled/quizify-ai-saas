@@ -19,6 +19,7 @@ from db.routers.subscription.subscription_router import router as subscription_r
 from db.routers.predefined.predefined_router import router as predefined_router
 from db.routers.predefined.horen_router import router as horen_router
 from db.routers.recommendations.recommendations_router import router as recommendations_router
+from db.routers.unsubscribe_router import router as unsubscribe_router
 from starlette.middleware.sessions import SessionMiddleware
 
 
@@ -37,6 +38,7 @@ app.include_router(subscription_router)
 app.include_router(predefined_router)
 app.include_router(horen_router)
 app.include_router(recommendations_router)
+app.include_router(unsubscribe_router)
 
 # Serve B1 Hören audio files. New on-demand quizzes write here with UUID
 # filenames; the directory is bootstrapped at startup so the StaticFiles
