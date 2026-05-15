@@ -6,7 +6,12 @@ load_dotenv()
 
 resend.api_key = os.getenv("RESEND_API_KEY")
 
-EMAIL_FROM = os.getenv("EMAIL_FROM", "Quizify <noreply@quizifyai.app>")
+# Send FROM a real, monitored mailbox (not a no-reply alias). Gmail / Outlook
+# weight sender reputation heavily on whether the from-address can actually
+# receive mail and shows interaction (replies, opens). Using `hello@` as the
+# from-address makes the `reply_to` header redundant for most clients —
+# replies land in the same inbox naturally.
+EMAIL_FROM = os.getenv("EMAIL_FROM", "Quizify AI <hello@quizifyai.app>")
 REPLY_TO = os.getenv("EMAIL_REPLY_TO", "hello@quizifyai.app")
 DASHBOARD_URL = os.getenv("DASHBOARD_URL", "http://localhost:3000")
 # Marketing site — reset-password lives here since users are signed out when they click the email link.
@@ -15,9 +20,23 @@ COMPANY_ADDRESS = os.getenv("COMPANY_ADDRESS", "Quizify AI , Vienna, Austria")
 UNSUBSCRIBE_URL = f"{FRONTEND_URL}/unsubscribe"
 
 
+SUPPORT_EMAIL = os.getenv("EMAIL_REPLY_TO", "hello@quizifyai.app")
+HELP_CENTER_URL = f"{FRONTEND_URL}/faq"
+
+
 def _footer_html() -> str:
+    # The contact line above the address/unsubscribe block matters for
+    # deliverability — Gmail/Outlook reduce spam-folder placement when emails
+    # show clear, real contact paths. Real human inbox + help-center link
+    # also lowers the "Report spam" rate when users have a question.
     return f"""
-    <p style="color: #94a3b8; font-size: 10px; margin-top: 40px; text-align: center;">
+    <p style="color: #64748b; font-size: 12px; margin-top: 32px; text-align: center;">
+        Questions? Contact us at
+        <a href="mailto:{SUPPORT_EMAIL}" style="color: #2563eb;">{SUPPORT_EMAIL}</a>
+        or visit our
+        <a href="{HELP_CENTER_URL}" style="color: #2563eb;">Help Center</a>.
+    </p>
+    <p style="color: #94a3b8; font-size: 10px; margin-top: 12px; text-align: center;">
         {COMPANY_ADDRESS} | <a href="{UNSUBSCRIBE_URL}" style="color: #94a3b8;">Unsubscribe</a>
     </p>
     """
