@@ -40,12 +40,21 @@ const subjects = [
     description: 'Dativ, Wechselpräpositionen, Konjunktiv II, Nebensätze — every A2 grammar rule.',
     badge: 'CEFR A2',
     to: '/exams/deutsch-a2'
+  },
+  {
+    slug: 'deutsch_b1',
+    name: 'German Grammar B1',
+    icon: '🇩🇪',
+    color: '#7F1D1D',
+    description: 'Konjunktiv II irreal, Plusquamperfekt, Passiv komplett, indirekte Rede — every B1 grammar rule.',
+    badge: 'CEFR B1',
+    to: '/exams/deutsch-b1'
   }
 ]
 </script>
 
 <template>
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 not-prose">
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 not-prose">
     <NuxtLink
       v-for="s in subjects"
       :key="s.slug"

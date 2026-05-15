@@ -10,7 +10,7 @@ from db.routers.util import build_user_response
 
 import schemas, security
 from authlib.integrations.starlette_client import OAuth
-from email_service import send_password_reset_email, send_verification_email
+from email_service import send_password_reset_email, send_verification_email, send_welcome_email
 import os, secrets as _secrets_mod
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
@@ -280,6 +280,13 @@ async def google_callback(request: Request, db: db_dep):
         db.add(user)
         db.commit()
         db.refresh(user)
+        # Welcome email — first-time Google signup is fully onboarded immediately
+        # (Google verifies the email, no extra step). Mirrors the email-
+        # verification path so both flows feel symmetrical to the user.
+        try:
+            send_welcome_email(user.email, name=user.name)
+        except Exception as e:
+            print(f"[oauth] Failed to send welcome email: {e}")
     else:
         if not user.is_verified:
             user.is_verified = True
@@ -318,9 +325,20 @@ async def verify_email(token: str, response: Response, db: db_dep):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # Send the welcome email only on the FIRST verification — re-verifying an
+    # already-verified account (rare, but possible if a stale link is clicked)
+    # shouldn't re-send. Capture the prior state before flipping the flag.
+    just_verified = not user.is_verified
+
     user.is_verified = True
     db.delete(record)
     db.commit()
+
+    if just_verified:
+        try:
+            send_welcome_email(user.email, name=user.name)
+        except Exception as e:
+            print(f"[verify-email] Failed to send welcome email: {e}")
 
     # Auto-login after verification
     access_token = security.create_access_token(data={"sub": user.email})
