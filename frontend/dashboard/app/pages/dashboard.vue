@@ -583,7 +583,18 @@ async function addToLibrary(slug: string) {
   }
 }
 
-const weakTopics = ref<WeakTopic[]>([])
+const rawWeakTopics = ref<WeakTopic[]>([])
+// Hide Hören / Lesen weak topics from the "Recommended for You" list.
+// Those features have their own per-feature quota and a separate practice
+// flow on the agent page; surfacing them here would invite users to burn
+// scarce Hören credits on auto-generated practice quizzes.
+const EXCLUDED_WEAK_TOPIC_ORIGINS = new Set<string>([
+  ...HOREN_SLUGS,
+  ...LESEN_SLUGS,
+])
+const weakTopics = computed<WeakTopic[]>(() =>
+  rawWeakTopics.value.filter((t) => !EXCLUDED_WEAK_TOPIC_ORIGINS.has(t.origin))
+)
 const provisioningSlug = ref<string | null>(null)
 const practicingTopicKey = ref<string | null>(null)
 
@@ -722,7 +733,7 @@ onMounted(async () => {
   }
 
   if (weakRes.status === 'fulfilled' && weakRes.value.ok) {
-    weakTopics.value = await weakRes.value.json()
+    rawWeakTopics.value = await weakRes.value.json()
   }
 })
 </script>

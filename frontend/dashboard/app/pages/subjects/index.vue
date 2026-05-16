@@ -228,8 +228,24 @@ async function addToLibrary(slug: string) {
   }
 }
 
+// Hören / Lesen don't use the generated-quiz subject view — they have their
+// own dedicated chapter-picker pages (/horen/<slug>, /lesen/<slug>) that
+// drive the audio/reading flow. Route them there directly instead of
+// provisioning a subject and dumping the user on /subjects/<id>, which
+// would mis-frame the feature as a regular generated-quiz subject.
+const HOREN_SLUGS = ['deutsch_a2_horen', 'deutsch_b1_horen'] as const
+const LESEN_SLUGS = ['deutsch_a2_lesen', 'deutsch_b1_lesen'] as const
+
 async function launchPredefined(slug: string) {
   if (provisioningSlug.value) return
+  if ((HOREN_SLUGS as readonly string[]).includes(slug)) {
+    await navigateTo(`/horen/${slug}`)
+    return
+  }
+  if ((LESEN_SLUGS as readonly string[]).includes(slug)) {
+    await navigateTo(`/lesen/${slug}`)
+    return
+  }
   provisioningSlug.value = slug
   try {
     const res = await fetch(`${config.public.apiBase}/predefined/${slug}/provision`, {
