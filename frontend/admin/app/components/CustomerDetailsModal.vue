@@ -83,6 +83,22 @@ const { data: user, pending, error, execute } = useFetch<UserDetail>(
 
 const deletingSourceId = ref<string | null>(null)
 const deletingQuizId = ref<string | null>(null)
+const resettingQuota = ref(false)
+
+async function resetQuota() {
+  if (!props.userId) return
+  if (!confirm("Reset this user's weekly Hören + Lesen quota? They'll get a full fresh allowance immediately.")) return
+  try {
+    resettingQuota.value = true
+    await $fetch(`/api/admin/users/${props.userId}/reset-quota`, { method: 'POST' })
+    alert('Quota reset successfully.')
+  } catch (e: any) {
+    console.error('Failed to reset quota', e)
+    alert(e?.data?.detail || e?.message || 'Failed to reset quota')
+  } finally {
+    resettingQuota.value = false
+  }
+}
 
 // Inline lazy-loaded attempt history: expandedQuizId tracks which quiz row's
 // "View attempts" panel is open; attemptsByQuiz caches loaded results so
@@ -233,9 +249,20 @@ function formatDate(dateString: string | null | undefined): string {
           </div>
           <div>
             <p class="text-sm font-medium text-gray-500">Pro Status</p>
-            <UBadge :color="user.is_pro ? 'success' : 'gray'" variant="subtle">
-              {{ user.is_pro ? 'Pro' : 'Free' }}
-            </UBadge>
+            <div class="flex items-center gap-2">
+              <UBadge :color="user.is_pro ? 'success' : 'gray'" variant="subtle">
+                {{ user.is_pro ? 'Pro' : 'Free' }}
+              </UBadge>
+              <UButton
+                size="xs"
+                variant="soft"
+                color="primary"
+                :loading="resettingQuota"
+                @click="resetQuota"
+              >
+                Reset quota
+              </UButton>
+            </div>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-500">Joined</p>

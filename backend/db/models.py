@@ -64,6 +64,11 @@ class User(Base):
     # Transactional mail (verification, password reset) ignores this flag — only marketing
     # / announcement emails check it. Resubscribing sets this back to NULL.
     unsubscribed_at = Column(DateTime, nullable=True)
+    # Floor for per-feature quota counting (Hören, Lesen). Set to now() when a
+    # user upgrades to Pro so quizzes they generated during their trial don't
+    # eat into their fresh Pro rolling-7-day window. NULL = never reset, so
+    # the quota window goes back to the user's earliest quiz.
+    quota_reset_at = Column(DateTime, nullable=True)
     # passive_deletes=True tells SQLAlchemy to trust the database to cascade —
     # the FK on the child side has ondelete=CASCADE, so we don't need the ORM
     # to load and delete each child row individually (which can fail when

@@ -128,6 +128,10 @@ def _lesen_quota_status(user: User, db: Session) -> dict:
         limit = LESEN_QUOTA_PRO_PER_WEEK
         window_start = now - LESEN_QUOTA_PRO_WINDOW
         window_start_naive = window_start.replace(tzinfo=None)
+        # Apply quota_reset_at as a floor — trial-era quizzes shouldn't
+        # eat into the fresh Pro window after upgrade. Same logic as Hören.
+        if user.quota_reset_at is not None and user.quota_reset_at > window_start_naive:
+            window_start_naive = user.quota_reset_at
 
         recent = (
             db.query(Quiz)
@@ -163,14 +167,13 @@ def _lesen_quota_status(user: User, db: Session) -> dict:
 
     if tier == "trial":
         limit = LESEN_QUOTA_TRIAL_LIFETIME
-        used = (
-            db.query(Quiz)
-            .filter(
-                Quiz.user_id == user.id,
-                Quiz.quiz_type == LESEN_QUIZ_TYPE,
-            )
-            .count()
+        trial_q = db.query(Quiz).filter(
+            Quiz.user_id == user.id,
+            Quiz.quiz_type == LESEN_QUIZ_TYPE,
         )
+        if user.quota_reset_at is not None:
+            trial_q = trial_q.filter(Quiz.generation_date >= user.quota_reset_at)
+        used = trial_q.count()
         period = "trial"
         reason = None if used < limit else "trial_limit_reached"
         return {

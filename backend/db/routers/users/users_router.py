@@ -47,6 +47,11 @@ def get_my_profile(current_user: CurrentUser, db: DBSession, sync: bool = Query(
                 subs = stripe.Subscription.list(customer=customer.id, status="active", limit=1)
                 if subs.data:
                     sub = subs.data[0]
+                    # Only reset the quota floor on the transition trial→Pro.
+                    # Re-running sync on an already-Pro user must not move the
+                    # floor forward (would silently erase legitimate Pro usage).
+                    if not current_user.is_pro:
+                        current_user.quota_reset_at = datetime.utcnow()
                     current_user.is_pro = True
                     current_user.stripe_subscription_id = sub.id
                     current_user.stripe_customer_id = customer.id

@@ -143,6 +143,12 @@ def _horen_quota_status(user: User, db: Session) -> dict:
         # The Quiz.generation_date column is naive UTC, so compare against a
         # naive UTC value to keep SQLAlchemy from complaining.
         window_start_naive = window_start.replace(tzinfo=None)
+        # Apply quota_reset_at as a floor — if the user upgraded recently
+        # (less than 7 days ago), only quizzes generated AFTER the upgrade
+        # count. Otherwise the 7-day window already starts after the reset
+        # and the floor is a no-op.
+        if user.quota_reset_at is not None and user.quota_reset_at > window_start_naive:
+            window_start_naive = user.quota_reset_at
 
         recent = (
             db.query(Quiz)
@@ -180,15 +186,17 @@ def _horen_quota_status(user: User, db: Session) -> dict:
 
     if tier == "trial":
         limit = HOREN_QUOTA_TRIAL_LIFETIME
-        # Lifetime-within-trial — count all audio_listening quizzes ever.
-        used = (
-            db.query(Quiz)
-            .filter(
-                Quiz.user_id == user.id,
-                Quiz.quiz_type == "audio_listening",
-            )
-            .count()
+        # Lifetime-within-trial — count all audio_listening quizzes since the
+        # last quota reset (NULL = since account creation). Edge case: a user
+        # who previously paid then re-entered trial wouldn't be penalized by
+        # pre-reset quizzes.
+        trial_q = db.query(Quiz).filter(
+            Quiz.user_id == user.id,
+            Quiz.quiz_type == "audio_listening",
         )
+        if user.quota_reset_at is not None:
+            trial_q = trial_q.filter(Quiz.generation_date >= user.quota_reset_at)
+        used = trial_q.count()
         period = "trial"
         reason = None if used < limit else "trial_limit_reached"
         return {

@@ -170,6 +170,12 @@ async def handle_webhook(request: Request, stripe_signature: str = Header(None))
             
             if user:
                 # Update User Status
+                # Only reset the quota floor on the trial→Pro transition.
+                # If the user is already Pro (e.g. webhook replay, top-up,
+                # subscription update event), don't move the floor forward —
+                # that would silently erase legitimate Pro usage.
+                if not user.is_pro:
+                    user.quota_reset_at = datetime.utcnow()
                 user.is_pro = True
                 user.is_verified = True
                 user.stripe_subscription_id = stripe_sub_id

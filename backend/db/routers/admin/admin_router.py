@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
@@ -196,6 +197,40 @@ async def delete_quiz_source(
             status_code=500,
             detail=f"Could not delete quiz source: {type(e).__name__}: {e}",
         )
+
+
+@router.post("/users/{user_id}/reset-quota")
+async def reset_user_quota(
+    user_id: UUID,
+    db: db_dep,
+    _: CurrentAdmin,
+):
+    """Reset a user's per-feature quota window (Hören + Lesen).
+
+    Sets quota_reset_at = now() so the user gets a full fresh allowance
+    immediately. Used for support cases (e.g. user upgraded but webhook
+    missed, manual is_pro flip, customer complaint).
+    """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.quota_reset_at = datetime.utcnow()
+    try:
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.exception("Admin quota reset failed for user id=%s", user_id)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Could not reset quota: {type(e).__name__}: {e}",
+        )
+
+    return {
+        "user_id": str(user.id),
+        "email": user.email,
+        "quota_reset_at": user.quota_reset_at.isoformat(),
+    }
 
 
 @router.delete("/quizzes/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)
