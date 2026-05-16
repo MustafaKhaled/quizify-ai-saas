@@ -1,0 +1,96 @@
+title: Goethe-Zertifikat B1 Lesen — full reading mocks on demand
+description: Quizify AI generates full Goethe-B1 Lesen mock exams on demand — all five Teile, 30 questions, 65-minute pacing. Practice the blog R/F task, two-article MCQ, the 10-ad Zuordnung, reader-comment Ja/Nein, and institutional document MCQ until the format is muscle memory.
+subject_slug: deutsch_b1_lesen
+color: '#7C3AED'
+icon: '📖'
+badge: 'Goethe-Zertifikat · B1'
+exam_authority: 'Goethe-Institut'
+hero:
+  headline: B1 Lesen. Alle fünf Teile. Auf Knopfdruck.
+  subhead: Full Goethe-Zertifikat B1 Lesen mocks generated on demand — Teil 1 (Blogeintrag, 6 R/F), Teil 2 (zwei Artikel, 6 MCQ), Teil 3 (10 Anzeigen + 7 Situationen mit Buchstaben-Zuordnung), Teil 4 (7 Leserkommentare, Ja/Nein), Teil 5 (Hausordnung o.ä., 4 MCQ). 30 Aufgaben, 65 Minuten, echtes Prüfungsformat.
+  tagline: Eine vollständige Lesen-Prüfung in 15 Sekunden generiert.
+  cta:
+    label: Generiere deine erste B1-Lesen-Prüfung
+    to: /signup?subject=deutsch_b1_lesen
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Das B1-Lesen-Problem
+  description: Most B1 candidates have read every grammar rule but never sat through a full Lesen mock under timed conditions. The Zuordnung task in Teil 3 alone breaks more candidates than any grammar mistake.
+  items:
+    - You can read a German blog post — but Teil 1 makes you decide six richtig/falsch statements that paraphrase the text, not quote it. Pattern matching dies here.
+    - Teil 3 puts ten ads on the page and seven situations underneath. You have to actively rule out three "distractor ads" — and you've never practiced that under a timer.
+    - Teil 4 gives you seven reader comments and asks Ja/Nein per author. The comments hedge. You guess.
+    - Teil 5 hands you a Hausordnung in formal Sie-form and four MCQs that paraphrase specific clauses. You start re-reading the document for each question. Time runs out.
+    - Your textbook has one mock at the back. You've taken it twice. You've memorized it instead of learning the format.
+promises:
+  title: What you actually need
+  description: Fresh full-length B1 Lesen mocks at the right pace, with the right task shapes, scored per Teil.
+  items:
+    - title: Full 5-Teil Goethe-B1 Lesen format
+      description: Every mock includes all five Teile in the order and shape of the real exam — Blogeintrag (R/F ×6), zwei Zeitungsartikel (MCQ ×6), Anzeigen-Zuordnung (10 ads, 7 situations, letter input a–j or 0), Leserkommentare (Ja/Nein ×7), institutional document (MCQ ×4). 30 items total.
+      icon: i-lucide-list-checks
+    - title: The Anzeigen-Zuordnung task — for real
+      description: Teil 3 is the most format-specific Lesen task in any CEFR exam. Quizify generates 10 plausible ads on a single theme (Sprachkurse, Wohnungsangebote, Veranstaltungen) and 7 situations where exactly one has no match — the "0" case — and four ads are pure distractors. Practice it correctly until the rhythm is automatic.
+      icon: i-lucide-search
+    - title: 65-minute timer matches the real exam
+      description: The mock runs with the official 65-minute time limit so you build pacing the way you'll need it on test day, not just under ideal conditions.
+      icon: i-lucide-timer
+    - title: Anti-verbatim comprehension items
+      description: Every correct answer is a paraphrase of the source text — not a quoted sentence. The exam tests comprehension, not keyword spotting; Quizify trains you the same way.
+      icon: i-lucide-target
+    - title: Per-Teil scoring + explanation review
+      description: After the mock, see your score per Teil and review every question with the German phrase that supports the correct answer. Learn from each item.
+      icon: i-lucide-line-chart
+comparison:
+  title: How Quizify B1 Lesen compares
+  description: Most B1 reading practice is a few official sample materials reused forever. Generic AI tools can't generate the Anzeigen-Zuordnung task with proper composition rules. Quizify is the only thing that does both.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Textbook mocks
+    - name: Generic ChatGPT
+  rows:
+    - feature: Fresh full-length B1 Lesen mock generated on demand
+      values: ['yes', 'no', 'partial']
+    - feature: All 5 Teile in the official Goethe-B1 format
+      values: ['yes', 'partial', 'no']
+    - feature: Anzeigen-Zuordnung — 10 ads, 7 situations, "0" no-match
+      values: ['yes', 'partial', 'no']
+    - feature: 65-minute exam timer
+      values: ['yes', 'no', 'no']
+    - feature: Anti-verbatim correct answers (paraphrase, not quote)
+      values: ['yes', 'partial', 'no']
+    - feature: Per-Teil scoring + per-question review
+      values: ['yes', 'no', 'no']
+faq:
+  title: B1 Lesen — häufig gestellte Fragen
+  items:
+    - label: Is this aligned to the official Goethe-Zertifikat B1 Lesen format?
+      content: Yes. Each mock contains all five Teile in the official order and shape — Teil 1 (one personal blog post, 6 richtig/falsch items), Teil 2 (two short press articles, 3+3 MCQ), Teil 3 (10 ads a–j + 7 situations, letter input or "0" for no match), Teil 4 (7 reader comments, Ja/Nein per author), Teil 5 (one institutional document, 4 MCQ). 30 items, 65 minutes.
+    - label: How does the Anzeigen-Zuordnung (Teil 3) work?
+      content: You see 10 lettered ads on a single theme and 7 situations describing different people's needs. For each situation, you type the letter (a–j) of the matching ad — or "0" if none of the ads fits. Quizify enforces the real-exam composition rules: exactly one no-match, six unique winning letters, four distractor-only ads. The frontend soft-warns if you type the same letter twice (each ad can match at most one situation) but doesn't block submission.
+    - label: How long does generation take?
+      content: A full 5-Teil mock takes ~10–20 seconds on Gemini 2.5 Flash. All five Teile are generated in parallel.
+    - label: How many mocks do I get?
+      content: Free trial includes 1 full mock (shared across Lesen levels). Pro includes 10 mocks per rolling 7 days across both A2 and B1 Lesen combined.
+    - label: Can I see why each answer is correct?
+      content: Yes. After completing each Teil, every question shows an English explanation with the German phrase from the source that proves (or disproves) the correct answer. You review what you missed before moving on.
+    - label: Does this prepare me for the Hören (listening) part too?
+      content: No — Lesen is reading only. For listening, see the Goethe-B1 Hören track (4 Teile with native German voices). Both modules are included in Pro.
+testimonials:
+  title: From B1 Lesen candidates
+  items:
+    - quote: Teil 3 was breaking me until I practiced it for real. Quizify let me sit a fresh Anzeigen-Zuordnung every other day — different theme each time — and the rhythm finally clicked.
+      user:
+        name: Lena Fischer
+        description: B1 Candidate, TU Munich
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+    - quote: I'd been reading the same two model tests for weeks. With Quizify I had a fresh full Lesen mock every couple of days and my pacing on Teil 4 went from "out of time" to comfortable.
+      user:
+        name: Marcus Okonkwo
+        description: B1 Candidate, University of Ghana
+        avatar:
+          src: https://i.pravatar.cc/120?img=12

@@ -41,13 +41,28 @@
                 >
                   {{ lesenQuotaLine }}
                 </p>
-                <button
-                  v-if="!subUser?.subscription?.is_eligible"
-                  @click="showSubscriptionModal = true"
-                  class="mt-2 w-full px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold"
+                <!-- Upgrade prompt — shown when any limit the user could
+                     resolve by upgrading has been reached. Pro users at the
+                     weekly Hören/Lesen cap don't see this (they need to
+                     wait for the rolling window; upgrading wouldn't help). -->
+                <div
+                  v-if="needsUpgrade"
+                  class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/70"
                 >
-                  Upgrade to Pro
-                </button>
+                  <p
+                    v-if="upgradeReasonLabel"
+                    class="text-xs font-medium text-amber-700 dark:text-amber-300 mb-1.5 flex items-center gap-1"
+                  >
+                    <UIcon name="i-lucide-alert-triangle" class="w-3.5 h-3.5" />
+                    {{ upgradeReasonLabel }}
+                  </p>
+                  <button
+                    @click="showSubscriptionModal = true"
+                    class="w-full px-3 py-1.5 btn-gradient rounded-lg text-xs font-semibold"
+                  >
+                    Upgrade to Pro
+                  </button>
+                </div>
               </div>
             </template>
           </UPopover>
@@ -412,6 +427,55 @@ const lesenQuotaLine = computed<string>(() => {
   if (q.tier === 'expired') return ''
   const periodWord = q.period === 'week' ? 'in 7 Tagen' : 'in der Probezeit'
   return `Lesen: ${q.remaining} von ${q.limit} ${periodWord}`
+})
+
+// ── Upgrade prompt logic ────────────────────────────────────────────────────
+// Surface an "Upgrade to Pro" CTA whenever the user has hit a limit they
+// could resolve by upgrading. We deliberately DON'T trigger for Pro users
+// at their weekly Hören/Lesen cap — upgrading wouldn't help them; they
+// just need to wait for the rolling 7-day window. The play pages already
+// show that wait time inline.
+
+const trialQuizzesExhausted = computed(() => {
+  const sub = subUser.value?.subscription
+  if (!sub || sub.status !== 'trial_active') return false
+  const limit = sub.trial_quiz_limit ?? 3
+  const used = subUser.value?.quizzes_count ?? 0
+  return used >= limit
+})
+
+const horenLimitedAndCanUpgrade = computed(() => {
+  const q = horenQuota.value
+  if (!q) return false
+  return q.tier !== 'pro' && !q.remaining  // trial-cap or no-sub — upgrading fixes both
+})
+
+const lesenLimitedAndCanUpgrade = computed(() => {
+  const q = lesenQuota.value
+  if (!q) return false
+  return q.tier !== 'pro' && !q.remaining
+})
+
+const subscriptionExpired = computed(() => {
+  const status = subUser.value?.subscription?.status || ''
+  return status === 'trial_expired' || status.startsWith('expired_')
+})
+
+const needsUpgrade = computed(() =>
+  subscriptionExpired.value
+  || trialQuizzesExhausted.value
+  || horenLimitedAndCanUpgrade.value
+  || lesenLimitedAndCanUpgrade.value
+)
+
+// One-line reason for the badge popover so the user knows WHY they're
+// being prompted. First match wins (most-blocking first).
+const upgradeReasonLabel = computed<string>(() => {
+  if (subscriptionExpired.value) return 'Subscription expired'
+  if (trialQuizzesExhausted.value) return 'Trial quiz limit reached'
+  if (horenLimitedAndCanUpgrade.value) return 'Hören trial limit reached'
+  if (lesenLimitedAndCanUpgrade.value) return 'Lesen trial limit reached'
+  return ''
 })
 
 const subscriptionBadgeLabel = computed(() => {

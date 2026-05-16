@@ -54,6 +54,52 @@ useSeoMeta({
       <PromotionalVideo />
     </UPageHero>
 
+    <!-- Modules section: rendered when the exam YAML includes a `modules`
+         array. Used by level-hub pages (deutsch-a1/a2/b1) to show which
+         modules are available at that level — Grammatik, Hören, Lesen.
+         Each module card deep-links to its own niched landing page. -->
+    <UPageSection
+      v-if="exam.modules && exam.modules.items && exam.modules.items.length"
+      :title="exam.modules.title"
+      :description="exam.modules.description"
+    >
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 not-prose">
+        <NuxtLink
+          v-for="(m, i) in exam.modules.items"
+          :key="i"
+          :to="m.to"
+          class="group relative overflow-hidden rounded-xl border border-default bg-default p-6 transition hover:-translate-y-0.5 hover:shadow-lg block"
+        >
+          <div
+            class="absolute inset-x-0 top-0 h-1"
+            :style="{ background: m.color || exam.color }"
+          />
+          <div class="flex items-start justify-between mb-3">
+            <div class="text-3xl leading-none">{{ m.icon }}</div>
+            <span
+              v-if="m.badge"
+              class="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full"
+              :style="{ background: `${(m.color || exam.color)}1A`, color: m.color || exam.color }"
+            >
+              {{ m.badge }}
+            </span>
+          </div>
+          <div class="font-semibold text-highlighted mb-1.5">{{ m.title }}</div>
+          <p class="text-sm text-muted leading-relaxed">{{ m.description }}</p>
+          <div
+            class="mt-4 inline-flex items-center gap-1 text-xs font-medium opacity-0 group-hover:opacity-100 transition"
+            :style="{ color: m.color || exam.color }"
+          >
+            {{ m.cta || 'Open module' }}
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="size-3.5"
+            />
+          </div>
+        </NuxtLink>
+      </div>
+    </UPageSection>
+
     <UPageSection
       :title="exam.pains.title"
       :description="exam.pains.description"

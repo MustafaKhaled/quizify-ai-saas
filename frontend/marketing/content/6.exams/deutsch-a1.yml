@@ -15,6 +15,17 @@ hero:
     icon: i-lucide-arrow-right
     trailing: true
     size: xl
+modules:
+  title: Was ist im A1-Track enthalten?
+  description: A1 starts where every German learner does — grammar fundamentals. Hören and Lesen mocks unlock at A2 (and B1) since the official Goethe-A1 exam is still mostly word- and sentence-level.
+  items:
+    - title: Grammatik
+      description: Every A1 grammar rule — Artikel und Genus, Nominativ + Akkusativ, Personal- und Possessivpronomen, Konjugation, Modalverben, trennbare Verben, Perfekt, basic Wortstellung. Mini-context fill-ins and chained-rule questions for every Regel.
+      icon: ✏️
+      color: '#DC2626'
+      badge: A1 · Live
+      cta: Open Grammatik
+      to: /signup?subject=deutsch_a1
 pains:
   title: Klingt das vertraut?
   description: Sound familiar? German A1 prep apps teach you words, not the rules the Goethe-Zertifikat actually tests.

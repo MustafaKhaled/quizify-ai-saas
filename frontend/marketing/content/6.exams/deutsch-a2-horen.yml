@@ -1,0 +1,93 @@
+title: Goethe-Zertifikat A2 Hören — full mocks on demand
+description: Quizify AI generates full Goethe-A2 Hören mock exams on demand — all four Teile, native German Azure Neural voices, simplified A2 vocabulary, real exam pacing. Practice short messages, presentation, dialogue, and discussion until A2-level listening becomes reflex.
+subject_slug: deutsch_a2_horen
+color: '#0E7490'
+icon: '🎧'
+badge: 'Goethe-Zertifikat · A2'
+exam_authority: 'Goethe-Institut'
+hero:
+  headline: A2 Hören. Echte Prüfungsformat — A2-Wortschatz.
+  subhead: Full Goethe-Zertifikat A2 Hören mocks generated on demand — Teil 1 (Kurze Mitteilungen, played twice), Teil 2 (Kurze Präsentation), Teil 3 (Gespräch, richtig/falsch, played twice), Teil 4 (Diskussion, "wer sagt was", played twice). Native German voices, A2-appropriate vocabulary, real exam pacing.
+  tagline: Mehr hören als lesen — das ist A2.
+  cta:
+    label: Generiere deine erste A2-Hören-Prüfung
+    to: /signup?subject=deutsch_a2_horen
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Das A2-Hören-Problem
+  description: Sound familiar? A2 listening is harder than A2 reading — by the time you've parsed the sentence, the speaker has moved on, and the question is about what came two sentences ago.
+  items:
+    - You know the words on paper but at speech tempo your brain runs out of buffer halfway through a sentence.
+    - The recordings in your textbook all use the same two voices. Real A2 Hören uses different speakers for every Teil — your ear isn't trained for that variety yet.
+    - You've taken the one mock at the back of your textbook three times and now you've memorized it instead of learning from it.
+    - Teil 3 plays twice on the real exam — but you've never simulated that, so you don't know whether to commit on the first pass or wait for the second.
+    - Teil 4 has three speakers and you can't track who said what because you're still translating each sentence in your head.
+promises:
+  title: What you actually need
+  description: An infinite supply of fresh full-length A2 Hören mocks at A2 speech pace, with A2-appropriate vocabulary, scored the way the real exam scores you.
+  items:
+    - title: Full 4-Teil Goethe-A2 Hören format
+      description: Every mock includes all four Teile in the order and shape they appear on the real A2 exam. Per-Teil play limits enforced — Teil 1, Teil 3, and Teil 4 play twice (as on the real exam); Teil 2 plays once.
+      icon: i-lucide-list-checks
+    - title: A2-appropriate vocabulary range
+      description: Scripts use everyday A2 topics — family, daily routines, weather, shopping, hobbies, school, simple work. No business jargon, no abstract debates, no Konjunktiv II beyond `möchte` / `könnte` / `hätte`. The level matches your study.
+      icon: i-lucide-feather
+    - title: Native German voices, multi-speaker
+      description: Teil 3 and Teil 4 use distinct native German Azure Neural voices per speaker so you actually rehearse tracking who is saying what — not just one narrator with different sentences.
+      icon: i-lucide-mic
+    - title: Per-Teil scoring + transcript review
+      description: After the mock, see your score per Teil and review every question with the German phrase that proved (or disproved) the correct answer. Comprehension built sentence by sentence.
+      icon: i-lucide-line-chart
+comparison:
+  title: How Quizify A2 Hören compares
+  description: Most A2 listening practice online either reuses the same official sample materials forever or skips the format entirely. Quizify gives you fresh A2-pace mocks on demand.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: YouTube playlists
+    - name: Duolingo / Babbel
+  rows:
+    - feature: Fresh full-length A2 mock generated on demand
+      values: ['yes', 'no', 'no']
+    - feature: All 4 Teile in the official Goethe-A2 format
+      values: ['yes', 'partial', 'no']
+    - feature: Native German Azure Neural voices, multi-speaker
+      values: ['yes', 'partial', 'no']
+    - feature: Real exam play-limit per Teil (most play twice)
+      values: ['yes', 'no', 'no']
+    - feature: Per-Teil scoring + transcript review
+      values: ['yes', 'no', 'partial']
+    - feature: A2-appropriate vocabulary — no B1 drift
+      values: ['yes', 'partial', 'partial']
+faq:
+  title: A2 Hören — häufig gestellte Fragen
+  items:
+    - label: Is this aligned to the official Goethe-Zertifikat A2 Hören format?
+      content: Yes. Each mock contains all four Teile in the official order — Teil 1 (5 short single-speaker monologues, MCQ, plays twice), Teil 2 (one short presentation, 5 MCQ, plays once), Teil 3 (two-speaker dialogue, 5 richtig/falsch, plays twice), Teil 4 (three-speaker discussion, 5 "wer sagt was" MCQ, plays twice).
+    - label: Is the vocabulary really at A2 level?
+      content: Yes. Scripts use everyday A2 vocabulary — family, daily routines, weather, shopping, hobbies, school, simple work. No business jargon, no abstract debates, no Konjunktiv II beyond `möchte` / `könnte` / `hätte`. Sentence structure stays simple.
+    - label: How is this different from the B1 Hören track?
+      content: Same architecture, different level. A2 uses shorter scripts (50–70% the word count of B1), simpler vocabulary, fewer comprehension items per Teil, and more replays per Teil. If you're planning to sit A2 within ~6 months, A2 Hören is the right starting point.
+    - label: How long does generation take?
+      content: A full 4-Teil mock takes ~2 minutes (Gemini writes the scripts, Edge TTS renders the audio for each Teil in parallel). The mock then stays in your library — you can replay it or take it again.
+    - label: How many mocks do I get?
+      content: Free trial includes 1 full mock (shared across Hören levels — pick A2 or B1). Pro includes 5 mocks per rolling 7 days across both A2 and B1 Hören combined.
+    - label: Should I do A2 Lesen alongside Hören?
+      content: If you're prepping for the full Goethe-A2 exam, yes. The Goethe-A2 Lesen track covers all 4 reading Teile (newspaper, directory, email, ad-matching) and is included in Pro.
+testimonials:
+  title: From A2 candidates
+  items:
+    - quote: Reading German clicked first, listening took ages. Quizify let me sit a fresh A2 Hören mock every couple of days instead of replaying the same sample recordings until they meant nothing. My ear caught up.
+      user:
+        name: Aisha Patel
+        description: A2 Candidate, Toronto
+        avatar:
+          src: https://i.pravatar.cc/120?img=1
+    - quote: The two-speaker dialogue in Teil 3 used to lose me by the third turn. Practicing with different voices every week trained me to track who's talking. Bestanden.
+      user:
+        name: Priya Sharma
+        description: A2 Candidate, University of Melbourne
+        avatar:
+          src: https://i.pravatar.cc/120?img=10

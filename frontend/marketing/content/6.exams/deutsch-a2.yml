@@ -15,6 +15,31 @@ hero:
     icon: i-lucide-arrow-right
     trailing: true
     size: xl
+modules:
+  title: Was ist im A2-Track enthalten?
+  description: Full Goethe-Zertifikat A2 coverage — Grammatik, Hören, and Lesen. Each module has its own niched landing if you want the full pitch on what's inside.
+  items:
+    - title: Grammatik
+      description: Every A2 Regel — Dativ, Wechselpräpositionen, Konjunktiv II (möchte/könnte), trennbare Verben in Perfekt, Nebensätze with weil/dass/wenn/als/obwohl, Plusquamperfekt. Mini-context fill-ins and chained-rule questions.
+      icon: ✏️
+      color: '#991B1B'
+      badge: A2 · Live
+      cta: Open Grammatik
+      to: /signup?subject=deutsch_a2
+    - title: Hören
+      description: Full Goethe-A2 Hören mocks on demand — all 4 Teile (Kurze Mitteilungen, Kurze Präsentation, Gespräch R/F, Diskussion). Native German voices for multi-speaker scripts, real exam pacing with per-Teil play limits (most Teile play twice).
+      icon: 🎧
+      color: '#0E7490'
+      badge: A2 · Hören
+      cta: See Hören details
+      to: /exams/deutsch-a2-horen
+    - title: Lesen
+      description: Full Goethe-A2 Lesen mocks on demand — 4 Teile, 20 questions, 30-minute timer. Includes the Wegweiser stockwerk-MCQ (Teil 2) and the 6-ad Anzeigen-Zuordnung with 'X' for no-match (Teil 4).
+      icon: 📖
+      color: '#A21CAF'
+      badge: A2 · Lesen
+      cta: See Lesen details
+      to: /exams/deutsch-a2-lesen
 pains:
   title: Klingt das vertraut?
   description: Sound familiar? A2 is where most German learners stall — A1 felt manageable, but Dativ and Konjunktiv break the pattern.

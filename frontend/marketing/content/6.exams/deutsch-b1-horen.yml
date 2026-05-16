@@ -1,0 +1,93 @@
+title: Goethe-Zertifikat B1 Hören — full mocks on demand
+description: Quizify AI generates full Goethe-B1 Hören mock exams on demand — all four Teile, native German Azure Neural voices, real exam pacing. Practice Kurze Texte, Vortrag, Gespräch, and Diskussion until the format is muscle memory.
+subject_slug: deutsch_b1_horen
+color: '#15803D'
+icon: '🎧'
+badge: 'Goethe-Zertifikat · B1'
+exam_authority: 'Goethe-Institut'
+hero:
+  headline: B1 Hören. Endlich richtig üben.
+  subhead: Full Goethe-Zertifikat B1 Hören mocks generated on demand — Teil 1 (Kurze Texte), Teil 2 (Vortrag), Teil 3 (Gespräch, richtig/falsch), Teil 4 (Diskussion, "wer sagt was"). Native German Azure Neural voices, real exam pacing, per-Teil scoring.
+  tagline: Eine vollständige Hörverstehensprüfung in zwei Minuten.
+  cta:
+    label: Generiere deine erste B1-Hören-Prüfung
+    to: /signup?subject=deutsch_b1_horen
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Das Hören-Problem
+  description: Most B1 candidates have read every grammar rule but never sat through a full Hören mock at exam pace. The format is what trips them up — not the language.
+  items:
+    - You can read a German news article — but at speech tempo with three speakers in Teil 4, your brain skips the part that gets quizzed.
+    - You've watched YouTube playlists of "Goethe-B1 Hören Übungen" — every video uses the same five recordings, so you've memorized the answers, not the skill.
+    - The dialogue in Teil 3 plays once and you have seven richtig/falsch decisions to make — there's no second chance, no rewind, and you've never simulated that pressure.
+    - Teil 4's "wer sagt was" task means tracking three speakers' opinions across five minutes — a skill nothing in your study materials actually rehearses.
+    - Your textbook has one mock at the back. You've taken it twice. Now what?
+promises:
+  title: What you actually need
+  description: An infinite supply of fresh full-length Hören mocks at the right pace, with the right voices, scored the way the real exam scores you.
+  items:
+    - title: Full 4-Teil Goethe-Zertifikat B1 format
+      description: Every mock includes all four Teile in the order and shape they appear on the real exam — Kurze Texte, Vortrag, Gespräch (richtig/falsch ×7), Diskussion (wer sagt was ×8). Per-Teil play limits enforced (Teil 4 plays twice; the others play once).
+      icon: i-lucide-list-checks
+    - title: Native German voices, not robotic TTS
+      description: Multi-speaker scripts are rendered with native German Azure Neural voices — distinct timbre per speaker so Teil 3 and Teil 4 actually sound like a conversation. No flat narrator drone.
+      icon: i-lucide-mic
+    - title: Fresh script every time
+      description: Scripts are generated fresh per mock — train station announcements, voicemails, panel discussions on real topics — so you can't just memorize the answers from previous attempts.
+      icon: i-lucide-refresh-cw
+    - title: Per-Teil scoring + transcript review
+      description: After the mock, see your score per Teil and review every question with the German phrase that proved (or disproved) the correct answer. Comprehension built rule by rule.
+      icon: i-lucide-line-chart
+comparison:
+  title: How Quizify B1 Hören compares
+  description: Most "B1 Hören practice" online is the same five recordings recycled. Generic AI tools can't pace audio. Quizify is the only thing that does both.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: YouTube playlists
+    - name: Generic ChatGPT / language apps
+  rows:
+    - feature: Fresh full-length mock generated on demand
+      values: ['yes', 'no', 'no']
+    - feature: All 4 Teile in the official Goethe-B1 format
+      values: ['yes', 'partial', 'no']
+    - feature: Native German Azure Neural voices, multi-speaker
+      values: ['yes', 'partial', 'no']
+    - feature: Real exam play-limit per Teil (once or twice)
+      values: ['yes', 'no', 'no']
+    - feature: Per-Teil scoring + transcript review
+      values: ['yes', 'no', 'no']
+    - feature: Comprehension items written in B1 vocabulary range
+      values: ['yes', 'partial', 'no']
+faq:
+  title: B1 Hören — häufig gestellte Fragen
+  items:
+    - label: Is this aligned to the official Goethe-Zertifikat B1 Hören format?
+      content: Yes. Each mock contains all four Teile in the official order and shape — Teil 1 (5 short single-speaker monologues, MCQ), Teil 2 (one longer presentation, 5 MCQ), Teil 3 (two-speaker dialogue, 7 richtig/falsch), Teil 4 (three-speaker discussion, 8 "wer sagt was" MCQ).
+    - label: Are the voices actually German?
+      content: Yes — multi-speaker scripts use native German Azure Neural voices with distinct timbre per speaker. Teil 3 and Teil 4 sound like an actual conversation, not the same narrator with different sentences.
+    - label: How long does generation take?
+      content: A full 4-Teil mock takes ~2 minutes (Gemini writes the scripts, Edge TTS renders the audio for each Teil in parallel). After that, the mock is yours forever in your library — you can replay it, share it, or take it again.
+    - label: How many mocks do I get?
+      content: Free trial includes 1 full mock. Pro includes 5 mocks per rolling 7 days — enough for daily practice in the final exam-prep weeks without ever running out of fresh material.
+    - label: Can I see the transcript?
+      content: Yes. After completing the mock, every Teil shows a per-question review — the German phrase that supports each correct answer is quoted in the explanation. You can read what you missed.
+    - label: Will this prepare me for the Lesen part too?
+      content: No — Hören is listening only. For reading, see the Goethe-B1 Lesen track (5 Teile including the 10-ad Zuordnung task). Both modules are included in Pro.
+testimonials:
+  title: From B1 Hören candidates
+  items:
+    - quote: I'd been recycling the same three YouTube mocks for weeks. With Quizify I had a fresh full-length Hören every morning before work. Teil 4 stopped feeling like a wall.
+      user:
+        name: Lena Fischer
+        description: B1 Candidate, TU Munich
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+    - quote: The native voices in Teil 3 made the difference. Practicing with two distinct speakers — one casual, one polite — taught my ear to track who was saying what. On exam day it felt familiar.
+      user:
+        name: Marcus Okonkwo
+        description: B1 Candidate, University of Ghana
+        avatar:
+          src: https://i.pravatar.cc/120?img=12

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-// Mirrors backend/agents/__init__.py PREDEFINED_AGENTS — keep slug, name,
-// color, and icon in sync with the agent registry. Static here so the
-// marketing site renders without depending on the API being up.
-// `to` matches a content file at content/6.exams/<slug>.yml — the dynamic
-// page at app/pages/exams/[slug].vue renders the niched landing.
+// Each tile links to a content file at content/6.exams/<slug>.yml. The
+// German tiles are CEFR-level hubs — each level's page lists which modules
+// (Grammatik / Hören / Lesen) are available at that level. The level
+// pages handle deep links to the per-module landings.
 const subjects = [
   {
     slug: 'pmp',
@@ -12,6 +11,7 @@ const subjects = [
     color: '#F97316',
     description: 'Project Management Professional. Full coverage of every PMI process group and knowledge area.',
     badge: 'PMI',
+    modules: '',
     to: '/exams/pmp'
   },
   {
@@ -21,33 +21,37 @@ const subjects = [
     color: '#FF9900',
     description: 'CLF-C02 exam prep across all four domains: cloud concepts, security, services, and billing.',
     badge: 'AWS',
+    modules: '',
     to: '/exams/clf-c02'
   },
   {
     slug: 'deutsch_a1',
-    name: 'German Grammar A1',
+    name: 'German A1',
     icon: '🇩🇪',
     color: '#DC2626',
-    description: 'CEFR A1 grammar drills modeled on Goethe-Zertifikat, telc, and ÖSD A1 question style.',
-    badge: 'CEFR A1',
+    description: 'Goethe-Zertifikat A1 prep — calibrated to the question style of the real exam.',
+    badge: 'CEFR · A1',
+    modules: 'Grammatik',
     to: '/exams/deutsch-a1'
   },
   {
     slug: 'deutsch_a2',
-    name: 'German Grammar A2',
+    name: 'German A2',
     icon: '🇩🇪',
     color: '#991B1B',
-    description: 'Dativ, Wechselpräpositionen, Konjunktiv II, Nebensätze — every A2 grammar rule.',
-    badge: 'CEFR A2',
+    description: 'Goethe-Zertifikat A2 — grammar drills plus full Hören and Lesen mock exams on demand.',
+    badge: 'CEFR · A2',
+    modules: 'Grammatik · Hören · Lesen',
     to: '/exams/deutsch-a2'
   },
   {
     slug: 'deutsch_b1',
-    name: 'German Grammar B1',
+    name: 'German B1',
     icon: '🇩🇪',
     color: '#7F1D1D',
-    description: 'Konjunktiv II irreal, Plusquamperfekt, Passiv komplett, indirekte Rede — every B1 grammar rule.',
-    badge: 'CEFR B1',
+    description: 'Goethe-Zertifikat B1 — grammar drills plus full Hören and Lesen mock exams on demand.',
+    badge: 'CEFR · B1',
+    modules: 'Grammatik · Hören · Lesen',
     to: '/exams/deutsch-b1'
   }
 ]
@@ -76,6 +80,13 @@ const subjects = [
       </div>
       <div class="font-semibold text-highlighted mb-1.5">{{ s.name }}</div>
       <p class="text-sm text-muted leading-relaxed">{{ s.description }}</p>
+      <p
+        v-if="s.modules"
+        class="mt-3 text-xs font-medium"
+        :style="{ color: s.color }"
+      >
+        {{ s.modules }}
+      </p>
       <div
         class="mt-4 inline-flex items-center gap-1 text-xs font-medium opacity-0 group-hover:opacity-100 transition"
         :style="{ color: s.color }"

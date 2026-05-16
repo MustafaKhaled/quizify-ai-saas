@@ -58,6 +58,17 @@
               Vollständige Prüfung generieren (~2 Min.)
             </template>
           </button>
+
+          <!-- Upgrade CTA — only shown when the limit is something an
+               upgrade would fix (trial limit, no subscription). Pro users at
+               their weekly cap see the wait-time message above instead. -->
+          <button
+            v-if="canUpgradeFromHere"
+            @click="showSubscriptionModal = true"
+            class="mt-3 w-full px-4 py-2.5 rounded-xl text-sm font-semibold border-2 border-emerald-500 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition"
+          >
+            Upgrade auf Pro für mehr Prüfungen →
+          </button>
         </div>
 
         <p v-if="generationError" class="mt-3 text-sm text-red-600 dark:text-red-400">
@@ -121,6 +132,10 @@
       </div>
 
     </UDashboardPanelContent>
+
+    <!-- Subscription modal: opened by the "Upgrade auf Pro" CTA when the
+         user has hit a trial cap or has no active subscription. -->
+    <SubscriptionModal v-model="showSubscriptionModal" />
   </UDashboardPanel>
 </template>
 
@@ -192,7 +207,17 @@ const generationStartedAt = ref<number>(0)
 const generationElapsed = ref(0)
 const generationError = ref<string | null>(null)
 const quota = ref<HorenQuota | null>(null)
+const showSubscriptionModal = ref(false)
 let elapsedTimer: ReturnType<typeof setInterval> | null = null
+
+// Show the upgrade CTA when the user has hit a limit that upgrading WOULD fix.
+// Pro users at the weekly cap can't be helped by upgrading — they just need
+// the rolling window to advance — so they don't see this CTA.
+const canUpgradeFromHere = computed(() => {
+  const q = quota.value
+  if (!q) return false
+  return q.reason === 'trial_limit_reached' || q.reason === 'subscription_required'
+})
 
 const quotaLabel = computed<string>(() => {
   const q = quota.value

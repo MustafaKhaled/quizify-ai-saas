@@ -2,7 +2,7 @@ title: Pass it. Or master it.
 description: Whether you're prepping for a high-stakes certification or sharpening a skill, pick the plan that matches how serious your prep is.
 seo:
   title: Pricing — Quizify AI
-  description: Free trial and Pro plans for certification practice. Curated tracks for PMP, AWS Cloud Practitioner, Goethe German A1 / A2 / B1 — with per-topic analytics that tell you exactly what to study next.
+  description: Free trial and Pro plans for certification practice. Curated tracks for PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1, plus Goethe-Zertifikat A2 & B1 Hören (listening) and Lesen (reading) full mock exams on demand.
 navigation.icon: i-lucide-credit-card
 plans:
   - title: Free trial
@@ -18,7 +18,8 @@ plans:
     features:
       - 7-day free trial
       - 3 quizzes during the trial
-      - 1 Hören mock exam (sample the listening track)
+      - 1 Hören mock exam — pick A2 or B1
+      - 1 Lesen mock exam — pick A2 or B1
       - Per-topic weakness analytics on every quiz
       - Save your trial results
   - title: Pro
@@ -34,9 +35,10 @@ plans:
       to: /signup
     features:
       - Unlimited practice quizzes on every curated track
-      - Every certification track — PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1
-      - 5 Goethe-B1 Hören full exams per rolling 7 days (audio + transcripts)
-      - Exam-style question patterns (mini-context, chained-rule, scenario-based)
+      - Every grammar track — PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1
+      - 5 Goethe Hören full exams per rolling 7 days — A2 and B1 (audio + transcripts)
+      - 10 Goethe Lesen full exams per rolling 7 days — A2 and B1 (all Teile, including Anzeigen-Zuordnung)
+      - Exam-style question patterns (mini-context, chained-rule, scenario-based, letter-matching)
       - Real-exam timer & full pacing simulation
       - Per-topic weakness map with ranked focus suggestions
       - Progress tracking — watch weak topics turn into strong ones
@@ -45,14 +47,18 @@ faq:
   title: Frequently asked questions
   description: The questions we hear most often from certification candidates and language learners.
   items:
-    - label: Which certifications do you cover?
-      content: Today PMP (PMI's Project Management Professional), AWS Cloud Practitioner (CLF-C02), and German Grammar at A1, A2, and B1 levels — modeled on Goethe-Zertifikat, telc, and ÖSD. We also offer a Goethe-B1 Hören (listening) module with on-demand audio mocks. New tracks roll out regularly.
+    - label: Which certifications and tracks do you cover?
+      content: PMP (PMI's Project Management Professional), AWS Cloud Practitioner (CLF-C02), and German Grammar at A1, A2, and B1 levels — modeled on Goethe-Zertifikat, telc, and ÖSD. Plus dedicated Goethe Hören (listening) modules at A2 and B1 with on-demand multi-speaker audio mocks, and Goethe Lesen (reading) modules at A2 and B1 with full text-based exams including the Anzeigen-Zuordnung task. New tracks roll out regularly.
     - label: How is this different from generic AI quiz tools?
       content: Each curated track is shaped by the official syllabus — chapters, question style, distractor patterns, and difficulty curve are all calibrated to the real exam. Generic tools generate plausible-looking questions; Quizify generates questions that train you for the exam you're actually sitting.
     - label: How does the per-topic weakness analytics work?
       content: Every quiz scores you per chapter, then the dashboard ranks topics by how much your overall score will move if you fix them. You stop re-reading what you already know and spend study hours where they actually shift your pass-readiness.
+    - label: How do the Hören mock exams work?
+      content: Pick a Goethe Hören level (A2 or B1) and Quizify generates a fresh full mock — all four Teile, native German Azure Neural voices for multi-speaker dialogues and panels, real exam pacing with per-Teil play limits. Pro plans include 5 Hören mocks per rolling 7 days across both levels combined.
+    - label: How do the Lesen mock exams work?
+      content: Pick a Goethe Lesen level (A2 or B1) and Quizify generates a fresh full mock — A2 has 4 Teile (newspaper, Wegweiser, email, 6-ad matching), B1 has 5 Teile (blog, two articles, 10-ad Zuordnung, reader comments, institutional doc). The matching task uses a text input where you type the matching letter, just like the real exam. Pro plans include 10 Lesen mocks per rolling 7 days across both levels combined.
     - label: How does the free trial work?
-      content: Seven days, 3 practice quizzes, and 1 Goethe-B1 Hören mock exam — enough to see how the platform finds your weak spots and tells you what to do about them. No credit card required to sign up.
+      content: Seven days, 3 practice quizzes, plus 1 Hören mock and 1 Lesen mock (pick any level) — enough to see how the platform finds your weak spots and tells you what to do about them. No credit card required to sign up.
     - label: Can I cancel my Pro subscription at any time?
       content: Yes — one click from your account settings. You keep Pro access until the end of your current billing cycle, no clawback.
     - label: Do you offer student discounts?

@@ -15,6 +15,31 @@ hero:
     icon: i-lucide-arrow-right
     trailing: true
     size: xl
+modules:
+  title: Was ist im B1-Track enthalten?
+  description: Full Goethe-Zertifikat B1 coverage — Grammatik, Hören, and Lesen. Each module has its own niched landing if you want the full pitch on what's inside.
+  items:
+    - title: Grammatik
+      description: 17 B1 chapters — Konjunktiv II (komplett), Plusquamperfekt, Passiv (komplett), indirekte Rede (Konjunktiv I), Temporale / Finale / Konzessive Nebensätze, Konditionalsätze (real & irreal), advanced Relativsätze, N-Deklination, Genitiv (komplett). No A1/A2 retesting.
+      icon: ✏️
+      color: '#7F1D1D'
+      badge: B1 · Live
+      cta: Open Grammatik
+      to: /signup?subject=deutsch_b1
+    - title: Hören
+      description: Full Goethe-B1 Hören mocks on demand — all 4 Teile (Kurze Texte, Vortrag, Gespräch R/F, Diskussion "wer sagt was"). Distinct native German voices per speaker for dialogues and panels, real exam pacing.
+      icon: 🎧
+      color: '#15803D'
+      badge: B1 · Hören
+      cta: See Hören details
+      to: /exams/deutsch-b1-horen
+    - title: Lesen
+      description: Full Goethe-B1 Lesen mocks on demand — 5 Teile, 30 questions, 65-minute timer. Includes the 10-ad Anzeigen-Zuordnung (Teil 3) with 'a–j' or '0' for no-match, and per-Teil scoring with English explanations.
+      icon: 📖
+      color: '#7C3AED'
+      badge: B1 · Lesen
+      cta: See Lesen details
+      to: /exams/deutsch-b1-lesen
 pains:
   title: Klingt das vertraut?
   description: Sound familiar? B1 is where rules stop being patterns and start being judgement calls — and the exam tests you on the judgement, not the pattern.

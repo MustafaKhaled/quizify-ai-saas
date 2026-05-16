@@ -1,8 +1,8 @@
 title: Pass it. Or [master it]{class="text-primary"}.
-description: Curated exam tracks for PMP, AWS Cloud Practitioner, Goethe German A1 / A2 / B1 — paired with diagnostic quizzes that show you exactly which topics you haven't actually learned yet. Built for serious certification candidates and skill-building learners.
+description: Curated exam tracks for PMP, AWS Cloud Practitioner, Goethe German A1 / A2 / B1, plus Goethe Hören (listening) and Lesen (reading) full mock exams on demand at A2 and B1 — paired with diagnostic quizzes that show you exactly which topics you haven't actually learned yet. Built for serious certification candidates and language learners.
 seo:
   title: Quizify AI — Pass Your Certification, Find Your Weak Spots
-  description: A practice platform built around real certification outcomes. Curated tracks for PMP, AWS, Goethe German A1/A2/B1 and more, with per-topic analytics that tell you exactly what to study next.
+  description: A practice platform built around real certification outcomes. Curated tracks for PMP, AWS Cloud Practitioner, Goethe German A1/A2/B1 grammar, plus Goethe-Zertifikat A2 & B1 Hören (listening) and Lesen (reading) full mocks generated on demand. Per-topic analytics that tell you exactly what to study next.
 navigation: false
 hero:
   links:
@@ -23,7 +23,7 @@ sections:
     id: subjects
     orientation: vertical
   - title: Practice the way the exam actually asks
-    description: Quizify generates four exam-grade question types — single-choice, multiple-select, true/false, and chained-rule fill-ins for grammar tracks — calibrated so the right answer requires understanding, not memorization.
+    description: Quizify generates every exam-grade question type — single-choice, multiple-select, true/false, chained-rule fill-ins for grammar tracks, Hören comprehension after multi-speaker audio, and the Goethe Lesen Anzeigen-Zuordnung (letter input) — calibrated so the right answer requires understanding, not memorization.
     id: question-style
     orientation: horizontal
     reverse: true
@@ -60,7 +60,7 @@ features:
   description: The features that matter when the exam fee, your study hours, and the certification on your CV are all on the line.
   items:
     - title: Curated certification tracks
-      description: PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1, Goethe-B1 Hören — chapters and questions modeled on the official exam.
+      description: PMP, AWS Cloud Practitioner, German Grammar A1 / A2 / B1, plus Goethe-Zertifikat A2 & B1 Hören (listening) and Lesen (reading) full mocks — chapters and questions modeled on the official exam.
       icon: i-lucide-graduation-cap
     - title: Real exam pacing
       description: Customizable timer matches the duration of your real exam so you train pacing the way you'll need it on test day.

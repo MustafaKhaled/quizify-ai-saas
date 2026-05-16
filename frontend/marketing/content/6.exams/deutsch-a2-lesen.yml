@@ -1,0 +1,96 @@
+title: Goethe-Zertifikat A2 Lesen — full reading mocks on demand
+description: Quizify AI generates full Goethe-A2 Lesen mock exams on demand — all four Teile, 20 questions, 30-minute pacing. Practice the newspaper article, the Wegweiser stockwerk-MCQ, the email, and the 6-ad Zuordnung task at A2-appropriate vocabulary.
+subject_slug: deutsch_a2_lesen
+color: '#A21CAF'
+icon: '📖'
+badge: 'Goethe-Zertifikat · A2'
+exam_authority: 'Goethe-Institut'
+hero:
+  headline: A2 Lesen. Echtes Format. A2-Wortschatz.
+  subhead: Full Goethe-Zertifikat A2 Lesen mocks generated on demand — Teil 1 (Zeitungstext, 5 MCQ), Teil 2 (Wegweiser im Kaufhaus o.ä., 5 Stockwerk-MCQ), Teil 3 (persönliche E-Mail, 5 MCQ), Teil 4 (6 Anzeigen + 5 Situationen mit Buchstaben-Zuordnung). 20 Aufgaben, 30 Minuten, echtes Prüfungsformat.
+  tagline: Eine vollständige A2-Leseprüfung in 10 Sekunden generiert.
+  cta:
+    label: Generiere deine erste A2-Lesen-Prüfung
+    to: /signup?subject=deutsch_a2_lesen
+    icon: i-lucide-arrow-right
+    trailing: true
+    size: xl
+pains:
+  title: Das A2-Lesen-Problem
+  description: A2 reading looks deceptively simple — until you sit a real mock and realize the format is the trap, not the vocabulary.
+  items:
+    - You can read every word on a Wegweiser im Kaufhaus — but the question paraphrases what you're looking for, so you have to map "Geschenk für ein Kind" to "Spielwaren" yourself.
+    - Teil 4 puts six ads on the page and five situations underneath. One situation has no match — you write "X" — but you've never practiced spotting which one.
+    - The email in Teil 3 hedges with `vielleicht`, `eigentlich`, `aber`. The question asks what the writer actually plans to do. You translate every sentence; the timer runs out.
+    - Your textbook has one A2 Lesen mock at the back. You've taken it twice and now you know the answers, not the format.
+    - You've watched videos titled "A2 Lesen Übung" — they all use the same official sample. You've memorized that one too.
+promises:
+  title: What you actually need
+  description: Fresh full-length A2 Lesen mocks at the right pace, with the right task shapes, scored per Teil — at A2 vocabulary.
+  items:
+    - title: Full 4-Teil Goethe-A2 Lesen format
+      description: Every mock includes all four Teile in the order and shape of the real exam — Zeitungstext (5 MCQ), Wegweiser (5 Stockwerk-MCQ), E-Mail (5 MCQ), Anzeigen-Zuordnung (6 ads + 5 situations, letter input a–f or "X" no-match). 20 items total.
+      icon: i-lucide-list-checks
+    - title: A2-appropriate vocabulary range
+      description: Source texts use everyday A2 topics — family, daily routines, weather, shopping, hobbies, school, simple work. Sentence structure stays simple — mostly main clauses joined by und/aber/oder/denn. No B1 drift.
+      icon: i-lucide-feather
+    - title: The Wegweiser task — for real
+      description: Teil 2 is unique to A2 Lesen — a building or department-store directory, then 5 questions like "Sie suchen ein Geschenk für ein Kind — wo finden Sie das?". Quizify generates fresh directories (Kaufhaus, Bürgerzentrum, Sportkomplex, Bibliothek) so you practice the format until paraphrasing becomes reflex.
+      icon: i-lucide-building
+    - title: The 6-ad Anzeigen-Zuordnung
+      description: Smaller and simpler than B1 Teil 3 (6 ads instead of 10, "X" no-match marker, 5 situations) but the same skill — read each ad fully, rule out distractors, commit to the letter or "X". Practice the right rhythm under a real timer.
+      icon: i-lucide-search
+    - title: Per-Teil scoring + explanation review
+      description: After the mock, see your score per Teil and review every question with the German phrase from the source that supports the correct answer. English explanations so the underlying rule is unambiguous.
+      icon: i-lucide-line-chart
+comparison:
+  title: How Quizify A2 Lesen compares
+  description: Most A2 reading practice is a few sample texts reused forever or generic vocabulary drills that don't simulate the format.
+  columns:
+    - name: Quizify AI
+      highlight: true
+    - name: Textbook mocks
+    - name: Duolingo / Babbel
+  rows:
+    - feature: Fresh full-length A2 mock generated on demand
+      values: ['yes', 'no', 'no']
+    - feature: All 4 Teile in the official Goethe-A2 format
+      values: ['yes', 'partial', 'no']
+    - feature: Wegweiser-style Stockwerk-MCQ task (Teil 2)
+      values: ['yes', 'partial', 'no']
+    - feature: Anzeigen-Zuordnung (6 ads + 5 situations, "X" no-match)
+      values: ['yes', 'partial', 'no']
+    - feature: 30-minute exam timer
+      values: ['yes', 'no', 'no']
+    - feature: A2-appropriate vocabulary — no B1 drift
+      values: ['yes', 'partial', 'partial']
+faq:
+  title: A2 Lesen — häufig gestellte Fragen
+  items:
+    - label: Is this aligned to the official Goethe-Zertifikat A2 Lesen format?
+      content: Yes. Each mock contains all four Teile in the official order and shape — Teil 1 (one short newspaper article, 5 MCQ a/b/c), Teil 2 (a building directory, 5 MCQ asking which floor an item is on), Teil 3 (one personal email, 5 MCQ a/b/c), Teil 4 (6 ads a–f + 5 situations, type a letter or "X" if no match). 20 items, 30 minutes.
+    - label: What's the Wegweiser task?
+      content: Teil 2 of A2 Lesen — the candidate sees a building or department-store directory listing what's on each floor, then answers 5 MCQs of the form "Sie suchen <X> — wo finden Sie das?". The trick is paraphrasing — the question describes the item differently than the directory categorizes it ("ein Geschenk für ein Kind" → "Spielwaren"). Quizify generates fresh directories every time.
+    - label: How is this different from the B1 Lesen track?
+      content: Same architecture, different level. A2 has 4 Teile (vs B1's 5), 20 items (vs B1's 30), 30 minutes (vs B1's 65), and uses simpler vocabulary. The matching task in A2 Teil 4 has 6 ads with "X" no-match (vs B1 Teil 3 with 10 ads and "0"). If you're planning to sit A2 within ~6 months, A2 Lesen is the right starting point.
+    - label: How long does generation take?
+      content: A full 4-Teil mock takes ~10 seconds on Gemini 2.5 Flash. All four Teile are generated in parallel.
+    - label: How many mocks do I get?
+      content: Free trial includes 1 full mock (shared across Lesen levels — pick A2 or B1). Pro includes 10 mocks per rolling 7 days across both A2 and B1 Lesen combined.
+    - label: Should I do A2 Hören alongside Lesen?
+      content: If you're prepping for the full Goethe-A2 exam, yes. The Goethe-A2 Hören track covers all 4 listening Teile with native German voices and is included in Pro.
+testimonials:
+  title: From A2 candidates
+  items:
+    - quote: The Wegweiser task in Teil 2 used to confuse me — I'd look for the exact word in the directory and it wasn't there. Practicing fresh directories every day taught me to map the question's paraphrase to the right floor.
+      user:
+        name: Aisha Patel
+        description: A2 Candidate, Toronto
+        avatar:
+          src: https://i.pravatar.cc/120?img=1
+    - quote: I'd taken the textbook mock so many times I knew every answer. Quizify gave me actually new mocks every couple of days and my pacing on the Anzeigen task finally clicked.
+      user:
+        name: Priya Sharma
+        description: A2 Candidate, University of Melbourne
+        avatar:
+          src: https://i.pravatar.cc/120?img=10
