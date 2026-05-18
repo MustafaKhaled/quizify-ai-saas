@@ -202,26 +202,27 @@ function formatDate(dateString: string | null | undefined): string {
 </script>
 
 <template>
-  <UModal 
-  v-model="isOpen" 
-  :prevent-close="pending || deletingSourceId !== null || deletingQuizId !== null" 
-  size="xl">
-    <UCard @click.stop>
-      <template #header>
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-semibold">
-            {{ user?.name || 'Customer Details' }}
-          </h2>
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-lucide-x"
-            @click="isOpen = false"
-          />
-        </div>
-      </template>
+  <USlideover
+    v-model:open="isOpen"
+    side="bottom"
+    :dismissible="!(pending || deletingSourceId !== null || deletingQuizId !== null)"
+    :ui="{ content: 'max-h-[85vh] rounded-t-2xl' }"
+  >
+    <template #default><span /></template>
+    <template #content>
+      <div class="flex items-center justify-between px-6 pt-4 pb-3 border-b border-default">
+        <h2 class="text-xl font-semibold">
+          {{ user?.name || 'Customer Details' }}
+        </h2>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          icon="i-lucide-x"
+          @click="isOpen = false"
+        />
+      </div>
 
-      <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="px-6 py-4 overflow-y-auto">
 
       <!-- Loading State -->
       <div v-if="pending" class="space-y-4">
@@ -425,6 +426,6 @@ function formatDate(dateString: string | null | undefined): string {
         </div>
       </div>
       </div>
-    </UCard>
-  </UModal>
+    </template>
+  </USlideover>
 </template>
