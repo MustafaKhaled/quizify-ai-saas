@@ -17,13 +17,18 @@ interface QuizSourceInfo {
 
 interface QuizInfo {
   id: string
-  source_id: string
+  source_id: string | null
+  subject_id: string | null
   title: string
   quiz_type: string
   num_questions: number
   time_limit: number | null
   content: any
   generation_date: string
+  is_custom: boolean
+  attempt_count: number
+  latest_score: number | null
+  latest_attempt_at: string | null
 }
 
 interface UserDetail {

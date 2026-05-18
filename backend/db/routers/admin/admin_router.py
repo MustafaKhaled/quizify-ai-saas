@@ -4,11 +4,22 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, joinedload
+from agents import PREDEFINED_AGENTS
 from db.routers.util import build_user_response
 from schemas import UserAdminResponse, UserDetailResponse, QuizSourceResponse, QuizResponse
 from db.dependency import get_current_admin, get_db
 from db import models
 from uuid import UUID
+
+# Subject names registered as predefined agents. Any Quiz whose subject_id
+# resolves to a Subject row with a name in this set is a predefined quiz
+# (Hören / Lesen / Grammatik / PMP / CLF-C02). Everything else is a custom
+# quiz built from the user's own QuizSource (uploaded PDF). The admin modal
+# uses this to gate the per-question submission drill-down — only custom
+# quizzes get the "View answers" affordance.
+_PREDEFINED_SUBJECT_NAMES: frozenset[str] = frozenset(
+    a["name"] for a in PREDEFINED_AGENTS.values()
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(
@@ -109,16 +120,39 @@ async def get_user_details(
             if r.quiz_id not in latest_by_quiz:
                 latest_by_quiz[r.quiz_id] = r
 
+    # Resolve subject names for every quiz in a single query so we can tag
+    # each row as custom or predefined without N+1.
+    subject_ids = {q.subject_id for q in quizzes if q.subject_id is not None}
+    subject_name_by_id: dict = {}
+    if subject_ids:
+        subject_rows = (
+            db.query(models.Subject.id, models.Subject.name)
+            .filter(models.Subject.id.in_(subject_ids))
+            .all()
+        )
+        subject_name_by_id = {sid: name for sid, name in subject_rows}
+
+    def _is_custom(q: models.Quiz) -> bool:
+        # A quiz is "custom" when it isn't tied to a predefined agent. Quizzes
+        # without a subject_id are necessarily custom (no predefined agent
+        # creates a Quiz with subject_id=NULL).
+        if q.subject_id is None:
+            return True
+        name = subject_name_by_id.get(q.subject_id)
+        return name not in _PREDEFINED_SUBJECT_NAMES
+
     user_data["quizzes"] = [
         {
             "id": q.id,
             "source_id": q.source_id,
+            "subject_id": q.subject_id,
             "title": q.title,
             "quiz_type": q.quiz_type,
             "num_questions": q.num_questions,
             "time_limit": q.time_limit,
             "content": q.content,
             "generation_date": q.generation_date,
+            "is_custom": _is_custom(q),
             "attempt_count": counts_by_quiz.get(q.id, 0),
             "latest_score": (
                 float(latest_by_quiz[q.id].score_percentage)

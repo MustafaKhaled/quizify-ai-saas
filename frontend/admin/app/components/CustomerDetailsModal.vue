@@ -27,6 +27,44 @@ interface Quiz {
   latest_score?: number | null
   latest_attempt_at?: string | null
   num_questions?: number
+  is_custom?: boolean
+  // Quiz content payload — present in the admin user-details response so we
+  // can render per-question answer reviews without an extra round trip.
+  content?: {
+    questions?: QuizQuestion[]
+    [key: string]: any
+  }
+}
+
+// Individual question shape inside Quiz.content.questions. Different quiz
+// types use different fields (single_choice has correct_option_index;
+// multiple_select has correct_option_indices; letter_matching has
+// correct_letter). We keep the type permissive and read defensively.
+interface QuizQuestion {
+  question_type?: string
+  stem?: string
+  question_text?: string
+  topic?: string
+  options?: string[]
+  correct_option_index?: number
+  correct_option_indices?: number[]
+  correct_letter?: string
+  explanation?: string
+}
+
+// One entry in QuizResult.user_answers, produced by calculate_quiz_score on
+// the backend. The shape is consistent across quiz types — user_choice and
+// correct_answer are typed loosely because their concrete value depends on
+// question_type (int for single_choice, list[int] for multiple_select,
+// string for letter_matching).
+interface AnswerBreakdown {
+  question_index: number
+  topic?: string
+  question_type?: string
+  is_correct: boolean
+  user_choice: number | number[] | string | null
+  correct_answer: number | number[] | string | null
+  explanation?: string
 }
 
 interface QuizAttempt {
@@ -38,7 +76,7 @@ interface QuizAttempt {
   started_at: string | null
   ended_at: string | null
   attempt_date: string | null
-  user_answers: any
+  user_answers: AnswerBreakdown[] | null
 }
 
 interface QuizResultsResponse {
@@ -125,6 +163,71 @@ async function toggleAttempts(quizId: string) {
   } finally {
     loadingAttemptsId.value = null
   }
+}
+
+// Per-attempt expanded answer review. Key is `${quizId}:${attemptId}` so a
+// user can have multiple quizzes with their own expansions independently —
+// only one attempt at a time stays open to keep the bottom-sheet scroll sane.
+const expandedAttemptKey = ref<string | null>(null)
+
+function toggleAttemptAnswers(quizId: string, attemptId: string) {
+  const key = `${quizId}:${attemptId}`
+  expandedAttemptKey.value = expandedAttemptKey.value === key ? null : key
+}
+
+function attemptKey(quizId: string, attemptId: string): string {
+  return `${quizId}:${attemptId}`
+}
+
+// Render the option a user picked (or the correct answer) into a readable
+// label for one question. Handles all quiz types we currently support:
+//   - single_choice / true_false       → integer index into options[]
+//   - multiple_select                  → list of integer indices
+//   - letter_matching                  → single letter (matches headings)
+// Falls back to a stringified raw value if the question shape is unrecognised.
+function formatChoice(
+  value: number | number[] | string | null | undefined,
+  question: QuizQuestion | undefined
+): string {
+  if (value === null || value === undefined || value === '') return 'No answer'
+  if (!question) return String(value)
+
+  const options = question.options || []
+  const qtype = question.question_type
+
+  if (Array.isArray(value)) {
+    // multiple_select: list of indices
+    if (value.length === 0) return 'No answer'
+    return value
+      .map((i) => (typeof i === 'number' && options[i] !== undefined ? `${String.fromCharCode(65 + i)}. ${options[i]}` : String(i)))
+      .join(', ')
+  }
+
+  if (typeof value === 'string') {
+    // letter_matching: the value IS the letter ('a'–'j' or '0')
+    if (qtype === 'letter_matching') return value.toUpperCase()
+    // Some legacy payloads stored stringified indices; try numeric parse.
+    const asInt = Number.parseInt(value, 10)
+    if (!Number.isNaN(asInt) && options[asInt] !== undefined) {
+      return `${String.fromCharCode(65 + asInt)}. ${options[asInt]}`
+    }
+    return value
+  }
+
+  // typeof value === 'number'
+  if (options[value] !== undefined) {
+    return `${String.fromCharCode(65 + value)}. ${options[value]}`
+  }
+  return String(value)
+}
+
+function questionStem(question: QuizQuestion | undefined, index: number): string {
+  if (!question) return `Question ${index + 1}`
+  return question.stem || question.question_text || `Question ${index + 1}`
+}
+
+function findQuestion(quiz: Quiz, index: number): QuizQuestion | undefined {
+  return quiz.content?.questions?.[index]
 }
 
 function scoreBadgeColor(score: number | null | undefined): 'success' | 'warning' | 'error' | 'gray' {
@@ -403,21 +506,75 @@ function formatDate(dateString: string | null | undefined): string {
                 <div
                   v-for="(attempt, idx) in attemptsByQuiz[quiz.id]"
                   :key="attempt.id"
-                  class="flex items-center gap-3 text-xs py-1.5"
+                  class="text-xs"
                 >
-                  <span class="text-gray-400 w-6">#{{ (attemptsByQuiz[quiz.id]?.length || 0) - idx }}</span>
-                  <UBadge :color="scoreBadgeColor(attempt.score_percentage)" variant="subtle" size="xs">
-                    {{ Math.round(attempt.score_percentage) }}%
-                  </UBadge>
-                  <UBadge :color="attempt.is_passed ? 'success' : 'error'" variant="soft" size="xs">
-                    {{ attempt.is_passed ? 'Passed' : 'Failed' }}
-                  </UBadge>
-                  <span class="text-gray-500">
-                    {{ formatDuration(attempt.time_taken_seconds) }}
-                  </span>
-                  <span class="text-gray-500 ml-auto">
-                    {{ formatDateTime(attempt.attempt_date) }}
-                  </span>
+                  <div class="flex items-center gap-3 py-1.5">
+                    <span class="text-gray-400 w-6">#{{ (attemptsByQuiz[quiz.id]?.length || 0) - idx }}</span>
+                    <UBadge :color="scoreBadgeColor(attempt.score_percentage)" variant="subtle" size="xs">
+                      {{ Math.round(attempt.score_percentage) }}%
+                    </UBadge>
+                    <UBadge :color="attempt.is_passed ? 'success' : 'error'" variant="soft" size="xs">
+                      {{ attempt.is_passed ? 'Passed' : 'Failed' }}
+                    </UBadge>
+                    <span class="text-gray-500">
+                      {{ formatDuration(attempt.time_taken_seconds) }}
+                    </span>
+                    <UButton
+                      v-if="quiz.is_custom && attempt.user_answers && attempt.user_answers.length"
+                      color="primary"
+                      variant="ghost"
+                      size="xs"
+                      :icon="expandedAttemptKey === attemptKey(quiz.id, attempt.id) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                      class="ml-auto"
+                      @click.stop="toggleAttemptAnswers(quiz.id, attempt.id)"
+                    >
+                      Answers
+                    </UButton>
+                    <span class="text-gray-500" :class="{ 'ml-auto': !(quiz.is_custom && attempt.user_answers && attempt.user_answers.length) }">
+                      {{ formatDateTime(attempt.attempt_date) }}
+                    </span>
+                  </div>
+
+                  <!-- Per-question answer review (custom quizzes only) -->
+                  <div
+                    v-if="quiz.is_custom && expandedAttemptKey === attemptKey(quiz.id, attempt.id)"
+                    class="ml-6 mt-1 mb-2 space-y-2 border-l-2 border-gray-200 dark:border-gray-700 pl-3"
+                  >
+                    <div
+                      v-for="answer in attempt.user_answers || []"
+                      :key="answer.question_index"
+                      class="rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2"
+                    >
+                      <div class="flex items-start gap-2">
+                        <UIcon
+                          :name="answer.is_correct ? 'i-lucide-check-circle-2' : 'i-lucide-x-circle'"
+                          :class="answer.is_correct ? 'text-green-500' : 'text-red-500'"
+                          class="shrink-0 mt-0.5"
+                        />
+                        <div class="flex-1 min-w-0 space-y-1">
+                          <p class="font-medium text-gray-900 dark:text-gray-100">
+                            Q{{ answer.question_index + 1 }}.
+                            {{ questionStem(findQuestion(quiz, answer.question_index), answer.question_index) }}
+                          </p>
+                          <p>
+                            <span class="text-gray-500">Answered:</span>
+                            <span class="ml-1" :class="answer.is_correct ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'">
+                              {{ formatChoice(answer.user_choice, findQuestion(quiz, answer.question_index)) }}
+                            </span>
+                          </p>
+                          <p v-if="!answer.is_correct">
+                            <span class="text-gray-500">Correct:</span>
+                            <span class="ml-1 text-green-700 dark:text-green-400">
+                              {{ formatChoice(answer.correct_answer, findQuestion(quiz, answer.question_index)) }}
+                            </span>
+                          </p>
+                          <p v-if="answer.explanation" class="text-gray-500 italic">
+                            {{ answer.explanation }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
